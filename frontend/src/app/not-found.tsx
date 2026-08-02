@@ -20,7 +20,7 @@ export default function NotFound() {
         className="px-8 py-3.5 rounded-full bg-gradient-to-r from-cyan-400 to-sky-300 text-slate-950 font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all inline-flex items-center space-x-2 shadow-lg shadow-cyan-500/25"
       >
         <Home className="w-4 h-4" />
-        <span>Return to Lumina Home</span>
+        <span>Return to Pearl Home</span>
       </Link>
     </div>
   );

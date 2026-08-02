@@ -1,0 +1,104 @@
+/* Global Cursor Reset for Desktop */
+@media (min-width: 769px) {
+  html, body, a, button, input, select, textarea, [role="button"], label, .pixel-card, .glass-card {
+    cursor: none !important;
+  }
+}
+
+/* Container for custom syringe cursor */
+.dental-syringe-cursor-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 52px;
+  height: 52px;
+  pointer-events: none;
+  z-index: 999999;
+  will-change: transform;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  user-select: none;
+}
+
+/* Inner graphic wrapper */
+.dental-syringe-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0px 0px; /* Hotspot at top-left needle tip */
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease;
+}
+
+/* Syringe Image Asset */
+.dental-syringe-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
+  transition: filter 0.2s ease;
+}
+
+/* Needle Tip Hotspot Indicator */
+.needle-hotspot-dot {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 5px;
+  height: 5px;
+  background-color: #38bdf8;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #0284c7;
+  pointer-events: none;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+/* Hover State Effects over Interactive Targets */
+.dental-syringe-cursor-container.is-hovered .dental-syringe-inner {
+  transform: scale(1.15) rotate(-6deg);
+  filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.85));
+}
+
+.dental-syringe-cursor-container.is-hovered .needle-hotspot-dot {
+  transform: scale(1.6);
+  background-color: #38bdf8;
+  box-shadow: 0 0 12px #38bdf8, 0 0 20px #0284c7;
+}
+
+/* Click / Injection Animation State */
+.dental-syringe-cursor-container.is-clicking .dental-syringe-inner {
+  transform: translate3d(-4px, -4px, 0) scale(0.95) rotate(-12deg);
+}
+
+.dental-syringe-cursor-container.is-clicking .needle-hotspot-dot {
+  transform: scale(2);
+  background-color: #0ea5e9;
+  box-shadow: 0 0 16px #38bdf8;
+}
+
+/* Micro Anesthetic Droplet on Click */
+.anesthetic-droplet {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, #38bdf8 0%, #0284c7 100%);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dental-syringe-cursor-container.is-clicking .anesthetic-droplet {
+  animation: dropletSplash 0.35s ease-out forwards;
+}
+
+@keyframes dropletSplash {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-14px, -14px, 0) scale(2.2);
+  }
+}

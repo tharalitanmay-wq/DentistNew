@@ -7,7 +7,7 @@ let memoryGallery = [...seedGallery];
 const getGallery = async (req, res) => {
   try {
     if (getIsConnected()) {
-      const items = await Gallery.find();
+      const items = await Gallery.findAll();
       if (items.length === 0) return res.json({ success: true, items: seedGallery });
       return res.json({ success: true, items });
     } else {
@@ -24,7 +24,7 @@ const createGalleryItem = async (req, res) => {
       const item = await Gallery.create(req.body);
       return res.status(201).json({ success: true, item });
     } else {
-      const newItem = { _id: 'gal-' + Date.now(), ...req.body };
+      const newItem = { id: memoryGallery.length + 1, ...req.body };
       memoryGallery.push(newItem);
       return res.status(201).json({ success: true, item: newItem });
     }
@@ -37,9 +37,9 @@ const deleteGalleryItem = async (req, res) => {
   try {
     const { id } = req.params;
     if (getIsConnected()) {
-      await Gallery.findByIdAndDelete(id);
+      await Gallery.destroy({ where: { id } });
     } else {
-      memoryGallery = memoryGallery.filter(g => g._id !== id);
+      memoryGallery = memoryGallery.filter(g => String(g.id || g._id) !== String(id));
     }
     res.json({ success: true, message: 'Gallery item deleted' });
   } catch (error) {

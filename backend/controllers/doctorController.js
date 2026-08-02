@@ -7,7 +7,7 @@ let memoryDoctors = [...seedDoctors];
 const getDoctors = async (req, res) => {
   try {
     if (getIsConnected()) {
-      const doctors = await Doctor.find();
+      const doctors = await Doctor.findAll();
       if (doctors.length === 0) return res.json({ success: true, doctors: seedDoctors });
       return res.json({ success: true, doctors });
     } else {
@@ -22,11 +22,11 @@ const getDoctorById = async (req, res) => {
   try {
     const { id } = req.params;
     if (getIsConnected()) {
-      const doctor = await Doctor.findById(id);
+      const doctor = await Doctor.findByPk(id);
       if (!doctor) return res.status(404).json({ success: false, message: 'Doctor not found' });
       return res.json({ success: true, doctor });
     } else {
-      const doctor = memoryDoctors.find(d => d._id === id);
+      const doctor = memoryDoctors.find(d => String(d.id || d._id) === String(id));
       if (!doctor) return res.status(404).json({ success: false, message: 'Doctor not found' });
       return res.json({ success: true, doctor });
     }
@@ -42,7 +42,7 @@ const createDoctor = async (req, res) => {
       const doc = await Doctor.create(data);
       return res.status(201).json({ success: true, doctor: doc });
     } else {
-      const newDoc = { _id: 'doc-' + Date.now(), ...data };
+      const newDoc = { id: memoryDoctors.length + 1, ...data };
       memoryDoctors.push(newDoc);
       return res.status(201).json({ success: true, doctor: newDoc });
     }
@@ -55,10 +55,12 @@ const updateDoctor = async (req, res) => {
   try {
     const { id } = req.params;
     if (getIsConnected()) {
-      const doc = await Doctor.findByIdAndUpdate(id, req.body, { new: true });
+      const doc = await Doctor.findByPk(id);
+      if (!doc) return res.status(404).json({ success: false, message: 'Doctor not found' });
+      await doc.update(req.body);
       return res.json({ success: true, doctor: doc });
     } else {
-      const idx = memoryDoctors.findIndex(d => d._id === id);
+      const idx = memoryDoctors.findIndex(d => String(d.id || d._id) === String(id));
       if (idx !== -1) {
         memoryDoctors[idx] = { ...memoryDoctors[idx], ...req.body };
         return res.json({ success: true, doctor: memoryDoctors[idx] });
@@ -74,9 +76,9 @@ const deleteDoctor = async (req, res) => {
   try {
     const { id } = req.params;
     if (getIsConnected()) {
-      await Doctor.findByIdAndDelete(id);
+      await Doctor.destroy({ where: { id } });
     } else {
-      memoryDoctors = memoryDoctors.filter(d => d._id !== id);
+      memoryDoctors = memoryDoctors.filter(d => String(d.id || d._id) !== String(id));
     }
     res.json({ success: true, message: 'Doctor deleted' });
   } catch (error) {

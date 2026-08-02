@@ -1,17 +1,58 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const serviceSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  category: { type: String, required: true }, // Cosmetic, Implants, Orthodontics, General, Surgery, Pediatric
-  description: { type: String, required: true },
-  priceRange: { type: String, required: true }, // e.g. "$150 - $400"
-  estimatedPriceMin: { type: Number, default: 150 },
-  estimatedPriceMax: { type: Number, default: 400 },
-  duration: { type: String, default: '45 mins' },
-  icon: { type: String, default: 'Sparkles' },
-  benefits: [{ type: String }],
-  isActive: { type: Boolean, default: true },
-  featured: { type: Boolean, default: false }
-}, { timestamps: true });
+const Service = sequelize.define('Service', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  category: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
+  priceRange: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  estimatedPriceMin: {
+    type: DataTypes.INTEGER,
+    defaultValue: 150
+  },
+  estimatedPriceMax: {
+    type: DataTypes.INTEGER,
+    defaultValue: 400
+  },
+  duration: {
+    type: DataTypes.STRING,
+    defaultValue: '45 mins'
+  },
+  icon: {
+    type: DataTypes.STRING,
+    defaultValue: 'Sparkles'
+  },
+  benefits: {
+    type: DataTypes.JSON,
+    defaultValue: []
+  },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
+  featured: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  }
+}, {
+  timestamps: true
+});
 
-module.exports = mongoose.model('Service', serviceSchema);
+module.exports = Service;

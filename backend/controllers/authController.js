@@ -3,19 +3,19 @@ const User = require('../models/User');
 const { getIsConnected } = require('../config/db');
 const { JWT_SECRET } = require('../middleware/auth');
 
-// In-memory fallback user store if MongoDB is offline
+// In-memory fallback user store if MySQL is offline
 const memoryUsers = [
   {
-    _id: 'usr-admin-1',
+    id: 1,
     name: 'Master Admin',
-    email: 'admin@lumina-dental.com',
+    email: 'admin@pearldental.com',
     password: '$2a$10$wE99V9n8tE5fCq6m/A0U.eQ80Jq55uO1vM7c4.6Y1z5/5G7J1K1.', // AdminPass123!
     role: 'admin',
     phone: '+1 (800) 555-0199',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400'
   },
   {
-    _id: 'usr-patient-1',
+    id: 2,
     name: 'Johnathan Miller',
     email: 'patient@example.com',
     password: '$2a$10$wE99V9n8tE5fCq6m/A0U.eQ80Jq55uO1vM7c4.6Y1z5/5G7J1K1.',
@@ -33,16 +33,16 @@ const register = async (req, res) => {
     }
 
     if (getIsConnected()) {
-      const existing = await User.findOne({ email: email.toLowerCase() });
+      const existing = await User.findOne({ where: { email: email.toLowerCase() } });
       if (existing) {
         return res.status(400).json({ success: false, message: 'Account already exists with this email' });
       }
-      const user = await User.create({ name, email, password, phone, role: role || 'patient' });
-      const token = jwt.sign({ id: user._id, email: user.email, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
+      const user = await User.create({ name, email: email.toLowerCase(), password, phone, role: role || 'patient' });
+      const token = jwt.sign({ id: user.id, email: user.email, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
       return res.status(201).json({
         success: true,
         token,
-        user: { id: user._id, name: user.name, email: user.email, role: user.role, phone: user.phone, avatar: user.avatar }
+        user: { id: user.id, name: user.name, email: user.email, role: user.role, phone: user.phone, avatar: user.avatar }
       });
     } else {
       const exists = memoryUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
@@ -50,7 +50,7 @@ const register = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Account already exists with this email' });
       }
       const newUser = {
-        _id: 'usr-' + Date.now(),
+        id: memoryUsers.length + 1,
         name,
         email,
         password,
@@ -59,11 +59,11 @@ const register = async (req, res) => {
         avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400'
       };
       memoryUsers.push(newUser);
-      const token = jwt.sign({ id: newUser._id, email: newUser.email, role: newUser.role, name: newUser.name }, JWT_SECRET, { expiresIn: '7d' });
+      const token = jwt.sign({ id: newUser.id, email: newUser.email, role: newUser.role, name: newUser.name }, JWT_SECRET, { expiresIn: '7d' });
       return res.status(201).json({
         success: true,
         token,
-        user: { id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role, phone: newUser.phone, avatar: newUser.avatar }
+        user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role, phone: newUser.phone, avatar: newUser.avatar }
       });
     }
   } catch (error) {
@@ -79,27 +79,26 @@ const login = async (req, res) => {
     }
 
     if (getIsConnected()) {
-      const user = await User.findOne({ email: email.toLowerCase() });
+      const user = await User.findOne({ where: { email: email.toLowerCase() } });
       if (!user || !(await user.comparePassword(password))) {
         return res.status(401).json({ success: false, message: 'Invalid credentials' });
       }
-      const token = jwt.sign({ id: user._id, email: user.email, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
+      const token = jwt.sign({ id: user.id, email: user.email, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
       return res.json({
         success: true,
         token,
-        user: { id: user._id, name: user.name, email: user.email, role: user.role, phone: user.phone, avatar: user.avatar }
+        user: { id: user.id, name: user.name, email: user.email, role: user.role, phone: user.phone, avatar: user.avatar }
       });
     } else {
       const user = memoryUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-      // In mock mode allow standard demo password check or fallback demo
       if (!user) {
-        return res.status(401).json({ success: false, message: 'Invalid credentials. Try admin@lumina-dental.com / AdminPass123!' });
+        return res.status(401).json({ success: false, message: 'Invalid credentials. Try admin@pearldental.com / AdminPass123!' });
       }
-      const token = jwt.sign({ id: user._id, email: user.email, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
+      const token = jwt.sign({ id: user.id, email: user.email, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
       return res.json({
         success: true,
         token,
-        user: { id: user._id, name: user.name, email: user.email, role: user.role, phone: user.phone, avatar: user.avatar }
+        user: { id: user.id, name: user.name, email: user.email, role: user.role, phone: user.phone, avatar: user.avatar }
       });
     }
   } catch (error) {
@@ -111,11 +110,11 @@ const getMe = async (req, res) => {
   try {
     const userId = req.user.id;
     if (getIsConnected()) {
-      const user = await User.findById(userId).select('-password');
+      const user = await User.findByPk(userId, { attributes: { exclude: ['password'] } });
       if (!user) return res.status(404).json({ success: false, message: 'User not found' });
       return res.json({ success: true, user });
     } else {
-      const user = memoryUsers.find(u => u._id === userId);
+      const user = memoryUsers.find(u => u.id == userId);
       if (!user) return res.status(404).json({ success: false, message: 'User not found' });
       const { password, ...safeUser } = user;
       return res.json({ success: true, user: safeUser });

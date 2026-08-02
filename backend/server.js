@@ -19,6 +19,7 @@ const testimonialRoutes = require('./routes/testimonialRoutes');
 const faqRoutes = require('./routes/faqRoutes');
 const settingRoutes = require('./routes/settingRoutes');
 const aiChatRoutes = require('./routes/aiChatRoutes');
+const queueRoutes = require('./routes/queueRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -51,12 +52,13 @@ app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/faqs', faqRoutes);
 app.use('/api/settings', settingRoutes);
 app.use('/api/ai-chat', aiChatRoutes);
+app.use('/api/queue', queueRoutes);
 
 // Root Status Health Check
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
-    system: 'Lumina Dental Studio API',
+    system: 'Pearl Dental Care API',
     timestamp: new Date().toISOString()
   });
 });

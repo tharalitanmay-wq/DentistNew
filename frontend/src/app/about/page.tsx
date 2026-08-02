@@ -37,7 +37,7 @@ export default function AboutPage() {
         </div>
         <h1 className="text-4xl sm:text-6xl font-serif font-bold text-white">Redefining The Dental Experience</h1>
         <p className="text-sm sm:text-base text-slate-300 font-light leading-relaxed">
-          Founded on Park Avenue, Lumina Dental Studio bridges the gap between high-fashion facial aesthetics and advanced surgical precision.
+          Founded on Park Avenue, Pearl Dental Care bridges the gap between high-fashion facial aesthetics and advanced surgical precision.
         </p>
       </div>
 
@@ -46,7 +46,7 @@ export default function AboutPage() {
         <div className="space-y-6">
           <h2 className="text-3xl font-serif font-bold text-white">Where Clinical Innovation Meets Luxury Hospitality</h2>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            Dr. Evelyn Sterling established Lumina with a singular vision: to eliminate the cold, sterile environment of traditional dentistry and create a sanctuary of health, beauty, and relaxation.
+            Dr. Evelyn Sterling established Pearl Dental Care with a singular vision: to eliminate the cold, sterile environment of traditional dentistry and create a sanctuary of health, beauty, and relaxation.
           </p>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
             Our team of AACD-accredited specialists and Johns Hopkins-trained implant surgeons leverage 3D intraoral imaging, CAD/CAM ceramic milling, and pain-free lasers to craft long-lasting, luminous smiles.

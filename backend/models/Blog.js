@@ -1,16 +1,55 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const blogSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  slug: { type: String, required: true, unique: true },
-  excerpt: { type: String, required: true },
-  content: { type: String, required: true },
-  category: { type: String, required: true },
-  author: { type: String, default: 'Dr. Evelyn Sterling' },
-  readTime: { type: String, default: '5 min read' },
-  coverImage: { type: String, required: true },
-  isPublished: { type: Boolean, default: true },
-  tags: [{ type: String }]
-}, { timestamps: true });
+const Blog = sequelize.define('Blog', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  slug: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+  excerpt: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
+  content: {
+    type: DataTypes.TEXT('long'),
+    allowNull: false
+  },
+  category: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  author: {
+    type: DataTypes.STRING,
+    defaultValue: 'Dr. Evelyn Sterling'
+  },
+  readTime: {
+    type: DataTypes.STRING,
+    defaultValue: '5 min read'
+  },
+  coverImage: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  isPublished: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
+  tags: {
+    type: DataTypes.JSON,
+    defaultValue: []
+  }
+}, {
+  timestamps: true
+});
 
-module.exports = mongoose.model('Blog', blogSchema);
+module.exports = Blog;

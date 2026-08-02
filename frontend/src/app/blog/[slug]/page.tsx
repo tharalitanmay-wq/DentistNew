@@ -41,7 +41,7 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
 
         <h3 className="text-xl font-serif font-bold text-white">Digital Smile Design (DSD)</h3>
         <p>
-          At Lumina Dental Studio, every transformation begins with high-definition 3D digital scans and facial symmetry analysis. We map out golden proportions tailored uniquely to your jaw structure, lip curvature, and skin tone translucency.
+          At Pearl Dental Care, every transformation begins with high-definition 3D digital scans and facial symmetry analysis. We map out golden proportions tailored uniquely to your jaw structure, lip curvature, and skin tone translucency.
         </p>
 
         <h3 className="text-xl font-serif font-bold text-white">Micro-Layering Feldspathic Porcelain</h3>

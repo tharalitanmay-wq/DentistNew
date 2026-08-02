@@ -11,7 +11,7 @@ export default function PrivacyPage() {
 
       <div className="space-y-4 glass-card rounded-3xl p-8 border border-white/10">
         <h3 className="text-base font-bold text-white">1. Patient Information Confidentiality</h3>
-        <p>Lumina Dental Studio complies with HIPAA and strict international medical data protection regulations. All uploaded X-rays, 3D CBCT scans, and medical history notes are end-to-end encrypted.</p>
+        <p>Pearl Dental Care complies with HIPAA and strict international medical data protection regulations. All uploaded X-rays, 3D CBCT scans, and medical history notes are end-to-end encrypted.</p>
 
         <h3 className="text-base font-bold text-white">2. Medical File Usage</h3>
         <p>Your uploaded reports are strictly accessible by your designated attending specialist doctor and surgical team for diagnosis and treatment planning.</p>

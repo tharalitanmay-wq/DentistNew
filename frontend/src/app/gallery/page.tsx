@@ -45,7 +45,7 @@ export default function GalleryPage() {
       <div className="text-center space-y-4 max-w-3xl mx-auto">
         <span className="text-xs font-bold uppercase tracking-widest text-cyan-400">Smile Transformations</span>
         <h1 className="text-4xl sm:text-6xl font-serif font-bold text-white">Before & After Gallery</h1>
-        <p className="text-sm text-slate-300">Explore verified real patient smile designs crafted at Lumina Dental Studio.</p>
+        <p className="text-sm text-slate-300">Explore verified real patient smile designs crafted at Pearl Dental Care.</p>
       </div>
 
       {/* Filter Tabs */}

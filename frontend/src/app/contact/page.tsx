@@ -17,94 +17,107 @@ export default function ContactPage() {
       {/* Header */}
       <div className="text-center space-y-4 max-w-3xl mx-auto">
         <span className="text-xs font-bold uppercase tracking-widest text-cyan-400">Park Avenue Concierge</span>
-        <h1 className="text-4xl sm:text-6xl font-serif font-bold text-white">Contact Lumina Studio</h1>
+        <h1 className="text-4xl sm:text-6xl font-serif font-bold text-white">Contact Pearl Dental Care</h1>
         <p className="text-sm text-slate-300">We invite you to experience private dental concierge care.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Contact Form */}
         <div className="glass-card rounded-3xl p-8 border border-white/10 space-y-6 shadow-xl">
-          <h3 className="text-2xl font-serif font-bold text-white">Send Private Inquiry</h3>
-
-          {submitted ? (
-            <div className="p-6 bg-cyan-500/10 border border-cyan-500/30 rounded-2xl text-center space-y-3">
-              <CheckCircle2 className="w-10 h-10 text-cyan-400 mx-auto" />
-              <h4 className="text-lg font-bold text-white">Inquiry Received</h4>
-              <p className="text-xs text-slate-300">Our patient concierge coordinator will contact you within 2 business hours.</p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Full Name</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Victoria Sterling"
-                    className="w-full px-4 py-2.5 bg-navy-900 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Phone Number</label>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="+1 (555) 000-0000"
-                    className="w-full px-4 py-2.5 bg-navy-900 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400"
-                  />
-                </div>
-              </div>
-
+          <h3 className="text-2xl font-serif font-bold text-white">Send Us A Message</h3>
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+                <label className="block text-xs text-slate-300 mb-1">Full Name</label>
+                <input
+                  type="text"
+                  required
+                  value={form.name}
+                  onChange={e => setForm({ ...form, name: e.target.value })}
+                  placeholder="John Doe"
+                  className="w-full px-4 py-3 text-xs rounded-xl bg-navy-900 border border-white/10 text-white focus:outline-none focus:border-cyan-400"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-slate-300 mb-1">Email Address</label>
                 <input
                   type="email"
                   required
-                  placeholder="victoria@example.com"
-                  className="w-full px-4 py-2.5 bg-navy-900 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400"
+                  value={form.email}
+                  onChange={e => setForm({ ...form, email: e.target.value })}
+                  placeholder="john@example.com"
+                  className="w-full px-4 py-3 text-xs rounded-xl bg-navy-900 border border-white/10 text-white focus:outline-none focus:border-cyan-400"
                 />
               </div>
+            </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Interested Treatment</label>
-                <select className="w-full px-4 py-2.5 bg-navy-900 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400">
-                  <option>Porcelain Veneers</option>
-                  <option>3D Dental Implants</option>
-                  <option>Invisalign Orthodontics</option>
-                  <option>Laser Spa Whitening</option>
-                  <option>General Consultation</option>
+                <label className="block text-xs text-slate-300 mb-1">Phone Number</label>
+                <input
+                  type="tel"
+                  value={form.phone}
+                  onChange={e => setForm({ ...form, phone: e.target.value })}
+                  placeholder="+1 (555) 000-0000"
+                  className="w-full px-4 py-3 text-xs rounded-xl bg-navy-900 border border-white/10 text-white focus:outline-none focus:border-cyan-400"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-slate-300 mb-1">Inquiry Type</label>
+                <select
+                  value={form.subject}
+                  onChange={e => setForm({ ...form, subject: e.target.value })}
+                  className="w-full px-4 py-3 text-xs rounded-xl bg-navy-900 border border-white/10 text-white focus:outline-none focus:border-cyan-400"
+                >
+                  <option value="General Inquiry">General Inquiry</option>
+                  <option value="Cosmetic Veneer Consultation">Cosmetic Veneer Consultation</option>
+                  <option value="3D Guided Implant Consultation">3D Guided Implant Consultation</option>
+                  <option value="Invisalign Orthodontics">Invisalign Orthodontics</option>
+                  <option value="Media & Press">Media & Press</option>
                 </select>
               </div>
+            </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Message or Specific Requests</label>
-                <textarea
-                  rows={4}
-                  placeholder="Please describe your smile goals or preferred consultation dates..."
-                  className="w-full px-4 py-2.5 bg-navy-900 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400"
-                ></textarea>
-              </div>
+            <div>
+              <label className="block text-xs text-slate-300 mb-1">Your Message</label>
+              <textarea
+                rows={4}
+                required
+                value={form.message}
+                onChange={e => setForm({ ...form, message: e.target.value })}
+                placeholder="How can our clinical concierge team assist your smile goals?"
+                className="w-full px-4 py-3 text-xs rounded-xl bg-navy-900 border border-white/10 text-white focus:outline-none focus:border-cyan-400 resize-none"
+              />
+            </div>
 
-              <button
-                type="submit"
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 to-sky-300 text-slate-950 font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all flex items-center justify-center space-x-2 shadow-lg shadow-cyan-500/25"
-              >
-                <Send className="w-4 h-4" />
-                <span>Submit Inquiry</span>
-              </button>
-            </form>
-          )}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-400 to-sky-300 text-slate-950 font-bold text-xs uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center space-x-2 shadow-lg shadow-cyan-500/20"
+            >
+              <span>{loading ? 'Sending...' : 'Send Message'}</span>
+              <Send className="w-4 h-4" />
+            </button>
+
+            {submitted && (
+              <p className="text-xs text-center text-emerald-400 font-bold">
+                ✓ Message received! Our Park Avenue concierge will contact you within 24 hours.
+              </p>
+            )}
+          </form>
         </div>
 
-        {/* Contact Info & Map Simulation */}
-        <div className="space-y-8">
-          <div className="glass-card rounded-3xl p-8 border border-white/10 space-y-6">
-            <h3 className="text-xl font-serif font-bold text-white">Studio Concierge Details</h3>
+        {/* Contact Information & Map Info */}
+        <div className="space-y-8 flex flex-col justify-between">
+          <div className="glass-card rounded-3xl p-8 border border-white/10 space-y-6 shadow-xl">
+            <h3 className="text-2xl font-serif font-bold text-white">Studio Concierge Info</h3>
+            
             <ul className="space-y-4 text-xs">
               <li className="flex items-start space-x-3">
                 <MapPin className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-bold text-white block">Location Address</span>
+                  <span className="font-bold text-white block">Park Avenue Studio</span>
                   <span className="text-slate-300">740 Park Avenue, Suite 12B, New York, NY 10021</span>
                 </div>
               </li>
@@ -112,14 +125,14 @@ export default function ContactPage() {
                 <Phone className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold text-white block">Concierge Telephone</span>
-                  <span className="text-slate-300">+1 (800) 555-LUMINA / Emergency: +1 (800) 999-DENT</span>
+                  <span className="text-slate-300">+1 (800) 555-PEARL / Emergency: +1 (800) 999-DENT</span>
                 </div>
               </li>
               <li className="flex items-start space-x-3">
                 <Mail className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold text-white block">Email Concierge</span>
-                  <span className="text-slate-300">concierge@luminadental.com</span>
+                  <span className="text-slate-300">concierge@pearldental.com</span>
                 </div>
               </li>
               <li className="flex items-start space-x-3">

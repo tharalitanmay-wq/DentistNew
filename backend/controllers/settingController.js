@@ -2,18 +2,18 @@ const Setting = require('../models/Setting');
 const { getIsConnected } = require('../config/db');
 
 let memorySettings = {
-  clinicName: 'Lumina Dental Studio',
+  clinicName: 'Pearl Dental Care',
   heroHeadline: 'Precision Dentistry. Bespoke Elegance.',
   heroSubtext: 'Experience luxury dental care with world-class specialists and cutting-edge 3D technology.',
-  phone: '+1 (800) 555-LUMINA',
+  phone: '+1 (800) 555-PEARL',
   emergencyPhone: '+1 (800) 999-DENT',
-  email: 'concierge@luminadental.com',
+  email: 'concierge@pearldental.com',
   whatsapp: '+18005555864',
   address: '740 Park Avenue, Suite 12B, New York, NY 10021',
   openingHours: 'Mon - Fri: 8:00 AM - 7:00 PM | Sat: 9:00 AM - 4:00 PM',
-  announcementBanner: '✨ Complimentary Cosmetic Smile Simulation for New Patients',
+  announcementBanner: 'Complimentary Cosmetic Smile Simulation for New Patients',
   showAnnouncement: true,
-  metaTitle: 'Lumina Dental Studio | Luxury Dental Excellence',
+  metaTitle: 'Pearl Dental Care | Luxury Dental Excellence',
   metaDescription: 'Pinnacle of cosmetic dentistry, dental implants, and porcelain veneers.'
 };
 
@@ -38,7 +38,7 @@ const updateSettings = async (req, res) => {
     if (getIsConnected()) {
       let settings = await Setting.findOne();
       if (settings) {
-        settings = await Setting.findByIdAndUpdate(settings._id, req.body, { new: true });
+        await settings.update(req.body);
       } else {
         settings = await Setting.create(req.body);
       }

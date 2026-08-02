@@ -4,8 +4,8 @@ import { AdminAuthProvider } from '@/context/AdminAuthContext';
 import AdminSidebar from '@/components/AdminSidebar';
 
 export const metadata: Metadata = {
-  title: 'Lumina Dental Studio | Admin CMS Dashboard',
-  description: 'Role-based Admin Management Portal for Lumina Dental Studio.',
+  title: 'Pearl Dental Care | Admin CMS Dashboard',
+  description: 'Role-based Admin Management Portal for Pearl Dental Care.',
 };
 
 export default function AdminRootLayout({

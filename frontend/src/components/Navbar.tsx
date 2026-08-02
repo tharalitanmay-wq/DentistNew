@@ -27,6 +27,7 @@ export default function Navbar() {
 
   const navItems = [
     { label: 'Home', href: '/' },
+    { label: 'Live Queue', href: '/queue' },
     { label: 'About', href: '/about' },
     { label: 'Services', href: '/services' },
     { label: 'Doctors', href: '/doctors' },
@@ -49,8 +50,7 @@ export default function Navbar() {
       }`}>
         <div className="flex items-center space-x-6">
           <span className="flex items-center text-cyan-600 dark:text-cyan-400 font-medium">
-            <Sparkles className="w-3.5 h-3.5 mr-1.5 animate-pulse" />
-            ✨ Complimentary 3D Cosmetic Smile Simulation for New Patients
+            Complimentary 3D Cosmetic Smile Simulation for New Patients
           </span>
           <span className="flex items-center text-slate-600 dark:text-slate-400">
             <Phone className="w-3.5 h-3.5 mr-1.5 text-cyan-600 dark:text-cyan-400" />
@@ -73,10 +73,10 @@ export default function Navbar() {
           </div>
           <div>
             <span className="text-xl font-serif font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
-              LUMINA
+              PEARL
             </span>
             <span className="block text-[10px] tracking-[0.25em] text-cyan-600 dark:text-cyan-400 uppercase font-medium">
-              Dental Studio
+              Dental Care
             </span>
           </div>
         </Link>

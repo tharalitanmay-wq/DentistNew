@@ -12,7 +12,7 @@ export default function AdminSettingsPage() {
     emergencyPhone: '+1 (800) 999-DENT',
     address: '740 Park Avenue, Suite 12B, New York, NY 10021',
     announcementBanner: '✨ Complimentary Cosmetic Smile Simulation for New Patients',
-    metaTitle: 'Lumina Dental Studio | Luxury Dental Excellence',
+    metaTitle: 'Pearl Dental Care | Luxury Dental Excellence',
     metaDescription: 'Pinnacle of cosmetic dentistry, dental implants, and porcelain veneers.'
   });
 

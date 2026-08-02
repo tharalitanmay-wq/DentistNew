@@ -7,7 +7,7 @@ let memoryFAQs = [...seedFAQs];
 const getFAQs = async (req, res) => {
   try {
     if (getIsConnected()) {
-      const faqs = await FAQ.find().sort({ order: 1 });
+      const faqs = await FAQ.findAll({ order: [['order', 'ASC']] });
       if (faqs.length === 0) return res.json({ success: true, faqs: seedFAQs });
       return res.json({ success: true, faqs });
     } else {
@@ -24,7 +24,7 @@ const createFAQ = async (req, res) => {
       const faq = await FAQ.create(req.body);
       return res.status(201).json({ success: true, faq });
     } else {
-      const newFaq = { _id: 'faq-' + Date.now(), ...req.body };
+      const newFaq = { id: memoryFAQs.length + 1, ...req.body };
       memoryFAQs.push(newFaq);
       return res.status(201).json({ success: true, faq: newFaq });
     }
@@ -37,9 +37,9 @@ const deleteFAQ = async (req, res) => {
   try {
     const { id } = req.params;
     if (getIsConnected()) {
-      await FAQ.findByIdAndDelete(id);
+      await FAQ.destroy({ where: { id } });
     } else {
-      memoryFAQs = memoryFAQs.filter(f => f._id !== id);
+      memoryFAQs = memoryFAQs.filter(f => String(f.id || f._id) !== String(id));
     }
     res.json({ success: true, message: 'FAQ deleted' });
   } catch (error) {

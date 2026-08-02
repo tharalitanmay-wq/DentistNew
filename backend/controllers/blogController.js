@@ -7,7 +7,7 @@ let memoryBlogs = [...seedBlogs];
 const getBlogs = async (req, res) => {
   try {
     if (getIsConnected()) {
-      const blogs = await Blog.find().sort({ createdAt: -1 });
+      const blogs = await Blog.findAll({ order: [['createdAt', 'DESC']] });
       if (blogs.length === 0) return res.json({ success: true, blogs: seedBlogs });
       return res.json({ success: true, blogs });
     } else {
@@ -22,11 +22,11 @@ const getBlogBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
     if (getIsConnected()) {
-      const blog = await Blog.findOne({ slug });
+      const blog = await Blog.findOne({ where: { slug } });
       if (!blog) return res.status(404).json({ success: false, message: 'Article not found' });
       return res.json({ success: true, blog });
     } else {
-      const blog = memoryBlogs.find(b => b.slug === slug || b._id === slug);
+      const blog = memoryBlogs.find(b => b.slug === slug || String(b.id || b._id) === String(slug));
       if (!blog) return res.status(404).json({ success: false, message: 'Article not found' });
       return res.json({ success: true, blog });
     }
@@ -44,7 +44,7 @@ const createBlog = async (req, res) => {
       const blog = await Blog.create({ ...req.body, slug });
       return res.status(201).json({ success: true, blog });
     } else {
-      const newBlog = { _id: 'blg-' + Date.now(), ...req.body, slug, createdAt: new Date().toISOString() };
+      const newBlog = { id: memoryBlogs.length + 1, ...req.body, slug, createdAt: new Date().toISOString() };
       memoryBlogs.unshift(newBlog);
       return res.status(201).json({ success: true, blog: newBlog });
     }
@@ -57,10 +57,12 @@ const updateBlog = async (req, res) => {
   try {
     const { id } = req.params;
     if (getIsConnected()) {
-      const blog = await Blog.findByIdAndUpdate(id, req.body, { new: true });
+      const blog = await Blog.findByPk(id);
+      if (!blog) return res.status(404).json({ success: false, message: 'Blog not found' });
+      await blog.update(req.body);
       return res.json({ success: true, blog });
     } else {
-      const idx = memoryBlogs.findIndex(b => b._id === id);
+      const idx = memoryBlogs.findIndex(b => String(b.id || b._id) === String(id));
       if (idx !== -1) {
         memoryBlogs[idx] = { ...memoryBlogs[idx], ...req.body };
         return res.json({ success: true, blog: memoryBlogs[idx] });
@@ -76,9 +78,9 @@ const deleteBlog = async (req, res) => {
   try {
     const { id } = req.params;
     if (getIsConnected()) {
-      await Blog.findByIdAndDelete(id);
+      await Blog.destroy({ where: { id } });
     } else {
-      memoryBlogs = memoryBlogs.filter(b => b._id !== id);
+      memoryBlogs = memoryBlogs.filter(b => String(b.id || b._id) !== String(id));
     }
     res.json({ success: true, message: 'Blog post deleted' });
   } catch (error) {

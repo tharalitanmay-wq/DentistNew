@@ -32,8 +32,8 @@ export default function Footer() {
               <div>
                 <span className={`text-2xl font-serif font-bold tracking-tight ${
                   theme === 'light' ? 'text-slate-900' : 'text-white'
-                }`}>LUMINA</span>
-                <span className="block text-[10px] tracking-[0.25em] text-cyan-600 dark:text-cyan-400 uppercase font-semibold">Dental Studio</span>
+                }`}>PEARL</span>
+                <span className="block text-[10px] tracking-[0.25em] text-cyan-600 dark:text-cyan-400 uppercase font-semibold">Dental Care</span>
               </div>
             </Link>
             <p className={`text-sm leading-relaxed max-w-md ${
@@ -76,11 +76,11 @@ export default function Footer() {
               </li>
               <li className="flex items-center space-x-3">
                 <Phone className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
-                <span>+1 (800) 555-LUMINA</span>
+                <span>+1 (800) 555-PEARL</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
-                <span>concierge@luminadental.com</span>
+                <span>concierge@pearldental.com</span>
               </li>
               <li className="flex items-start space-x-3">
                 <Clock className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0 mt-0.5" />
@@ -120,7 +120,7 @@ export default function Footer() {
         {/* Bottom Copyright & Admin Link */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 space-y-4 sm:space-y-0">
           <div>
-            © {new Date().getFullYear()} Lumina Dental Studio. All Rights Reserved.
+            © {new Date().getFullYear()} Pearl Dental Care. All Rights Reserved.
           </div>
           <div className="flex items-center space-x-6">
             <Link href="/privacy" className="hover:text-slate-700 dark:hover:text-slate-300">Privacy Policy</Link>

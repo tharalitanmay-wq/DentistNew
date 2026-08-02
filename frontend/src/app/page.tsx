@@ -12,6 +12,7 @@ import GoogleReviews from '@/components/GoogleReviews';
 import CostEstimator from '@/components/CostEstimator';
 import SpecularButton from '@/components/SpecularButton';
 import PixelCard from '@/components/PixelCard';
+import LiveClinicQueue from '@/components/LiveClinicQueue';
 import { useTheme } from '@/context/ThemeContext';
 
 export default function HomePage() {
@@ -85,7 +86,7 @@ export default function HomePage() {
     { num: '01', title: '3D Digital Scan', desc: 'Non-invasive iTero intraoral scanning captures 100,000 data points of your teeth.' },
     { num: '02', title: 'Facial Harmony Design', desc: 'We craft a custom digital preview aligned with your lip line and facial geometry.' },
     { num: '03', title: 'Pain-Free Treatment', desc: 'State-of-the-art cold laser and twilight sedation ensure effortless comfort.' },
-    { num: '04', title: 'Lumina Smile Reveal', desc: 'Walk out with a radiant, natural-looking high-wattage smile guaranteed to last.' },
+    { num: '04', title: 'Pearl Smile Reveal', desc: 'Walk out with a radiant, natural-looking high-wattage smile guaranteed to last.' },
   ];
 
   const technologies = [
@@ -97,7 +98,7 @@ export default function HomePage() {
 
   const faqs = [
     {
-      q: 'What makes Lumina Dental Studio different from traditional dental clinics?',
+      q: 'What makes Pearl Dental Care different from traditional dental clinics?',
       a: 'We combine 5-star hotel concierge service, serene spa environments, computer-guided 3D digital dentistry, and master AACD cosmetic specialists to deliver painless, life-changing smile outcomes.'
     },
     {
@@ -125,7 +126,7 @@ export default function HomePage() {
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=2000"
-            alt="Lumina Dental Studio"
+            alt="Pearl Dental Care"
             className={`w-full h-full object-cover transition-all duration-1000 ${
               isLight ? 'brightness-[1.1] opacity-25 scale-105' : 'brightness-[0.35] scale-105'
             }`}
@@ -205,6 +206,11 @@ export default function HomePage() {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* Live Offline Centre Queue Counter */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <LiveClinicQueue />
       </section>
 
       {/* Dental Services Grid with React Bits PixelCard Integration */}
@@ -319,7 +325,7 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-16">
           <span className="text-xs uppercase font-bold tracking-widest text-cyan-600 dark:text-cyan-400">Seamless Journey</span>
-          <h2 className={`text-3xl sm:text-5xl font-serif font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>The Lumina Treatment Process</h2>
+          <h2 className={`text-3xl sm:text-5xl font-serif font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>The Pearl Treatment Process</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

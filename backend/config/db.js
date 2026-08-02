@@ -1,22 +1,49 @@
-const mongoose = require('mongoose');
+const { Sequelize } = require('sequelize');
+
+const dbHost = process.env.MYSQL_HOST || '127.0.0.1';
+const dbPort = parseInt(process.env.MYSQL_PORT || '3306', 10);
+const dbUser = process.env.MYSQL_USER || 'root';
+const dbPassword = process.env.MYSQL_PASSWORD || '';
+const dbName = process.env.MYSQL_DATABASE || 'pearl_dental';
+
+const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
+  host: dbHost,
+  port: dbPort,
+  dialect: 'mysql',
+  logging: false, // Set to console.log to debug SQL queries
+  pool: {
+    max: 10,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  }
+});
 
 let isConnected = false;
 
 const connectDB = async () => {
   if (isConnected) return;
   try {
-    const connStr = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/lumina_dental';
-    await mongoose.connect(connStr, {
-      serverSelectionTimeoutMS: 3000,
+    // Auto-create database if not exists using Sequelize
+    const rootSequelize = new Sequelize('', dbUser, dbPassword, {
+      host: dbHost,
+      port: dbPort,
+      dialect: 'mysql',
+      logging: false
     });
+    await rootSequelize.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\`;`);
+    await rootSequelize.close();
+
+    await sequelize.authenticate();
+    await sequelize.sync({ alter: true });
     isConnected = true;
-    console.log(`[MongoDB] Connected to ${mongoose.connection.host}`);
+    console.log(`[MySQL Database] Connected successfully to ${dbHost}:${dbPort}/${dbName}`);
   } catch (error) {
-    console.warn(`[MongoDB Warning] Could not connect to MongoDB (${error.message}). Running in mock fallback mode.`);
+    console.warn(`[MySQL Warning] Could not connect to MySQL (${error.message}). Operating in in-memory fallback mode.`);
     isConnected = false;
   }
 };
 
 const getIsConnected = () => isConnected;
 
-module.exports = { connectDB, getIsConnected };
+module.exports = { sequelize, connectDB, getIsConnected };

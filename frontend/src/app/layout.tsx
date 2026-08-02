@@ -7,14 +7,14 @@ import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import AiAssistantModal from '@/components/AiAssistantModal';
 import CookieConsent from '@/components/CookieConsent';
-import TargetCursor from '@/components/TargetCursor';
+import Cursor from '@/components/Cursor/Cursor';
 
 export const metadata: Metadata = {
-  title: 'Lumina Dental Studio | Luxury Cosmetic Dentistry & 3D Implants',
+  title: 'Pearl Dental Care | Luxury Cosmetic Dentistry & 3D Implants',
   description: 'Pinnacle of luxury aesthetic dentistry, porcelain veneers, computer-guided implants, and Invisalign on Park Avenue, New York.',
   keywords: ['cosmetic dentistry', 'porcelain veneers', 'dental implants', 'invisalign', 'luxury dental clinic', 'park avenue dentist'],
   openGraph: {
-    title: 'Lumina Dental Studio | Luxury Dentistry',
+    title: 'Pearl Dental Care | Luxury Dentistry',
     description: 'Pinnacle of luxury aesthetic dentistry, porcelain veneers, and computer-guided implants.',
     images: ['https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=1200'],
   }
@@ -30,13 +30,7 @@ export default function RootLayout({
       <body className="bg-slate-50 text-slate-900 light:bg-slate-50 light:text-slate-900 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-slate-950 transition-colors duration-300">
         <AuthProvider>
           <ThemeProvider>
-            <TargetCursor
-              spinDuration={2.5}
-              cursorColor="#0284c7"
-              cursorColorOnTarget="#0ea5e9"
-              hoverDuration={0.2}
-              parallaxOn={true}
-            />
+            <Cursor />
             <Navbar />
             <main className="flex-grow pt-24">{children}</main>
             <Footer />

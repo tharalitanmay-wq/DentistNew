@@ -11,7 +11,7 @@ const seedDoctors = [
     consultationFee: 250,
     availableDays: ['Monday', 'Tuesday', 'Thursday', 'Friday'],
     timeSlots: ['09:00 AM', '11:00 AM', '02:00 PM', '04:00 PM'],
-    contactEmail: 'evelyn@luminadental.com',
+    contactEmail: 'evelyn@pearldental.com',
     education: ['DDS - Harvard School of Dental Medicine', 'Fellowship - AACD'],
     featured: true
   },
@@ -27,7 +27,7 @@ const seedDoctors = [
     consultationFee: 300,
     availableDays: ['Monday', 'Wednesday', 'Friday'],
     timeSlots: ['10:00 AM', '01:00 PM', '03:30 PM'],
-    contactEmail: 'julian@luminadental.com',
+    contactEmail: 'julian@pearldental.com',
     education: ['DMD - Columbia University Dentistry', 'Maxillofacial Fellowship - Johns Hopkins'],
     featured: true
   },
@@ -43,7 +43,7 @@ const seedDoctors = [
     consultationFee: 200,
     availableDays: ['Tuesday', 'Wednesday', 'Saturday'],
     timeSlots: ['09:30 AM', '11:30 AM', '02:30 PM', '05:00 PM'],
-    contactEmail: 'aria@luminadental.com',
+    contactEmail: 'aria@pearldental.com',
     education: ['DDS - UPenn Dental Medicine', 'MS Orthodontics - NYU'],
     featured: true
   }
@@ -161,7 +161,7 @@ const seedBlogs = [
     title: 'The Art of Porcelain Veneers: How Bespoke Smiles are Crafted',
     slug: 'art-of-porcelain-veneers',
     excerpt: 'Discover the meticulous craftsmanship, color translucency matching, and digital smile design behind natural porcelain veneers.',
-    content: `Porcelain veneers are widely regarded as the pinnacle of cosmetic dentistry. Unlike traditional crowns that cover the entire tooth, veneers are handcrafted ceramic shells meticulously bonded to the front surface of teeth.\n\n### Digital Smile Design (DSD)\nAt Lumina Dental Studio, every transformation begins with high-definition 3D digital scans and facial symmetry analysis. We map out golden proportions tailored uniquely to your jaw structure and lip curvature.\n\n### Micro-Layering Porcelain\nOur master ceramists use field-spat ceramic layering to mimic the natural translucency and enamel ridges of youth. The result is a luminous, high-wattage smile that never looks artificially opaque.`,
+    content: `Porcelain veneers are widely regarded as the pinnacle of cosmetic dentistry. Unlike traditional crowns that cover the entire tooth, veneers are handcrafted ceramic shells meticulously bonded to the front surface of teeth.\n\n### Digital Smile Design (DSD)\nAt Pearl Dental Care, every transformation begins with high-definition 3D digital scans and facial symmetry analysis. We map out golden proportions tailored uniquely to your jaw structure and lip curvature.\n\n### Micro-Layering Porcelain\nOur master ceramists use field-spat ceramic layering to mimic the natural translucency and enamel ridges of youth. The result is a luminous, high-wattage smile that never looks artificially opaque.`,
     category: 'Cosmetic Dentistry',
     author: 'Dr. Evelyn Sterling',
     readTime: '6 min read',

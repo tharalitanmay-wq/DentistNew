@@ -9,7 +9,7 @@ export default function AiAssistantModal() {
   const [messages, setMessages] = useState([
     {
       sender: 'ai',
-      text: 'Hello! I am Lumina Dental AI Assistant. How may I guide your smile transformation today?'
+      text: 'Hello! I am Pearl Dental AI Assistant. How may I guide your smile transformation today?'
     }
   ]);
   const [input, setInput] = useState('');
@@ -34,12 +34,12 @@ export default function AiAssistantModal() {
       if (data.success) {
         setMessages(prev => [...prev, { sender: 'ai', text: data.reply }]);
       } else {
-        setMessages(prev => [...prev, { sender: 'ai', text: 'I am currently operating in offline mode. For immediate consultation, please call our Concierge at +1 (800) 555-LUMINA.' }]);
+        setMessages(prev => [...prev, { sender: 'ai', text: 'I am currently operating in offline mode. For immediate consultation, please call our Concierge at +1 (800) 555-PEARL.' }]);
       }
     } catch (err) {
       // Local intelligent response fallback
       setTimeout(() => {
-        let reply = "Thank you for asking! Lumina Dental Studio offers bespoke porcelain veneers, computer-guided implants, and 3D Invisalign aligners.";
+        let reply = "Thank you for asking! Pearl Dental Care offers bespoke porcelain veneers, computer-guided implants, and 3D Invisalign aligners.";
         if (userMsg.toLowerCase().includes('cost') || userMsg.toLowerCase().includes('price')) {
           reply = "Our procedures range from $550 for Whitening to $1,400 per Porcelain Veneer and $2,800 for Dental Implants. We also offer 0% APR financing!";
         } else if (userMsg.toLowerCase().includes('pain') || userMsg.toLowerCase().includes('emergency')) {
@@ -58,7 +58,7 @@ export default function AiAssistantModal() {
       <button
         onClick={() => setIsOpen(true)}
         className="fixed bottom-6 right-24 z-40 p-3.5 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-bold shadow-xl shadow-cyan-500/30 hover:scale-110 transition-all flex items-center space-x-2 border border-white/20"
-        title="Lumina AI Dental Assistant"
+        title="Pearl AI Dental Assistant"
       >
         <Bot className="w-6 h-6 text-slate-950" />
         <span className="hidden md:inline text-xs tracking-wider uppercase font-extrabold pr-1">AI Assistant</span>
@@ -77,7 +77,7 @@ export default function AiAssistantModal() {
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-white flex items-center">
-                    <span>Lumina Dental AI</span>
+                    <span>Pearl Dental AI</span>
                     <Sparkles className="w-3.5 h-3.5 text-cyan-400 ml-1.5" />
                   </h4>
                   <span className="text-[10px] text-emerald-400 flex items-center">

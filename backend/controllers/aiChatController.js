@@ -6,7 +6,7 @@ const handleAiQuery = async (req, res) => {
     }
 
     const lower = message.toLowerCase();
-    let reply = "Thank you for reaching out to Lumina Dental Studio. ";
+    let reply = "Thank you for reaching out to Pearl Dental Care. ";
 
     if (lower.includes('veneer') || lower.includes('porcelain') || lower.includes('smile makeover')) {
       reply += "Dr. Evelyn Sterling specializes in bespoke Porcelain Veneers using 3D Digital Smile Design. Veneers cost around $1,200 - $2,500 per tooth and last 15-20 years with natural light translucency. Would you like to schedule a 3D smile design consultation?";
@@ -21,7 +21,7 @@ const handleAiQuery = async (req, res) => {
     } else if (lower.includes('book') || lower.includes('appointment') || lower.includes('schedule') || lower.includes('slot')) {
       reply += "You can book directly using our interactive Booking Wizard on the website, or let me know your preferred date, time, and doctor, and I will assist you immediately!";
     } else {
-      reply += "Lumina Dental Studio provides world-class cosmetic, implant, and restorative dentistry at 740 Park Avenue, NYC. How may I assist you with your treatment, appointment booking, or doctor selection today?";
+      reply += "Pearl Dental Care provides world-class cosmetic, implant, and restorative dentistry at 740 Park Avenue, NYC. How may I assist you with your treatment, appointment booking, or doctor selection today?";
     }
 
     return res.json({

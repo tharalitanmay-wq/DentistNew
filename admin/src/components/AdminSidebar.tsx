@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, Calendar, Stethoscope, Sparkles, BookOpen,
-  Settings, LogOut, ExternalLink, ShieldCheck, FileText
+  Settings, LogOut, ExternalLink, ShieldCheck, FileText, Users
 } from 'lucide-react';
 import { useAdminAuth } from '@/context/AdminAuthContext';
 
@@ -16,6 +16,7 @@ export default function AdminSidebar() {
   const links = [
     { name: 'Dashboard Overview', href: '/', icon: LayoutDashboard },
     { name: 'Appointments Manager', href: '/appointments', icon: Calendar },
+    { name: 'Offline Centre Queue', href: '/queue', icon: Users },
     { name: 'Doctors & Specialists', href: '/doctors', icon: Stethoscope },
     { name: 'Services & Pricing', href: '/services', icon: Sparkles },
     { name: 'Blog CMS', href: '/blogs', icon: BookOpen },
@@ -33,7 +34,7 @@ export default function AdminSidebar() {
             </div>
           </div>
           <div>
-            <span className="text-xl font-serif font-bold text-white tracking-tight">LUMINA</span>
+            <span className="text-xl font-serif font-bold text-white tracking-tight">PEARL</span>
             <span className="block text-[10px] tracking-widest text-cyan-400 uppercase font-bold">Admin CMS</span>
           </div>
         </Link>

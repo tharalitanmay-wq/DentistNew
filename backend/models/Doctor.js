@@ -1,19 +1,66 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 
-const doctorSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  title: { type: String, required: true },
-  specialization: { type: String, required: true },
-  experience: { type: String, required: true },
-  bio: { type: String, required: true },
-  avatar: { type: String, required: true },
-  rating: { type: Number, default: 5.0 },
-  consultationFee: { type: Number, required: true },
-  availableDays: [{ type: String }],
-  timeSlots: [{ type: String }],
-  contactEmail: { type: String, default: '' },
-  education: [{ type: String }],
-  featured: { type: Boolean, default: false }
-}, { timestamps: true });
+const Doctor = sequelize.define('Doctor', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  specialization: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  experience: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  bio: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
+  avatar: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  rating: {
+    type: DataTypes.FLOAT,
+    defaultValue: 5.0
+  },
+  consultationFee: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  availableDays: {
+    type: DataTypes.JSON,
+    defaultValue: []
+  },
+  timeSlots: {
+    type: DataTypes.JSON,
+    defaultValue: []
+  },
+  contactEmail: {
+    type: DataTypes.STRING,
+    defaultValue: ''
+  },
+  education: {
+    type: DataTypes.JSON,
+    defaultValue: []
+  },
+  featured: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  }
+}, {
+  timestamps: true
+});
 
-module.exports = mongoose.model('Doctor', doctorSchema);
+module.exports = Doctor;

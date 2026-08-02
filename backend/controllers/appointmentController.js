@@ -1,38 +1,39 @@
+const { Op } = require('sequelize');
 const Appointment = require('../models/Appointment');
 const { getIsConnected } = require('../config/db');
 
 const memoryAppointments = [
   {
-    _id: 'app-101',
+    id: 1,
     patientName: 'Victoria Sterling-Hayes',
     patientEmail: 'victoria@example.com',
     patientPhone: '+1 (555) 888-9900',
-    doctorId: 'doc-1',
+    doctorId: '1',
     doctorName: 'Dr. Evelyn Sterling',
-    serviceId: 'srv-1',
+    serviceId: '1',
     serviceName: 'Signature Porcelain Veneers',
     date: '2026-08-05',
     timeSlot: '11:00 AM',
     notes: 'Consultation for 8 upper veneers and smile simulation.',
     status: 'Confirmed',
-    userId: 'usr-patient-1',
+    userId: '2',
     reportFile: '',
     createdAt: new Date().toISOString()
   },
   {
-    _id: 'app-102',
+    id: 2,
     patientName: 'Harrison Ford-Blake',
     patientEmail: 'harrison@example.com',
     patientPhone: '+1 (555) 777-6655',
-    doctorId: 'doc-2',
+    doctorId: '2',
     doctorName: 'Dr. Julian Vance',
-    serviceId: 'srv-2',
+    serviceId: '2',
     serviceName: '3D Computer-Guided Dental Implants',
     date: '2026-08-10',
     timeSlot: '02:00 PM',
     notes: 'Single molar implant consultation with 3D CBCT scan review.',
     status: 'Pending',
-    userId: 'usr-patient-2',
+    userId: '3',
     reportFile: '',
     createdAt: new Date().toISOString()
   }
@@ -51,16 +52,16 @@ const createAppointment = async (req, res) => {
       reportFile = '/uploads/' + req.file.filename;
     }
 
-    const userId = req.user ? req.user.id : '';
+    const userId = req.user ? String(req.user.id) : '';
 
     if (getIsConnected()) {
       const appt = await Appointment.create({
         patientName,
         patientEmail,
         patientPhone,
-        doctorId: doctorId || '',
+        doctorId: doctorId ? String(doctorId) : '',
         doctorName,
-        serviceId: serviceId || '',
+        serviceId: serviceId ? String(serviceId) : '',
         serviceName,
         date,
         timeSlot,
@@ -71,13 +72,13 @@ const createAppointment = async (req, res) => {
       return res.status(201).json({ success: true, message: 'Appointment booked successfully!', appointment: appt });
     } else {
       const newAppt = {
-        _id: 'app-' + Date.now(),
+        id: memoryAppointments.length + 1,
         patientName,
         patientEmail,
         patientPhone,
-        doctorId: doctorId || '',
+        doctorId: doctorId ? String(doctorId) : '',
         doctorName,
-        serviceId: serviceId || '',
+        serviceId: serviceId ? String(serviceId) : '',
         serviceName,
         date,
         timeSlot,
@@ -97,16 +98,19 @@ const createAppointment = async (req, res) => {
 
 const getMyAppointments = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = String(req.user.id);
     const userEmail = req.user.email;
 
     if (getIsConnected()) {
-      const appts = await Appointment.find({
-        $or: [{ userId: userId }, { patientEmail: userEmail }]
-      }).sort({ createdAt: -1 });
+      const appts = await Appointment.findAll({
+        where: {
+          [Op.or]: [{ userId: userId }, { patientEmail: userEmail }]
+        },
+        order: [['createdAt', 'DESC']]
+      });
       return res.json({ success: true, appointments: appts });
     } else {
-      const appts = memoryAppointments.filter(a => a.userId === userId || a.patientEmail === userEmail);
+      const appts = memoryAppointments.filter(a => String(a.userId) === userId || a.patientEmail === userEmail);
       return res.json({ success: true, appointments: appts });
     }
   } catch (error) {
@@ -117,7 +121,9 @@ const getMyAppointments = async (req, res) => {
 const getAllAppointments = async (req, res) => {
   try {
     if (getIsConnected()) {
-      const appts = await Appointment.find().sort({ createdAt: -1 });
+      const appts = await Appointment.findAll({
+        order: [['createdAt', 'DESC']]
+      });
       return res.json({ success: true, appointments: appts });
     } else {
       return res.json({ success: true, appointments: memoryAppointments });
@@ -138,11 +144,12 @@ const updateAppointmentStatus = async (req, res) => {
       if (doctorName) updateData.doctorName = doctorName;
       if (prescription) updateData.prescription = prescription;
 
-      const appt = await Appointment.findByIdAndUpdate(id, updateData, { new: true });
+      const appt = await Appointment.findByPk(id);
       if (!appt) return res.status(404).json({ success: false, message: 'Appointment not found' });
+      await appt.update(updateData);
       return res.json({ success: true, message: 'Appointment updated successfully', appointment: appt });
     } else {
-      const appt = memoryAppointments.find(a => a._id === id);
+      const appt = memoryAppointments.find(a => String(a.id) === String(id));
       if (!appt) return res.status(404).json({ success: false, message: 'Appointment not found' });
       if (status) appt.status = status;
       if (doctorName) appt.doctorName = doctorName;
@@ -158,9 +165,9 @@ const deleteAppointment = async (req, res) => {
   try {
     const { id } = req.params;
     if (getIsConnected()) {
-      await Appointment.findByIdAndDelete(id);
+      await Appointment.destroy({ where: { id } });
     } else {
-      const idx = memoryAppointments.findIndex(a => a._id === id);
+      const idx = memoryAppointments.findIndex(a => String(a.id) === String(id));
       if (idx !== -1) memoryAppointments.splice(idx, 1);
     }
     res.json({ success: true, message: 'Appointment removed' });

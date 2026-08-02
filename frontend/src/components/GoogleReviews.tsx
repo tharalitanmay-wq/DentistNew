@@ -15,7 +15,7 @@ export default function GoogleReviews() {
       role: 'Fashion Executive',
       rating: 5,
       date: '2 weeks ago',
-      comment: 'Lumina Dental Studio is the absolute pinnacle of luxury. Dr. Sterling designed 10 upper porcelain veneers that literally transformed my face. The pain-free laser technology and spa atmosphere made it effortless.',
+      comment: 'Pearl Dental Care is the absolute pinnacle of luxury. Dr. Sterling designed 10 upper porcelain veneers that literally transformed my face. The pain-free laser technology and spa atmosphere made it effortless.',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200'
     },
     {
