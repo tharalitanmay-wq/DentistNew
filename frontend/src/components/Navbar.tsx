@@ -8,6 +8,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
 import SpecularButton from '@/components/SpecularButton';
 import GooeyNav from '@/components/GooeyNav';
+import ToothIcon from '@/components/ToothIcon';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -67,8 +68,8 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-3 group">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 p-0.5 shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform duration-300">
-            <div className="w-full h-full bg-slate-900 dark:bg-navy-900 rounded-[10px] flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-cyan-400" />
+            <div className="w-full h-full bg-slate-900 dark:bg-navy-900 rounded-[10px] flex items-center justify-center p-1">
+              <ToothIcon className="w-5 h-5 text-cyan-400" />
             </div>
           </div>
           <div>

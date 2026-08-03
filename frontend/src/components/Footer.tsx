@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Sparkles, Phone, Mail, MapPin, Clock, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+import ToothIcon from '@/components/ToothIcon';
 
 export default function Footer() {
   const { theme } = useTheme();
@@ -25,8 +26,8 @@ export default function Footer() {
           <div className="lg:col-span-2 space-y-6">
             <Link href="/" className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 p-0.5">
-                <div className="w-full h-full bg-slate-900 dark:bg-navy-900 rounded-[10px] flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-cyan-400" />
+                <div className="w-full h-full bg-slate-900 dark:bg-navy-900 rounded-[10px] flex items-center justify-center p-1">
+                  <ToothIcon className="w-5 h-5 text-cyan-400" />
                 </div>
               </div>
               <div>
