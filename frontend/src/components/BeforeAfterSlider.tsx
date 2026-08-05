@@ -1,96 +1,248 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Sparkles, MoveHorizontal } from 'lucide-react';
+import { Sparkles, MoveHorizontal, Columns, Sliders, CheckCircle2 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 
-interface BeforeAfterProps {
-  beforeImage: string;
-  afterImage: string;
+interface TransformationItem {
+  id: string;
   title: string;
   subtitle: string;
+  before: string;
+  after: string;
+  details: string[];
+}
+
+const PRESET_TRANSFORMATIONS: TransformationItem[] = [
+  {
+    id: 'veneers',
+    title: '10 Upper Porcelain Veneers',
+    subtitle: 'Full shade BL1 bleach transformation resolving discolored, uneven teeth',
+    before: '/api/transformations/before-veneers',
+    after: '/api/transformations/after-veneers',
+    details: ['E.max Porcelain Veneers', 'Shade BL1 Bright White', 'Symmetrical Arch Alignment']
+  },
+  {
+    id: 'whitening',
+    title: 'Laser Teeth Whitening',
+    subtitle: '8 shades brighter in a single 45-minute in-office treatment',
+    before: '/api/transformations/before-whitening',
+    after: '/api/transformations/after-whitening',
+    details: ['Philips Zoom! Laser', 'Zero Sensitivity Protocol', 'Enamel Gloss Seal']
+  }
+];
+
+interface BeforeAfterProps {
+  beforeImage?: string;
+  afterImage?: string;
+  title?: string;
+  subtitle?: string;
 }
 
 export default function BeforeAfterSlider({
-  beforeImage = 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&q=80&w=1200',
-  afterImage = 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&q=80&w=1200',
-  title = 'Smile Transformation',
-  subtitle = 'Drag slider to reveal 10 Upper Porcelain Veneers result'
+  beforeImage,
+  afterImage,
+  title,
+  subtitle
 }: BeforeAfterProps) {
   const { theme } = useTheme();
   const isLight = theme === 'light';
-  const [sliderPos, setSliderPos] = useState(50);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
+  const [activePresetIndex, setActivePresetIndex] = useState(0);
+  const [viewMode, setViewMode] = useState<'slider' | 'side-by-side'>('slider');
+  const [sliderPos, setSliderPos] = useState(50);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const activePreset = PRESET_TRANSFORMATIONS[activePresetIndex];
+  const currentBefore = beforeImage || activePreset.before;
+  const currentAfter = afterImage || activePreset.after;
+  const currentTitle = title || activePreset.title;
+  const currentSubtitle = subtitle || activePreset.subtitle;
+
+  const updateSliderPosition = (clientX: number, target: HTMLDivElement) => {
+    const rect = target.getBoundingClientRect();
+    const x = clientX - rect.left;
     const pos = Math.max(0, Math.min(100, (x / rect.width) * 100));
     setSliderPos(pos);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    updateSliderPosition(e.clientX, e.currentTarget);
   };
 
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.touches[0].clientX - rect.left;
-    const pos = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    setSliderPos(pos);
+    updateSliderPosition(e.touches[0].clientX, e.currentTarget);
   };
 
   return (
-    <div className={`relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden glass-card p-2 border shadow-2xl ${
-      isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'border-white/15'
+    <div className={`relative w-full max-w-5xl mx-auto rounded-3xl overflow-hidden glass-card p-4 sm:p-6 border shadow-2xl transition-all ${
+      isLight ? 'bg-white/90 border-slate-200 shadow-slate-200/50' : 'bg-slate-900/80 border-white/15 shadow-cyan-950/20'
     }`}>
-      <div className="text-center py-4 px-6">
-        <h3 className={`text-xl md:text-2xl font-serif font-bold flex items-center justify-center space-x-2 ${
-          isLight ? 'text-slate-900' : 'text-white'
-        }`}>
-          <Sparkles className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
-          <span>{title}</span>
-        </h3>
-        <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>{subtitle}</p>
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-white/10 mb-6">
+        <div>
+          <div className="inline-flex items-center space-x-2 text-cyan-600 dark:text-cyan-400 text-xs font-bold uppercase tracking-widest mb-1">
+            <Sparkles className="w-4 h-4" />
+            <span>Real Patient Transformations</span>
+          </div>
+          <h3 className={`text-2xl sm:text-3xl font-serif font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
+            {currentTitle}
+          </h3>
+          <p className={`text-xs sm:text-sm mt-1 max-w-xl ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
+            {currentSubtitle}
+          </p>
+        </div>
+
+        {/* View Mode Controls (Slider vs Side-by-Side) */}
+        <div className="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-200 dark:border-white/10 self-start md:self-center">
+          <button
+            onClick={() => setViewMode('slider')}
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              viewMode === 'slider'
+                ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <Sliders className="w-3.5 h-3.5" />
+            <span>Slider View</span>
+          </button>
+          <button
+            onClick={() => setViewMode('side-by-side')}
+            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              viewMode === 'side-by-side'
+                ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <Columns className="w-3.5 h-3.5" />
+            <span>Side-by-Side</span>
+          </button>
+        </div>
       </div>
 
-      <div
-        className="relative h-[320px] sm:h-[420px] md:h-[500px] w-full select-none cursor-ew-resize overflow-hidden rounded-2xl"
-        onMouseMove={handleMouseMove}
-        onTouchMove={handleTouchMove}
-      >
-        {/* AFTER IMAGE (Background) */}
-        <div className="absolute inset-0 w-full h-full">
-          <img
-            src={afterImage}
-            alt="After Smile Transformation"
-            className="w-full h-full object-cover"
-          />
-          <span className="absolute top-4 right-4 bg-cyan-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">
-            After Transformation
-          </span>
+      {/* Treatment Case Selection Tabs */}
+      {!beforeImage && (
+        <div className="flex flex-wrap gap-2 mb-6">
+          {PRESET_TRANSFORMATIONS.map((preset, idx) => (
+            <button
+              key={preset.id}
+              onClick={() => setActivePresetIndex(idx)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
+                activePresetIndex === idx
+                  ? 'bg-cyan-500/10 border-cyan-500 text-cyan-600 dark:text-cyan-400'
+                  : 'bg-transparent border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400 hover:border-cyan-500/50'
+              }`}
+            >
+              {preset.title}
+            </button>
+          ))}
         </div>
+      )}
 
-        {/* BEFORE IMAGE (Clipped Foreground) */}
+      {/* Main Image Showcase */}
+      {viewMode === 'slider' ? (
+        /* INTERACTIVE SLIDER VIEW */
         <div
-          className="absolute inset-y-0 left-0 overflow-hidden border-r-2 border-white shadow-2xl"
-          style={{ width: `${sliderPos}%` }}
+          className="relative h-[340px] sm:h-[460px] md:h-[540px] w-full select-none cursor-ew-resize overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10 shadow-inner group"
+          onMouseMove={handleMouseMove}
+          onTouchMove={handleTouchMove}
+          onMouseDown={() => setIsDragging(true)}
+          onMouseUp={() => setIsDragging(false)}
         >
-          <img
-            src={beforeImage}
-            alt="Before Smile Transformation"
-            className="absolute inset-0 w-full h-full object-cover max-w-none"
-            style={{ width: '100%', height: '100%' }}
-          />
-          <span className="absolute top-4 left-4 bg-slate-900/90 text-slate-100 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg border border-white/10">
-            Before Treatment
-          </span>
-        </div>
+          {/* AFTER IMAGE (Background) */}
+          <div className="absolute inset-0 w-full h-full">
+            <img
+              src={currentAfter}
+              alt="After Treatment Smile Transformation"
+              className="w-full h-full object-cover object-center"
+            />
+            <div className="absolute top-4 right-4 bg-cyan-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg border border-white/20 flex items-center space-x-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>AFTER TREATMENT</span>
+            </div>
+          </div>
 
-        {/* SLIDER HANDLE */}
-        <div
-          className="absolute inset-y-0 w-1 bg-gradient-to-b from-cyan-400 via-white to-cyan-400 cursor-ew-resize pointer-events-none"
-          style={{ left: `${sliderPos}%` }}
-        >
-          <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-cyan-500 text-white flex items-center justify-center shadow-xl border-2 border-white">
-            <MoveHorizontal className="w-5 h-5" />
+          {/* BEFORE IMAGE (Clipped Overlay - 1:1 Pixel Match) */}
+          <div
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            style={{ clipPath: `inset(0 ${100 - sliderPos}% 0 0)` }}
+          >
+            <img
+              src={currentBefore}
+              alt="Before Treatment Smile"
+              className="w-full h-full object-cover object-center"
+            />
+            <div className="absolute top-4 left-4 bg-slate-950/90 text-slate-100 text-[11px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg border border-white/20">
+              BEFORE TREATMENT
+            </div>
+          </div>
+
+          {/* SLIDER DIVIDER LINE & HANDLE */}
+          <div
+            className="absolute inset-y-0 w-0.5 bg-gradient-to-b from-cyan-300 via-white to-cyan-300 pointer-events-none shadow-[0_0_15px_rgba(6,182,212,0.8)]"
+            style={{ left: `${sliderPos}%` }}
+          >
+            <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-11 h-11 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center shadow-2xl border-2 border-white ring-4 ring-cyan-500/30">
+              <MoveHorizontal className="w-5 h-5 font-bold" />
+            </div>
+          </div>
+
+          {/* Drag Instruction Banner */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-slate-950/70 text-slate-200 text-xs px-4 py-1.5 rounded-full backdrop-blur-md border border-white/10 pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity">
+            Drag slider left or right to compare
           </div>
         </div>
+      ) : (
+        /* SIDE-BY-SIDE VIEW ("both aside") */
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* BEFORE PHOTO */}
+          <div className="relative h-[300px] sm:h-[400px] rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10 shadow-lg group">
+            <img
+              src={currentBefore}
+              alt="Before Treatment Smile"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute top-4 left-4 bg-slate-950/90 text-slate-100 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider border border-white/20 shadow-md">
+              BEFORE TREATMENT
+            </div>
+            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 to-transparent p-4 text-white">
+              <p className="text-xs font-medium text-slate-300">Initial Smile Condition</p>
+            </div>
+          </div>
+
+          {/* AFTER PHOTO */}
+          <div className="relative h-[300px] sm:h-[400px] rounded-2xl overflow-hidden border border-cyan-500/30 dark:border-cyan-400/40 shadow-lg shadow-cyan-500/10 group">
+            <img
+              src={currentAfter}
+              alt="After Treatment Smile Transformation"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute top-4 right-4 bg-cyan-600 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-md border border-white/20 flex items-center space-x-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>AFTER TRANSFORMATION</span>
+            </div>
+            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 to-transparent p-4 text-white">
+              <p className="text-xs font-medium text-cyan-300">Final Clinical Result</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Clinical Highlights / Details */}
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {activePreset.details.map((detail, i) => (
+          <div
+            key={i}
+            className={`flex items-center space-x-2 p-3 rounded-xl border text-xs font-medium ${
+              isLight
+                ? 'bg-slate-50 border-slate-200 text-slate-700'
+                : 'bg-slate-800/50 border-white/5 text-slate-300'
+            }`}
+          >
+            <CheckCircle2 className="w-4 h-4 text-cyan-500 flex-shrink-0" />
+            <span>{detail}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

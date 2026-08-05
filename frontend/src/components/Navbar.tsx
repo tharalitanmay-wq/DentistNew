@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Sparkles, Calendar, Phone, Menu, X, Sun, Moon, User } from 'lucide-react';
+import { Sparkles, Calendar, Phone, Menu, X, Sun, Moon, User, LogOut } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
 import SpecularButton from '@/components/SpecularButton';
@@ -14,7 +14,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -36,6 +36,11 @@ export default function Navbar() {
     { label: 'Blog', href: '/blog' },
     { label: 'Contact', href: '/contact' },
   ];
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -66,17 +71,17 @@ export default function Navbar() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between mt-1">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 p-0.5 shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform duration-300">
-            <div className="w-full h-full bg-slate-900 dark:bg-navy-900 rounded-[10px] flex items-center justify-center p-1">
-              <ToothIcon className="w-5 h-5 text-cyan-400" />
+        <Link href="/" className="flex items-center space-x-3.5 group">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-cyan-400 via-sky-500 to-blue-600 p-0.5 shadow-md shadow-cyan-500/30 group-hover:scale-105 transition-all duration-300">
+            <div className="w-full h-full bg-slate-950 dark:bg-navy-950 rounded-[10px] flex items-center justify-center p-1.5">
+              <ToothIcon className="w-7 h-7" />
             </div>
           </div>
           <div>
-            <span className="text-xl font-serif font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+            <span className="text-2xl font-serif font-extrabold tracking-tight text-slate-950 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
               PEARL
             </span>
-            <span className="block text-[10px] tracking-[0.25em] text-cyan-600 dark:text-cyan-400 uppercase font-medium">
+            <span className="block text-[11px] tracking-[0.25em] text-cyan-600 dark:text-cyan-400 uppercase font-bold">
               Dental Care
             </span>
           </div>
@@ -109,12 +114,12 @@ export default function Navbar() {
             {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
           </button>
 
-          {/* User Account or Login */}
+          {/* User Account / Login / Logout */}
           {user ? (
             <div className="flex items-center space-x-2">
               <Link
                 href="/dashboard"
-                className={`flex items-center space-x-2 px-3 py-1.5 rounded-full border text-xs font-medium transition-all ${
+                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all ${
                   theme === 'light'
                     ? 'bg-slate-100 border-cyan-500/40 text-cyan-700 hover:bg-cyan-50'
                     : 'bg-navy-800 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500 hover:text-navy-950'
@@ -123,16 +128,32 @@ export default function Navbar() {
                 <User className="w-3.5 h-3.5" />
                 <span>{user.name.split(' ')[0]}</span>
               </Link>
+              <button
+                onClick={handleLogout}
+                className="flex items-center space-x-1 px-3 py-1.5 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-bold border border-red-500/30 transition-all"
+                title="Logout of Account"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Logout</span>
+              </button>
             </div>
           ) : (
-            <Link
-              href="/dashboard"
-              className={`text-xs px-3 py-1.5 transition-colors ${
-                theme === 'light' ? 'text-slate-700 hover:text-cyan-600' : 'text-slate-300 hover:text-cyan-400'
-              }`}
-            >
-              Sign In
-            </Link>
+            <div className="flex items-center space-x-2">
+              <Link
+                href="/login"
+                className={`text-xs px-3 py-1.5 rounded-full transition-all font-medium ${
+                  theme === 'light' ? 'text-slate-700 hover:text-cyan-600' : 'text-slate-300 hover:text-cyan-400'
+                }`}
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/register"
+                className="text-xs px-3 py-1.5 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30 font-bold hover:bg-cyan-500 hover:text-slate-950 transition-all"
+              >
+                Register
+              </Link>
+            </div>
           )}
 
           {/* React Bits SpecularButton Integration for BOOK APPOINTMENT */}
@@ -197,15 +218,47 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/dashboard"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-2.5 rounded-xl text-sm font-medium text-cyan-600 border border-cyan-500/30 flex items-center justify-between"
-            >
-              <span>Patient Dashboard</span>
-              <User className="w-4 h-4" />
-            </Link>
-            
+
+            {user ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-4 py-2.5 rounded-xl text-sm font-medium text-cyan-600 border border-cyan-500/30 flex items-center justify-between"
+                >
+                  <span>Patient Dashboard ({user.name})</span>
+                  <User className="w-4 h-4" />
+                </Link>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full px-4 py-2.5 rounded-xl text-sm font-bold text-red-400 bg-red-500/10 border border-red-500/30 flex items-center justify-between"
+                >
+                  <span>Logout Account</span>
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </>
+            ) : (
+              <div className="grid grid-cols-2 gap-2 pt-2">
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-center border border-white/10 text-slate-300"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/register"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-center bg-cyan-500 text-slate-950"
+                >
+                  Register
+                </Link>
+              </div>
+            )}
+
             <div className="pt-2">
               <SpecularButton
                 size="md"

@@ -24,17 +24,17 @@ export default function Footer() {
 
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-6">
-            <Link href="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 p-0.5">
-                <div className="w-full h-full bg-slate-900 dark:bg-navy-900 rounded-[10px] flex items-center justify-center p-1">
-                  <ToothIcon className="w-5 h-5 text-cyan-400" />
+            <Link href="/" className="flex items-center space-x-3.5 group">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-cyan-400 via-sky-500 to-blue-600 p-0.5 shadow-md shadow-cyan-500/30">
+                <div className="w-full h-full bg-slate-950 dark:bg-navy-950 rounded-[10px] flex items-center justify-center p-1.5">
+                  <ToothIcon className="w-7 h-7" />
                 </div>
               </div>
               <div>
-                <span className={`text-2xl font-serif font-bold tracking-tight ${
-                  theme === 'light' ? 'text-slate-900' : 'text-white'
+                <span className={`text-2xl font-serif font-extrabold tracking-tight ${
+                  theme === 'light' ? 'text-slate-950' : 'text-white'
                 }`}>PEARL</span>
-                <span className="block text-[10px] tracking-[0.25em] text-cyan-600 dark:text-cyan-400 uppercase font-semibold">Dental Care</span>
+                <span className="block text-[11px] tracking-[0.25em] text-cyan-600 dark:text-cyan-400 uppercase font-bold">Dental Care</span>
               </div>
             </Link>
             <p className={`text-sm leading-relaxed max-w-md ${

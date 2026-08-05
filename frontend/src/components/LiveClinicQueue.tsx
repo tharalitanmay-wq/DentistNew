@@ -2,8 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { Users, Clock, CheckCircle2, Sparkles, RefreshCw, AlertCircle, MapPin, Hash } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function LiveClinicQueue() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const [queueData, setQueueData] = useState<{
     waitingCount: number;
     treatedCount: number;
@@ -140,18 +143,20 @@ export default function LiveClinicQueue() {
       {/* Currently Waiting Tokens Banner */}
       <div className="space-y-3 pt-2">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-slate-300 flex items-center">
-            <Hash className="w-3.5 h-3.5 text-cyan-400 mr-1.5" />
+          <span className={`text-xs font-bold flex items-center ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+            <Hash className="w-3.5 h-3.5 text-cyan-500 mr-1.5" />
             Tokens Currently in Line:
           </span>
-          <span className="text-[11px] text-slate-400">
+          <span className={`text-[11px] ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
             {waitingList.length > 0 ? `${waitingList.length} Active Tokens` : 'No Patients Waiting'}
           </span>
         </div>
 
         {waitingList.length === 0 ? (
-          <div className="p-4 rounded-2xl bg-navy-900/60 border border-white/5 text-center text-xs text-slate-400 flex items-center justify-center space-x-2">
-            <Sparkles className="w-4 h-4 text-emerald-400" />
+          <div className={`p-4 rounded-2xl border text-center text-xs flex items-center justify-center space-x-2 ${
+            isLight ? 'bg-slate-50 border-slate-200 text-slate-600' : 'bg-navy-900/60 border-white/5 text-slate-400'
+          }`}>
+            <Sparkles className="w-4 h-4 text-emerald-500" />
             <span>The queue is currently empty! Walk-in patients can receive immediate consultation.</span>
           </div>
         ) : (
@@ -159,12 +164,22 @@ export default function LiveClinicQueue() {
             {waitingList.map((item) => (
               <div
                 key={item.id}
-                className="px-3.5 py-2 rounded-xl bg-navy-900/90 border border-cyan-500/30 text-xs font-mono flex items-center space-x-2 shadow-sm"
+                className={`px-3.5 py-2 rounded-xl border text-xs font-mono flex items-center space-x-2 shadow-sm transition-all ${
+                  isLight
+                    ? 'bg-white border-slate-200 text-slate-800 shadow-slate-200/50'
+                    : 'bg-navy-900/90 border-cyan-500/30 text-slate-200'
+                }`}
               >
-                <span className="font-bold text-cyan-300 bg-cyan-500/20 px-2 py-0.5 rounded text-[11px]">
+                <span className={`font-bold px-2 py-0.5 rounded text-[11px] ${
+                  isLight
+                    ? 'bg-cyan-100 text-cyan-800'
+                    : 'bg-cyan-500/20 text-cyan-300'
+                }`}>
                   {item.tokenNumber}
                 </span>
-                <span className="text-slate-300 text-[11px] truncate max-w-[140px]">
+                <span className={`text-[11px] truncate max-w-[140px] ${
+                  isLight ? 'text-slate-700' : 'text-slate-300'
+                }`}>
                   {item.reason}
                 </span>
               </div>

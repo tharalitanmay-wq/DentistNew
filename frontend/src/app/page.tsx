@@ -13,6 +13,7 @@ import CostEstimator from '@/components/CostEstimator';
 import SpecularButton from '@/components/SpecularButton';
 import PixelCard from '@/components/PixelCard';
 import LiveClinicQueue from '@/components/LiveClinicQueue';
+import LogoLoop from '@/components/LogoLoop';
 import { useTheme } from '@/context/ThemeContext';
 
 export default function HomePage() {
@@ -25,6 +26,63 @@ export default function HomePage() {
     { number: '12,400+', label: 'Smiles Transformed', icon: Sparkles },
     { number: '99.8%', label: 'Patient Satisfaction', icon: ShieldCheck },
     { number: '5.0★', label: 'Google Rating (480+)', icon: Star },
+  ];
+
+  const partnerLogos = [
+    {
+      node: (
+        <div className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-navy-900/60 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 font-serif font-bold text-xs tracking-wider shadow-sm">
+          <ShieldCheck className="w-4 h-4 text-cyan-500" />
+          <span>AMERICAN ACADEMY OF COSMETIC DENTISTRY</span>
+        </div>
+      ),
+      title: 'AACD Accredited'
+    },
+    {
+      node: (
+        <div className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-navy-900/60 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 font-serif font-bold text-xs tracking-wider shadow-sm">
+          <Sparkles className="w-4 h-4 text-sky-500" />
+          <span>INVISALIGN DIAMOND PLUS PROVIDER</span>
+        </div>
+      ),
+      title: 'Invisalign Diamond Plus'
+    },
+    {
+      node: (
+        <div className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-navy-900/60 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 font-serif font-bold text-xs tracking-wider shadow-sm">
+          <Cpu className="w-4 h-4 text-cyan-500" />
+          <span>iTERO 5D DIGITAL SCANNING</span>
+        </div>
+      ),
+      title: 'iTero 5D Scanner'
+    },
+    {
+      node: (
+        <div className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-navy-900/60 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 font-serif font-bold text-xs tracking-wider shadow-sm">
+          <Award className="w-4 h-4 text-indigo-500" />
+          <span>HARVARD & COLUMBIA AACD MASTERS</span>
+        </div>
+      ),
+      title: 'Harvard & Columbia'
+    },
+    {
+      node: (
+        <div className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-navy-900/60 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 font-serif font-bold text-xs tracking-wider shadow-sm">
+          <Zap className="w-4 h-4 text-amber-500" />
+          <span>BIOLASE WATERLASE PAINLESS LASER</span>
+        </div>
+      ),
+      title: 'Biolase Laser'
+    },
+    {
+      node: (
+        <div className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-navy-900/60 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 font-serif font-bold text-xs tracking-wider shadow-sm">
+          <Star className="w-4 h-4 text-yellow-500" />
+          <span>TOP DENTISTRY CLINIC 2026</span>
+        </div>
+      ),
+      title: 'Top Dentistry 2026'
+    }
   ];
 
   const services = [
@@ -47,7 +105,7 @@ export default function HomePage() {
       desc: 'Discreet 3D aligner sequences straightening your teeth 50% faster than metal.',
       price: 'From $3,500',
       tag: 'Orthodontics',
-      img: 'https://images.unsplash.com/photo-1594824813566-78a9c30f40d2?auto=format&fit=crop&q=80&w=600'
+      img: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=600'
     },
     {
       title: 'Laser Whitening Spa',
@@ -208,6 +266,25 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* React Bits LogoLoop Accredited Partners Marquee */}
+      <section className={`py-6 border-y ${isLight ? 'bg-slate-100/60 border-slate-200' : 'bg-navy-950/60 border-white/10'}`}>
+        <div className="max-w-7xl mx-auto px-4 overflow-hidden">
+          <LogoLoop
+            logos={partnerLogos}
+            speed={70}
+            direction="left"
+            logoHeight={36}
+            gap={24}
+            hoverSpeed={0}
+            pauseOnHover={true}
+            scaleOnHover
+            fadeOut
+            fadeOutColor={isLight ? '#f1f5f9' : '#030712'}
+            ariaLabel="Accreditation and technology partners"
+          />
+        </div>
+      </section>
+
       {/* Live Offline Centre Queue Counter */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <LiveClinicQueue />
@@ -265,12 +342,7 @@ export default function HomePage() {
 
       {/* Interactive Before & After Smile Slider Showcase */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <BeforeAfterSlider
-          beforeImage="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&q=80&w=1200"
-          afterImage="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&q=80&w=1200"
-          title="Transformational Results"
-          subtitle="Drag the interactive slider to view real patient porcelain veneer results"
-        />
+        <BeforeAfterSlider />
       </section>
 
       {/* Doctors Profiles Showcase */}

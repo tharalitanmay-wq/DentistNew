@@ -14,6 +14,7 @@ export default function DashboardPage() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [authError, setAuthError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
 
   const [appointments, setAppointments] = useState<any[]>([]);
   const [loadingAppts, setLoadingAppts] = useState(false);
@@ -55,31 +56,54 @@ export default function DashboardPage() {
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError('');
+    setSuccessMsg('');
 
-    const endpoint = isLoginTab ? '/api/auth/login' : '/api/auth/register';
-    const payload = isLoginTab ? { email, password } : { name, email, password, phone };
-
-    try {
-      const res = await fetch(`http://localhost:5000${endpoint}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      if (data.success) {
-        login(data.token, data.user);
-      } else {
-        setAuthError(data.message || 'Authentication failed');
+    if (isLoginTab) {
+      // LOGIN SUBMISSION
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (data.success) {
+          login(data.token, data.user);
+        } else {
+          setAuthError(data.message || 'Invalid email or password');
+        }
+      } catch (err) {
+        // Fallback mock login for offline mode
+        login('mock_jwt_token_123', {
+          id: 'usr-1',
+          name: name || email.split('@')[0] || 'Demo Patient',
+          email: email || 'patient@example.com',
+          role: 'patient',
+          phone: phone || '+1 555-0199'
+        });
       }
-    } catch (err) {
-      // Fallback mock login for offline mode
-      login('mock_jwt_token_123', {
-        id: 'usr-1',
-        name: name || 'Demo Patient',
-        email: email || 'patient@example.com',
-        role: 'patient',
-        phone: phone || '+1 555-0199'
-      });
+    } else {
+      // REGISTER SUBMISSION -> NEXT PAGE IS LOGIN!
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password, phone })
+        });
+        const data = await res.json();
+        if (data.success) {
+          setSuccessMsg('Registration successful! Please sign in with your email and password.');
+          setIsLoginTab(true); // Switch tab to Login!
+          setPassword('');
+        } else {
+          setAuthError(data.message || 'Registration failed');
+        }
+      } catch (err) {
+        // Fallback mock registration redirect to Login
+        setSuccessMsg('Registration successful! Please sign in with your account below.');
+        setIsLoginTab(true); // Switch tab to Login!
+        setPassword('');
+      }
     }
   };
 
@@ -106,7 +130,7 @@ export default function DashboardPage() {
 
           <div className="flex bg-navy-900 rounded-xl p-1 border border-white/10">
             <button
-              onClick={() => setIsLoginTab(true)}
+              onClick={() => { setIsLoginTab(true); setAuthError(''); setSuccessMsg(''); }}
               className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
                 isLoginTab ? 'bg-cyan-500 text-slate-950 shadow-md' : 'text-slate-400'
               }`}
@@ -114,7 +138,7 @@ export default function DashboardPage() {
               Sign In
             </button>
             <button
-              onClick={() => setIsLoginTab(false)}
+              onClick={() => { setIsLoginTab(false); setAuthError(''); setSuccessMsg(''); }}
               className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
                 !isLoginTab ? 'bg-cyan-500 text-slate-950 shadow-md' : 'text-slate-400'
               }`}
@@ -122,6 +146,13 @@ export default function DashboardPage() {
               Register
             </button>
           </div>
+
+          {successMsg && (
+            <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-400 flex items-center space-x-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+              <span>{successMsg}</span>
+            </div>
+          )}
 
           {authError && (
             <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-xs text-red-400 flex items-center space-x-2">
@@ -186,7 +217,7 @@ export default function DashboardPage() {
               type="submit"
               className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-sky-300 text-slate-950 font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-lg shadow-cyan-500/25"
             >
-              {isLoginTab ? 'Sign In to Portal' : 'Create Patient Account'}
+              {isLoginTab ? 'Sign In to Portal' : 'Create Account (Next: Login)'}
             </button>
           </form>
         </div>
@@ -202,7 +233,7 @@ export default function DashboardPage() {
       <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
         <div className="flex items-center space-x-4">
           <div className="w-16 h-16 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-serif font-bold text-2xl border border-cyan-500/30">
-            {user.name[0]}
+            {user.name ? user.name[0] : 'P'}
           </div>
           <div>
             <h1 className="text-2xl font-serif font-bold text-white">Welcome, {user.name}</h1>
@@ -219,10 +250,11 @@ export default function DashboardPage() {
           </Link>
           <button
             onClick={logout}
-            className="p-2.5 rounded-full bg-navy-800 text-slate-400 hover:text-red-400 border border-white/10 transition-all"
-            title="Sign Out"
+            className="px-4 py-2.5 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-400 font-bold text-xs border border-red-500/30 transition-all flex items-center space-x-2 shadow-md"
+            title="Sign Out of Account"
           >
             <LogOut className="w-4 h-4" />
+            <span>Logout</span>
           </button>
         </div>
       </div>

@@ -5,7 +5,7 @@
   }
 }
 
-/* Sharp Inner Pointer Dot (Exact Mouse Position - Zero Latency) */
+/* Light, Crisp Pointer Dot (Exact Mouse Target) */
 .modern-cursor-dot {
   position: fixed;
   top: 0;
@@ -15,39 +15,41 @@
   margin-top: -4px;
   margin-left: -4px;
   background-color: #38bdf8;
+  border: 1.5px solid #ffffff;
   border-radius: 50%;
   pointer-events: none;
   z-index: 999999;
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.9);
-  transition: transform 0.15s ease, background-color 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+  transition: transform 0.15s ease, background-color 0.2s ease;
   will-change: transform;
 }
 
 .modern-cursor-dot.is-hovered {
   background-color: #06b6d4;
-  transform: scale(1.5);
+  transform: scale(1.35);
+  box-shadow: 0 0 14px rgba(6, 182, 212, 0.9);
 }
 
 .modern-cursor-dot.is-clicking {
   transform: scale(0.75);
 }
 
-/* Outer Trailing Dot / Ring (Smooth Fluid Lag Effect) */
+/* Light, Elegant Outer Trailing Ring (Feather-Light Lag Effect) */
 .modern-cursor-trailing {
   position: fixed;
   top: 0;
   left: 0;
-  width: 36px;
-  height: 36px;
-  margin-top: -18px;
-  margin-left: -18px;
-  border: 1.5px solid rgba(56, 189, 248, 0.6);
-  background-color: rgba(56, 189, 248, 0.08);
-  backdrop-filter: blur(1px);
+  width: 38px;
+  height: 38px;
+  margin-top: -19px;
+  margin-left: -19px;
+  border: 1.2px solid rgba(56, 189, 248, 0.55);
+  background-color: rgba(56, 189, 248, 0.05);
   border-radius: 50%;
   pointer-events: none;
   z-index: 999998;
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.25), inset 0 0 10px rgba(56, 189, 248, 0.15);
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.2);
+  backdrop-filter: blur(1px);
   transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
               height 0.25s cubic-bezier(0.16, 1, 0.3, 1),
               margin 0.25s cubic-bezier(0.16, 1, 0.3, 1),
@@ -57,15 +59,15 @@
   will-change: transform;
 }
 
-/* Hover State - Translucent Expanding Ring over Interactive Elements */
+/* Hover State - Soft Translucent Expanding Ring */
 .modern-cursor-trailing.is-hovered {
-  width: 54px;
-  height: 54px;
-  margin-top: -27px;
-  margin-left: -27px;
-  border-color: rgba(6, 182, 212, 0.8);
-  background-color: rgba(6, 182, 212, 0.15);
-  box-shadow: 0 0 30px rgba(6, 182, 212, 0.4), inset 0 0 15px rgba(6, 182, 212, 0.2);
+  width: 52px;
+  height: 52px;
+  margin-top: -26px;
+  margin-left: -26px;
+  border-color: rgba(6, 182, 212, 0.7);
+  background-color: rgba(6, 182, 212, 0.1);
+  box-shadow: 0 0 24px rgba(6, 182, 212, 0.35);
 }
 
 /* Click State - Pulse Inward */
@@ -74,6 +76,6 @@
   height: 26px;
   margin-top: -13px;
   margin-left: -13px;
-  border-color: rgba(56, 189, 248, 0.9);
-  background-color: rgba(56, 189, 248, 0.3);
+  border-color: rgba(56, 189, 248, 0.8);
+  background-color: rgba(56, 189, 248, 0.2);
 }

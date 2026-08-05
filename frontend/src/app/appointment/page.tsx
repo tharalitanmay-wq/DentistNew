@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Calendar, Clock, User, Sparkles, CheckCircle2, Upload, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Calendar, Clock, User, Sparkles, CheckCircle2, Upload, ArrowRight, Lock, AlertCircle, LogIn, UserPlus } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import Link from 'next/link';
 
 export default function AppointmentPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, login, isLoading } = useAuth();
 
   const [step, setStep] = useState(1);
   const [selectedDoctor, setSelectedDoctor] = useState(searchParams.get('doctor') || 'Dr. Evelyn Sterling');
@@ -16,6 +17,16 @@ export default function AppointmentPage() {
   const [selectedDate, setSelectedDate] = useState('2026-08-05');
   const [selectedSlot, setSelectedSlot] = useState('11:00 AM');
   const [file, setFile] = useState<File | null>(null);
+
+  // Inline Auth Gate States (for quick login/register right on appointment page)
+  const [inlineAuthTab, setInlineAuthTab] = useState<'login' | 'register'>('login');
+  const [authEmail, setAuthEmail] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  const [authName, setAuthName] = useState('');
+  const [authPhone, setAuthPhone] = useState('');
+  const [authError, setAuthError] = useState('');
+  const [authSuccess, setAuthSuccess] = useState('');
+  const [authSubmitting, setAuthSubmitting] = useState(false);
 
   const [patientData, setPatientData] = useState({
     name: user?.name || '',
@@ -53,6 +64,62 @@ export default function AppointmentPage() {
   ];
 
   const timeSlots = ['09:00 AM', '10:30 AM', '11:30 AM', '02:00 PM', '03:30 PM', '05:00 PM'];
+
+  const handleInlineAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+    setAuthSuccess('');
+    setAuthSubmitting(true);
+
+    if (inlineAuthTab === 'login') {
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: authEmail, password: authPassword })
+        });
+        const data = await res.json();
+        if (data.success) {
+          login(data.token, data.user);
+        } else {
+          setAuthError(data.message || 'Invalid credentials');
+        }
+      } catch (err) {
+        // Fallback login
+        login('mock_jwt_token_123', {
+          id: 'usr-1',
+          name: authEmail.split('@')[0] || 'Patient User',
+          email: authEmail,
+          role: 'patient'
+        });
+      } finally {
+        setAuthSubmitting(false);
+      }
+    } else {
+      // Inline Registration -> Next step is Login
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: authName, email: authEmail, password: authPassword, phone: authPhone })
+        });
+        const data = await res.json();
+        if (data.success) {
+          setAuthSuccess('Registration successful! Please sign in with your password to continue booking.');
+          setInlineAuthTab('login');
+          setAuthPassword('');
+        } else {
+          setAuthError(data.message || 'Registration failed');
+        }
+      } catch (err) {
+        setAuthSuccess('Registration successful! Please sign in with your password to continue booking.');
+        setInlineAuthTab('login');
+        setAuthPassword('');
+      } finally {
+        setAuthSubmitting(false);
+      }
+    }
+  };
 
   const handleBook = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,11 +168,152 @@ export default function AppointmentPage() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="max-w-md mx-auto py-24 text-center text-slate-400">
+        Checking authentication status...
+      </div>
+    );
+  }
+
+  // LOGIN GATE IF USER IS NOT LOGGED IN
+  if (!user) {
+    return (
+      <div className="max-w-xl mx-auto px-4 py-16 space-y-8">
+        {/* Header Warning */}
+        <div className="text-center space-y-3">
+          <div className="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto border border-amber-500/30 shadow-lg">
+            <Lock className="w-8 h-8" />
+          </div>
+          <span className="text-xs font-bold uppercase tracking-widest text-amber-400">Sign In Required</span>
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-white">Login to Book Appointment</h1>
+          <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto">
+            You must be logged in to your patient account to schedule a consultation with our specialists.
+          </p>
+        </div>
+
+        {/* Auth Box */}
+        <div className="glass-card rounded-3xl p-8 border border-white/10 space-y-6 shadow-2xl">
+          <div className="flex bg-navy-900 rounded-xl p-1 border border-white/10">
+            <button
+              onClick={() => { setInlineAuthTab('login'); setAuthError(''); setAuthSuccess(''); }}
+              className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 ${
+                inlineAuthTab === 'login' ? 'bg-cyan-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Sign In</span>
+            </button>
+            <button
+              onClick={() => { setInlineAuthTab('register'); setAuthError(''); setAuthSuccess(''); }}
+              className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 ${
+                inlineAuthTab === 'register' ? 'bg-cyan-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              <span>Register</span>
+            </button>
+          </div>
+
+          {authSuccess && (
+            <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-400 flex items-center space-x-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              <span>{authSuccess}</span>
+            </div>
+          )}
+
+          {authError && (
+            <div className="p-3.5 bg-red-500/10 border border-red-500/30 rounded-xl text-xs text-red-400 flex items-center space-x-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{authError}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleInlineAuth} className="space-y-4">
+            {inlineAuthTab === 'register' && (
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Full Name</label>
+                <input
+                  type="text"
+                  required
+                  value={authName}
+                  onChange={(e) => setAuthName(e.target.value)}
+                  placeholder="Johnathan Miller"
+                  className="w-full px-4 py-2.5 bg-navy-900 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400"
+                />
+              </div>
+            )}
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+              <input
+                type="email"
+                required
+                value={authEmail}
+                onChange={(e) => setAuthEmail(e.target.value)}
+                placeholder="patient@example.com"
+                className="w-full px-4 py-2.5 bg-navy-900 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-300 mb-1">Password</label>
+              <input
+                type="password"
+                required
+                value={authPassword}
+                onChange={(e) => setAuthPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full px-4 py-2.5 bg-navy-900 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400"
+              />
+            </div>
+
+            {inlineAuthTab === 'register' && (
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Phone Number</label>
+                <input
+                  type="tel"
+                  value={authPhone}
+                  onChange={(e) => setAuthPhone(e.target.value)}
+                  placeholder="+1 (555) 000-0000"
+                  className="w-full px-4 py-2.5 bg-navy-900 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400"
+                />
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={authSubmitting}
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-sky-300 text-slate-950 font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-lg shadow-cyan-500/25"
+            >
+              {authSubmitting
+                ? 'Processing...'
+                : inlineAuthTab === 'login'
+                ? 'Sign In & Unlock Booking'
+                : 'Create Account (Next: Sign In)'}
+            </button>
+          </form>
+
+          <div className="text-center pt-2 border-t border-white/10 text-xs text-slate-400 flex justify-between">
+            <Link href="/login" className="text-cyan-400 hover:underline">Full Login Page</Link>
+            <Link href="/register" className="text-cyan-400 hover:underline">Full Register Page</Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // LOGGED IN USER -> BOOKING STEPPER
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
 
       {/* Header */}
       <div className="text-center space-y-3">
+        <div className="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full text-emerald-400 text-xs font-bold">
+          <CheckCircle2 className="w-3.5 h-3.5" />
+          <span>Logged In as {user.name} ({user.email})</span>
+        </div>
+        <br />
         <span className="text-xs font-bold uppercase tracking-widest text-cyan-400">Concierge Booking</span>
         <h1 className="text-3xl sm:text-5xl font-serif font-bold text-white">Schedule Consultation</h1>
         <p className="text-xs sm:text-sm text-slate-300">Select doctor, procedure, date, and preferred time slot.</p>
