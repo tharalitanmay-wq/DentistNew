@@ -5,10 +5,31 @@ import { MapPin, Phone, Mail, Clock, Send, Sparkles, CheckCircle2 } from 'lucide
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    subject: 'General Inquiry',
+    message: ''
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    try {
+      await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+      setSubmitted(true);
+    }
   };
 
   return (
@@ -17,7 +38,7 @@ export default function ContactPage() {
       {/* Header */}
       <div className="text-center space-y-4 max-w-3xl mx-auto">
         <span className="text-xs font-bold uppercase tracking-widest text-cyan-400">Park Avenue Concierge</span>
-        <h1 className="text-4xl sm:text-6xl font-serif font-bold text-white">Contact Pearl Dental Care</h1>
+        <h1 className="text-4xl sm:text-6xl font-serif font-bold text-white">Contact Lumina Dental Studio</h1>
         <p className="text-sm text-slate-300">We invite you to experience private dental concierge care.</p>
       </div>
 
@@ -132,7 +153,7 @@ export default function ContactPage() {
                 <Mail className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold text-white block">Email Concierge</span>
-                  <span className="text-slate-300">concierge@pearldental.com</span>
+                  <span className="text-slate-300">concierge@luminadental.com</span>
                 </div>
               </li>
               <li className="flex items-start space-x-3">
