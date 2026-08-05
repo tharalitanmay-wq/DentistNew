@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 const { connectDB } = require('./config/db');
@@ -24,6 +25,12 @@ const queueRoutes = require('./routes/queueRoutes');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
 // Security & Middleware
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(cors({ origin: '*', credentials: true }));
@@ -39,7 +46,7 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // Serve static uploads
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(uploadsDir));
 
 // Register Routes
 app.use('/api/auth', authRoutes);
