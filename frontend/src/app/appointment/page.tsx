@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Calendar, Clock, User, Sparkles, CheckCircle2, Upload, ArrowRight, Lock, AlertCircle, LogIn, UserPlus } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 
-export default function AppointmentPage() {
+function AppointmentContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { user, login, isLoading } = useAuth();
@@ -582,5 +582,13 @@ export default function AppointmentPage() {
       )}
 
     </div>
+  );
+}
+
+export default function AppointmentPage() {
+  return (
+    <Suspense fallback={<div className="max-w-md mx-auto py-24 text-center text-slate-400">Loading appointment portal...</div>}>
+      <AppointmentContent />
+    </Suspense>
   );
 }
