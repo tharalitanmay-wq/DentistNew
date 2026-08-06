@@ -98,20 +98,20 @@ if (fs.existsSync(adminBuildPath)) {
 // Global Error Handler
 app.use(errorHandler);
 
-// Connect DB & Start Server
-connectDB().then(() => {
-  const server = app.listen(PORT, () => {
-    console.log(`✨ [Lumina Dental Server] Running on http://localhost:${PORT}`);
-  });
-  server.on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-      console.error(`❌ Port ${PORT} is already in use by another process.`);
-      process.exit(1);
-    } else {
-      console.error('Server error:', err);
-    }
-  });
-}).catch((err) => {
-  console.error('Initialization error:', err);
-  process.exit(1);
+// Start Express HTTP Server
+const server = app.listen(PORT, () => {
+  console.log(`✨ [Lumina Dental Server] Running on http://localhost:${PORT}`);
+});
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`❌ Port ${PORT} is already in use by another process.`);
+  } else {
+    console.error('Server error:', err);
+  }
+});
+
+// Connect Database in background
+connectDB().catch((err) => {
+  console.warn('Database initialization warning:', err.message);
 });
