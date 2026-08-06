@@ -2,53 +2,28 @@ import React from 'react';
 
 interface ToothIconProps extends React.SVGProps<SVGSVGElement> {
   className?: string;
-  sparkle?: boolean;
 }
 
-export default function ToothIcon({ className = "w-7 h-7 text-cyan-400", sparkle = true, ...props }: ToothIconProps) {
+export default function ToothIcon({ className = "w-6 h-6 text-cyan-600 dark:text-cyan-400", ...props }: ToothIconProps) {
   return (
     <svg
-      viewBox="0 0 100 100"
+      viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       {...props}
     >
-      <defs>
-        <linearGradient id="tooth-gradient-vivid" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#38bdf8" />
-          <stop offset="50%" stopColor="#0284c7" />
-          <stop offset="100%" stopColor="#0369a1" />
-        </linearGradient>
-        <filter id="tooth-glow-vivid" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="#0284c7" floodOpacity="0.8" />
-        </filter>
-      </defs>
-
-      {/* Main Vivid Tooth Silhouette with White Contrast Outline */}
+      {/* Scandinavian Continuous Line Art Tooth */}
       <path
-        d="M 32,6 C 42,6 45,14 50,14 C 55,14 58,6 68,6 C 85,6 94,18 90,38 C 86,58 76,64 74,74 C 72,84 68,96 62,96 C 57,96 55,84 52,70 C 51,60 49,60 48,70 C 45,84 43,96 38,96 C 32,96 28,84 26,74 C 24,64 14,58 10,38 C 6,18 15,6 32,6 Z"
-        fill="url(#tooth-gradient-vivid)"
-        stroke="#ffffff"
-        strokeWidth="2.5"
-        filter="url(#tooth-glow-vivid)"
-      />
-      
-      {/* Inner Crown Curve Accent */}
-      <path
-        d="M 35 24 C 45 18 55 18 65 24"
-        stroke="#ffffff"
-        strokeWidth="4"
+        d="M 12 3.5 C 9.5 3.5 7.5 2 4.5 4 C 2.2 5.5 2.2 9.5 3.2 13 C 4.2 16.5 6 18.5 7.2 21 C 7.6 21.8 8.6 21.8 9 20.5 C 9.8 17.5 10.6 14.5 12 13.8 C 13.4 14.5 14.2 17.5 15 20.5 C 15.4 21.8 16.4 21.8 16.8 21 C 18 18.5 19.8 16.5 20.8 13 C 21.8 9.5 21.8 5.5 19.5 4 C 16.5 2 14.5 3.5 12 3.5 Z M 12 3.5 C 11.5 6.5 9.5 8.5 7.5 9.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
-
-      {/* Bright Sparkle Star Accent */}
-      {sparkle && (
-        <path
-          d="M 74 14 C 74 18 76 20 80 20 C 76 20 74 22 74 26 C 74 22 72 20 68 20 C 72 20 74 18 74 14 Z"
-          fill="#ffffff"
-        />
-      )}
     </svg>
   );
 }
+
+
+

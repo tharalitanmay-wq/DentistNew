@@ -24,53 +24,35 @@ A modern, luxury, full-stack Dental Studio web application built with Next.js, R
 
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 Quick Start Guide (2-Process Setup)
 
 ### ⚡ 1-Click Launch (Recommended for Windows)
 Simply double-click [`start_app.bat`](file:///c:/Users/admin/tanmay/Dentistnew/start_app.bat) in the project root directory or run:
 ```cmd
 .\start_app.bat
 ```
-This automatically opens 3 separate terminal windows for Backend, Frontend, and Admin CMS.
+This automatically builds the Admin dashboard static export and starts the 2 processes:
+- **Backend API & Admin CMS**: http://localhost:5000 (Admin at `http://localhost:5000/admin`)
+- **Frontend Website**: http://localhost:3000
 
 ---
 
-### Manual Launch
+### Production PM2 Launch (2 Processes Only)
 
-#### 1. Database Setup (MySQL)
-Ensure your MySQL server is running (e.g. via XAMPP, MySQL Workbench, Docker, or native service), then configure credentials in `backend/.env`:
-```env
-MYSQL_HOST=127.0.0.1
-MYSQL_PORT=3306
-MYSQL_USER=root
-MYSQL_PASSWORD=
-MYSQL_DATABASE=pearl_dental
-```
-
-#### 2. Backend Server (Port 5000)
 ```bash
-cd backend
-npm install
-
-# (Optional) Seed initial data into MySQL database
-npm run seed
-
-# Run Backend
-npm run dev
-```
-
-#### 3. Frontend Client App (Port 3000)
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-#### 4. Admin CMS Panel (Port 3001)
-```bash
+# 1. Build Admin export inside admin/
 cd admin
 npm install
-npm run dev
+npm run build
+
+# 2. Start PM2 for Backend & Frontend only
+pm2 delete admin # (If admin was previously running as process 3)
+
+cd ../backend
+pm2 start server.js --name backend
+
+cd ../frontend
+pm2 start npm --name "frontend" -- run start
 ```
 
 ---

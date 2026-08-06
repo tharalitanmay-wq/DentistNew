@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Users, DollarSign, Sparkles, TrendingUp, CheckCircle2, Clock, AlertCircle, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
+import { API_BASE } from '@/config/api';
 
 export default function AdminDashboardPage() {
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -14,7 +15,7 @@ export default function AdminDashboardPage() {
 
   const fetchAppointments = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/appointments/all', {
+      const res = await fetch(`${API_BASE}/appointments/all`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('lumina_admin_token')}` }
       });
       const data = await res.json();
@@ -52,7 +53,7 @@ export default function AdminDashboardPage() {
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
-      await fetch(`http://localhost:5000/api/appointments/${id}`, {
+      await fetch(`${API_BASE}/appointments/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

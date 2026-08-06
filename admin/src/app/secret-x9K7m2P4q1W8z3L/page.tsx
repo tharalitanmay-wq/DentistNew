@@ -5,6 +5,7 @@ import { ShieldCheck, Key, Lock, Mail, ArrowRight, Sparkles, AlertCircle, CheckC
 import { useAdminAuth } from '@/context/AdminAuthContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { API_BASE } from '@/config/api';
 
 export default function SecretAdminAccessPage() {
   const { login } = useAdminAuth();
@@ -23,7 +24,7 @@ export default function SecretAdminAccessPage() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })

@@ -70,6 +70,31 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Serve Admin CMS Dashboard under /admin (Integrated 2-Process Setup)
+const adminBuildPath = path.join(__dirname, '../admin/out');
+if (fs.existsSync(adminBuildPath)) {
+  app.use('/admin', express.static(adminBuildPath));
+  app.get('/admin*', (req, res) => {
+    let relativePath = req.path.replace(/^\/admin/, '');
+    if (!relativePath || relativePath === '/') {
+      return res.sendFile(path.join(adminBuildPath, 'index.html'));
+    }
+    const directFile = path.join(adminBuildPath, relativePath);
+    if (fs.existsSync(directFile) && fs.statSync(directFile).isFile()) {
+      return res.sendFile(directFile);
+    }
+    const htmlFile = path.join(adminBuildPath, `${relativePath.replace(/\/$/, '')}.html`);
+    if (fs.existsSync(htmlFile)) {
+      return res.sendFile(htmlFile);
+    }
+    const indexInDir = path.join(adminBuildPath, relativePath, 'index.html');
+    if (fs.existsSync(indexInDir)) {
+      return res.sendFile(indexInDir);
+    }
+    res.sendFile(path.join(adminBuildPath, 'index.html'));
+  });
+}
+
 // Global Error Handler
 app.use(errorHandler);
 

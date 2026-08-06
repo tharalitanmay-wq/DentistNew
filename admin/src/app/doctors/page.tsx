@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Star, Award, Stethoscope, X, Save, DollarSign, Image } from 'lucide-react';
+import { API_BASE } from '@/config/api';
 
 export default function AdminDoctorsPage() {
   const [doctors, setDoctors] = useState<any[]>([]);
@@ -24,7 +25,7 @@ export default function AdminDoctorsPage() {
 
   const fetchDoctors = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/doctors');
+      const res = await fetch(`${API_BASE}/doctors`);
       const data = await res.json();
       if (data.success && data.doctors) {
         setDoctors(data.doctors);
@@ -106,7 +107,7 @@ export default function AdminDoctorsPage() {
     if (editingDoctorId) {
       // EDIT EXISTING DOCTOR
       try {
-        const res = await fetch(`http://localhost:5000/api/doctors/${editingDoctorId}`, {
+        const res = await fetch(`${API_BASE}/doctors/${editingDoctorId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
@@ -132,7 +133,7 @@ export default function AdminDoctorsPage() {
       // ADD NEW DOCTOR
       const newId = 'doc-' + Date.now();
       try {
-        const res = await fetch('http://localhost:5000/api/doctors', {
+        const res = await fetch(`${API_BASE}/doctors`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
@@ -159,7 +160,7 @@ export default function AdminDoctorsPage() {
     if (!confirm('Are you sure you want to delete this doctor profile?')) return;
 
     try {
-      await fetch(`http://localhost:5000/api/doctors/${id}`, { method: 'DELETE' });
+      await fetch(`${API_BASE}/doctors/${id}`, { method: 'DELETE' });
     } catch (err) {
       console.error(err);
     }

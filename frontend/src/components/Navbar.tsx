@@ -71,18 +71,14 @@ export default function Navbar() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between mt-1">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-3.5 group">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-cyan-400 via-sky-500 to-blue-600 p-0.5 shadow-md shadow-cyan-500/30 group-hover:scale-105 transition-all duration-300">
-            <div className="w-full h-full bg-slate-950 dark:bg-navy-950 rounded-[10px] flex items-center justify-center p-1.5">
-              <ToothIcon className="w-7 h-7" />
-            </div>
-          </div>
-          <div>
-            <span className="text-2xl font-serif font-extrabold tracking-tight text-slate-950 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+        <Link href="/" className="flex items-center space-x-3 group py-1">
+          <ToothIcon className="w-7 h-7 text-cyan-600 dark:text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
+          <div className="flex flex-col justify-center">
+            <span className="text-2xl font-serif font-extrabold tracking-tight text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors leading-none">
               PEARL
             </span>
-            <span className="block text-[11px] tracking-[0.25em] text-cyan-600 dark:text-cyan-400 uppercase font-bold">
-              Dental Care
+            <span className="text-[9px] tracking-[0.32em] text-cyan-600 dark:text-cyan-400 uppercase font-bold mt-1 leading-none">
+              Dental Studio
             </span>
           </div>
         </Link>

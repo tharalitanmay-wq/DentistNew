@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { BookOpen, Plus, Trash2, Edit2, Eye } from 'lucide-react';
+import { API_BASE } from '@/config/api';
 
 export default function AdminBlogsPage() {
   const [blogs, setBlogs] = useState<any[]>([]);
@@ -12,7 +13,7 @@ export default function AdminBlogsPage() {
 
   const fetchBlogs = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/blogs');
+      const res = await fetch(`${API_BASE}/blogs`);
       const data = await res.json();
       if (data.success) setBlogs(data.blogs);
     } catch (e) {

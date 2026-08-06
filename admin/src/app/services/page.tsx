@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Sparkles, CheckCircle2 } from 'lucide-react';
+import { API_BASE } from '@/config/api';
 
 export default function AdminServicesPage() {
   const [services, setServices] = useState<any[]>([]);
@@ -12,7 +13,7 @@ export default function AdminServicesPage() {
 
   const fetchServices = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/services');
+      const res = await fetch(`${API_BASE}/services`);
       const data = await res.json();
       if (data.success) setServices(data.services);
     } catch (e) {

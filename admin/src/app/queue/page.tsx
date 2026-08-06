@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Users, Clock, CheckCircle2, UserPlus, RefreshCw, AlertCircle, Trash2, Phone, Hash, FileText } from 'lucide-react';
+import { API_BASE } from '@/config/api';
 
 export default function AdminQueuePage() {
   const [queue, setQueue] = useState<any[]>([]);
@@ -27,7 +28,7 @@ export default function AdminQueuePage() {
 
   const fetchQueue = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/queue/today');
+      const res = await fetch(`${API_BASE}/queue/today`);
       const data = await res.json();
       if (data.success) {
         setQueue(data.queue);
@@ -59,7 +60,7 @@ export default function AdminQueuePage() {
     setMessage(null);
 
     try {
-      const res = await fetch('http://localhost:5000/api/queue', {
+      const res = await fetch(`${API_BASE}/queue`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -96,7 +97,7 @@ export default function AdminQueuePage() {
     setQueue(prev => prev.map(item => item.id === id ? { ...item, isTreated: newStatus } : item));
 
     try {
-      await fetch(`http://localhost:5000/api/queue/${id}/status`, {
+      await fetch(`${API_BASE}/queue/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isTreated: newStatus })
@@ -112,7 +113,7 @@ export default function AdminQueuePage() {
     setQueue(prev => prev.filter(item => item.id !== id));
 
     try {
-      await fetch(`http://localhost:5000/api/queue/${id}`, {
+      await fetch(`${API_BASE}/queue/${id}`, {
         method: 'DELETE'
       });
       fetchQueue();

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Calendar, Search, Filter, Trash2, CheckCircle2, Download } from 'lucide-react';
+import { API_BASE } from '@/config/api';
 
 export default function AdminAppointmentsPage() {
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -14,7 +15,7 @@ export default function AdminAppointmentsPage() {
 
   const fetchAppointments = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/appointments/all', {
+      const res = await fetch(`${API_BASE}/appointments/all`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('lumina_admin_token')}` }
       });
       const data = await res.json();
@@ -53,7 +54,7 @@ export default function AdminAppointmentsPage() {
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
-      await fetch(`http://localhost:5000/api/appointments/${id}`, {
+      await fetch(`${API_BASE}/appointments/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -70,7 +71,7 @@ export default function AdminAppointmentsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this appointment?')) return;
     try {
-      await fetch(`http://localhost:5000/api/appointments/${id}`, {
+      await fetch(`${API_BASE}/appointments/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${localStorage.getItem('lumina_admin_token')}` }
       });
