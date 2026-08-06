@@ -100,7 +100,18 @@ app.use(errorHandler);
 
 // Connect DB & Start Server
 connectDB().then(() => {
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`✨ [Lumina Dental Server] Running on http://localhost:${PORT}`);
   });
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`❌ Port ${PORT} is already in use by another process.`);
+      process.exit(1);
+    } else {
+      console.error('Server error:', err);
+    }
+  });
+}).catch((err) => {
+  console.error('Initialization error:', err);
+  process.exit(1);
 });
