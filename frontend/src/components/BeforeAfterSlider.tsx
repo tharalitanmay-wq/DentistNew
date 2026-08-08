@@ -18,16 +18,16 @@ const PRESET_TRANSFORMATIONS: TransformationItem[] = [
     id: 'veneers',
     title: '10 Upper Porcelain Veneers',
     subtitle: 'Full shade BL1 bleach transformation resolving discolored, uneven teeth',
-    before: '/api/transformations/before-veneers',
-    after: '/api/transformations/after-veneers',
+    before: '/images/transformations/before-veneers.png?v=3',
+    after: '/images/transformations/after-veneers.png?v=3',
     details: ['E.max Porcelain Veneers', 'Shade BL1 Bright White', 'Symmetrical Arch Alignment']
   },
   {
     id: 'whitening',
     title: 'Laser Teeth Whitening',
     subtitle: '8 shades brighter in a single 45-minute in-office treatment',
-    before: '/api/transformations/before-whitening',
-    after: '/api/transformations/after-whitening',
+    before: '/images/transformations/before-whitening.png?v=3',
+    after: '/images/transformations/after-whitening.png?v=3',
     details: ['Philips Zoom! Laser', 'Zero Sensitivity Protocol', 'Enamel Gloss Seal']
   }
 ];
@@ -75,20 +75,20 @@ export default function BeforeAfterSlider({
   };
 
   return (
-    <div className={`relative w-full max-w-5xl mx-auto rounded-3xl overflow-hidden glass-card p-4 sm:p-6 border shadow-2xl transition-all ${
+    <div className={`relative w-full max-w-4xl mx-auto rounded-2xl overflow-hidden glass-card p-3 sm:p-4 border shadow-xl transition-all ${
       isLight ? 'bg-white/90 border-slate-200 shadow-slate-200/50' : 'bg-slate-900/80 border-white/15 shadow-cyan-950/20'
     }`}>
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-white/10 mb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-slate-200 dark:border-white/10 mb-3">
         <div>
-          <div className="inline-flex items-center space-x-2 text-cyan-600 dark:text-cyan-400 text-xs font-bold uppercase tracking-widest mb-1">
-            <Sparkles className="w-4 h-4" />
+          <div className="inline-flex items-center space-x-1.5 text-cyan-600 dark:text-cyan-400 text-[10px] font-bold uppercase tracking-widest mb-0.5">
+            <Sparkles className="w-3 h-3" />
             <span>Real Patient Transformations</span>
           </div>
-          <h3 className={`text-2xl sm:text-3xl font-serif font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
+          <h3 className={`text-base sm:text-lg font-serif font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
             {currentTitle}
           </h3>
-          <p className={`text-xs sm:text-sm mt-1 max-w-xl ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
+          <p className={`text-[11px] mt-0.5 max-w-xl ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
             {currentSubtitle}
           </p>
         </div>
@@ -143,7 +143,7 @@ export default function BeforeAfterSlider({
       {viewMode === 'slider' ? (
         /* INTERACTIVE SLIDER VIEW */
         <div
-          className="relative h-[340px] sm:h-[460px] md:h-[540px] w-full select-none cursor-ew-resize overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10 shadow-inner group"
+          className="relative h-[160px] sm:h-[220px] md:h-[260px] w-full select-none cursor-ew-resize overflow-hidden rounded-xl border border-slate-200 dark:border-white/10 shadow-inner group"
           onMouseMove={handleMouseMove}
           onTouchMove={handleTouchMove}
           onMouseDown={() => setIsDragging(true)}
@@ -196,7 +196,7 @@ export default function BeforeAfterSlider({
         /* SIDE-BY-SIDE VIEW ("both aside") */
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* BEFORE PHOTO */}
-          <div className="relative h-[300px] sm:h-[400px] rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10 shadow-lg group">
+          <div className="relative h-[150px] sm:h-[200px] rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 shadow-lg group">
             <img
               src={currentBefore}
               alt="Before Treatment Smile"
@@ -211,7 +211,7 @@ export default function BeforeAfterSlider({
           </div>
 
           {/* AFTER PHOTO */}
-          <div className="relative h-[300px] sm:h-[400px] rounded-2xl overflow-hidden border border-cyan-500/30 dark:border-cyan-400/40 shadow-lg shadow-cyan-500/10 group">
+          <div className="relative h-[150px] sm:h-[200px] rounded-xl overflow-hidden border border-cyan-500/30 dark:border-cyan-400/40 shadow-lg shadow-cyan-500/10 group">
             <img
               src={currentAfter}
               alt="After Treatment Smile Transformation"
@@ -229,7 +229,7 @@ export default function BeforeAfterSlider({
       )}
 
       {/* Clinical Highlights / Details */}
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
         {activePreset.details.map((detail, i) => (
           <div
             key={i}

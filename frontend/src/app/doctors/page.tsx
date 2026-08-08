@@ -7,42 +7,43 @@ import { Star, Award, Calendar, CheckCircle2, Mail, Clock } from 'lucide-react';
 export default function DoctorsPage() {
   const doctors = [
     {
-      name: 'Dr. Evelyn Sterling',
+      name: 'Dr. Priya Sharma',
       title: 'Chief Cosmetic Dentist & Director',
       specialization: 'Cosmetic Dentistry & Porcelain Veneers',
       experience: '16+ Years Experience',
-      bio: 'Renowned world leader in smile design, porcelain veneers, and full-mouth rehabilitation. Dr. Sterling blends medical precision with high fashion artistry.',
-      avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=800',
+      bio: 'Internationally acclaimed smile design expert trained at AIIMS New Delhi. Dr. Sharma specialises in full-mouth rehabilitation, porcelain veneers, and high-precision aesthetic dentistry for discerning patients.',
+      avatar: '/doctor_priya.png',
       rating: 5.0,
       consultationFee: 250,
       availableDays: ['Mon', 'Tue', 'Thu', 'Fri'],
-      education: ['DDS - Harvard School of Dental Medicine', 'Fellowship - AACD']
+      education: ['BDS - AIIMS New Delhi', 'MDS Prosthodontics - Maulana Azad Institute', 'Fellowship - AACD USA']
     },
     {
-      name: 'Dr. Julian Vance',
+      name: 'Dr. Arjun Mehta',
       title: 'Lead Implant Specialist & Oral Surgeon',
       specialization: 'Dental Implants & All-on-4 Restoration',
       experience: '14+ Years Experience',
-      bio: 'Pioneer in minimally invasive computer-guided implantology and bone regeneration techniques. Over 4,000 successful implant placements.',
-      avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=800',
+      bio: 'Pioneer in computer-guided implantology and bone regeneration techniques. Dr. Mehta completed advanced training at Manipal College of Dental Sciences and has performed over 4,000 successful implant procedures.',
+      avatar: '/doctor_arjun.png',
       rating: 4.9,
       consultationFee: 300,
       availableDays: ['Mon', 'Wed', 'Fri'],
-      education: ['DMD - Columbia University Dentistry', 'Maxillofacial Fellowship - Johns Hopkins']
+      education: ['BDS - KMC Manipal', 'MDS Oral Surgery - Kasturba Medical College', 'Maxillofacial Fellowship - SGPGI']
     },
     {
-      name: 'Dr. Aria Chen',
+      name: 'Dr. Kavitha Nair',
       title: 'Orthodontics & Invisalign Specialist',
       specialization: 'Clear Aligners & Invisible Orthodontics',
       experience: '10+ Years Experience',
-      bio: 'Diamond Plus Invisalign provider specializing in adult orthodontics, facial symmetry balancing, and discreet teeth straightening.',
-      avatar: 'https://images.unsplash.com/photo-1594824813566-78a9c30f40d2?auto=format&fit=crop&q=80&w=800',
+      bio: 'Diamond Plus Invisalign provider and top-rated orthodontist from Chennai. Dr. Nair specialises in adult orthodontics, facial symmetry balancing, and discreet teeth-straightening solutions.',
+      avatar: '/doctor_kavitha.png',
       rating: 5.0,
       consultationFee: 200,
       availableDays: ['Tue', 'Wed', 'Sat'],
-      education: ['DDS - UPenn Dental Medicine', 'MS Orthodontics - NYU']
+      education: ['BDS - Sri Ramachandra University (MAHER)', 'MDS Orthodontics - Saveetha Dental College', 'Invisalign Diamond Plus Certified']
     }
   ];
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">

@@ -137,52 +137,50 @@ export default function CostEstimator() {
         </div>
 
         {/* Calculation Summary Card */}
-        <div className={`rounded-2xl p-6 border flex flex-col justify-between shadow-xl ${
-          isLight ? 'bg-gradient-to-b from-slate-900 to-slate-950 border-slate-800 text-white' : 'bg-gradient-to-b from-navy-800 to-navy-900 border-cyan-500/30'
-        }`}>
+        <div className="rounded-2xl p-6 border flex flex-col justify-between shadow-xl bg-white border-slate-200 shadow-slate-200/60">
           <div className="space-y-4">
-            <span className="inline-flex items-center text-[10px] uppercase font-bold tracking-widest text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">
+            <span className="inline-flex items-center text-[10px] uppercase font-bold tracking-widest text-cyan-600 bg-cyan-50 px-3 py-1.5 rounded-full border border-cyan-200">
               <Sparkles className="w-3 h-3 mr-1" /> Estimated Breakout
             </span>
 
-            <div className="space-y-2 pt-2 text-xs text-slate-300">
-              <div className="flex justify-between py-1 border-b border-white/10">
-                <span>Selected Procedure:</span>
-                <span className="font-semibold text-white">{current.name}</span>
+            <div className="space-y-1 pt-2 text-sm">
+              <div className="flex justify-between items-center py-2.5 border-b border-slate-100">
+                <span className="text-slate-500 font-medium">Selected Procedure</span>
+                <span className="font-bold text-slate-800 text-right max-w-[55%] leading-tight">{current.name}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-white/10">
-                <span>Quantity:</span>
-                <span className="font-semibold text-white">{totalUnits} {totalUnits === 1 ? 'Unit' : 'Teeth'}</span>
+              <div className="flex justify-between items-center py-2.5 border-b border-slate-100">
+                <span className="text-slate-500 font-medium">Quantity</span>
+                <span className="font-bold text-slate-800">{totalUnits} {totalUnits === 1 ? 'Unit' : 'Teeth'}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-white/10">
-                <span>Estimated Gross Total:</span>
-                <span className="font-semibold text-white">${rawSubtotal.toLocaleString()}</span>
+              <div className="flex justify-between items-center py-2.5 border-b border-slate-100">
+                <span className="text-slate-500 font-medium">Estimated Gross Total</span>
+                <span className="font-bold text-slate-800">${rawSubtotal.toLocaleString()}</span>
               </div>
               {hasInsurance && (
-                <div className="flex justify-between py-1 border-b border-white/10 text-emerald-400">
-                  <span>Estimated Insurance Benefit:</span>
-                  <span className="font-semibold">-${insuranceSavings.toLocaleString()}</span>
+                <div className="flex justify-between items-center py-2.5 border-b border-slate-100">
+                  <span className="text-emerald-600 font-medium">Insurance Benefit</span>
+                  <span className="font-bold text-emerald-600">-${insuranceSavings.toLocaleString()}</span>
                 </div>
               )}
             </div>
 
-            <div className="pt-4 border-t border-cyan-500/20">
-              <span className="text-xs text-slate-400 uppercase tracking-wider block">Estimated Net Investment</span>
-              <div className="text-3xl font-serif font-bold text-white mt-1">
+            <div className="pt-3 border-t-2 border-cyan-400">
+              <span className="text-xs text-cyan-600 uppercase tracking-wider font-bold block mb-1">Estimated Net Investment</span>
+              <div className="text-4xl font-serif font-extrabold text-slate-900">
                 ${netTotal.toLocaleString()}
               </div>
             </div>
 
-            <div className="p-4 bg-cyan-500/10 rounded-xl border border-cyan-500/20 text-center">
-              <span className="text-xs text-slate-300 block">As low as</span>
-              <span className="text-2xl font-extrabold text-cyan-400">${monthlyPayment} / mo</span>
-              <span className="text-[10px] text-slate-400 block mt-0.5">with 0% APR for {financingMonths} months</span>
+            <div className="p-4 bg-gradient-to-br from-cyan-500 to-sky-500 rounded-xl text-center shadow-lg shadow-cyan-500/30">
+              <span className="text-xs text-cyan-100 font-semibold block mb-0.5">As low as</span>
+              <span className="text-3xl font-extrabold text-white">${monthlyPayment} / mo</span>
+              <span className="text-[10px] text-cyan-100 block mt-1">with 0% APR for {financingMonths} months</span>
             </div>
           </div>
 
           <Link
             href={`/appointment?service=${encodeURIComponent(current.name)}`}
-            className="w-full mt-6 py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-400 to-sky-400 text-slate-950 font-bold text-xs uppercase tracking-wider flex items-center justify-center space-x-2 hover:brightness-110 transition-all shadow-lg shadow-cyan-500/25"
+            className="w-full mt-6 py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-500 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center space-x-2 hover:brightness-110 transition-all shadow-lg shadow-cyan-500/30"
           >
             <span>Book Consultation for this Plan</span>
             <ArrowRight className="w-4 h-4" />
