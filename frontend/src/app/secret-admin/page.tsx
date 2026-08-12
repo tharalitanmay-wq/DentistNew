@@ -1,5 +1,18 @@
-import { redirect } from 'next/navigation';
+'use client';
 
-export default function Page() {
-  redirect('/secret-x9K7m2P4q1W8z3L');
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+export default function SecretAdminRedirect() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/xkqmpqwzvkjrhfn');
+  }, [router]);
+
+  return (
+    <div className="max-w-md mx-auto py-32 text-center text-slate-400">
+      Redirecting to secret admin portal...
+    </div>
+  );
 }

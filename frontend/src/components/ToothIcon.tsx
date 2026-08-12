@@ -4,7 +4,7 @@ interface ToothIconProps extends React.SVGProps<SVGSVGElement> {
   className?: string;
 }
 
-export default function ToothIcon({ className = "w-6 h-6 text-cyan-600 dark:text-cyan-400", ...props }: ToothIconProps) {
+export default function ToothIcon({ className = "w-6 h-6 text-amber-500 dark:text-yellow-400", ...props }: ToothIconProps) {
   return (
     <svg
       viewBox="0 0 24 24"

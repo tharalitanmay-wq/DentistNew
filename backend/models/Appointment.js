@@ -68,6 +68,7 @@ const Appointment = sequelize.define('Appointment', {
     defaultValue: 'Unpaid'
   }
 }, {
+  tableName: 'appointments',
   timestamps: true
 });
 

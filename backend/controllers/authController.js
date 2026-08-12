@@ -1,69 +1,127 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const Customer = require('../models/Customer');
+const Admin = require('../models/Admin');
 const User = require('../models/User');
 const { getIsConnected } = require('../config/db');
 const { JWT_SECRET } = require('../middleware/auth');
 
-// In-memory fallback user store if MySQL is offline
-const memoryUsers = [
+// In-memory fallback stores when MySQL is offline
+const memoryAdmins = [
   {
     id: 1,
     name: 'Master Admin',
+    username: 'admin',
     email: 'admin@pearldental.com',
     password: '$2a$10$wE99V9n8tE5fCq6m/A0U.eQ80Jq55uO1vM7c4.6Y1z5/5G7J1K1.', // AdminPass123!
-    role: 'admin',
-    phone: '+1 (800) 555-0199',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400'
-  },
-  {
-    id: 2,
-    name: 'Johnathan Miller',
-    email: 'patient@example.com',
-    password: '$2a$10$wE99V9n8tE5fCq6m/A0U.eQ80Jq55uO1vM7c4.6Y1z5/5G7J1K1.',
-    role: 'patient',
-    phone: '+1 (555) 234-5678',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400'
+    role: 'admin'
   }
 ];
 
+const memoryCustomers = [
+  {
+    id: 1,
+    name: 'Johnathan Miller',
+    username: 'jmiller',
+    email: 'patient@example.com',
+    phone: '+1 (555) 234-5678',
+    password: '$2a$10$wE99V9n8tE5fCq6m/A0U.eQ80Jq55uO1vM7c4.6Y1z5/5G7J1K1.', // AdminPass123!
+    role: 'patient'
+  },
+  {
+    id: 2,
+    name: 'Sahil',
+    username: 'sahil',
+    email: 'sahil@gmail.com',
+    phone: '+1 (555) 999-8888',
+    password: '$2a$10$wE99V9n8tE5fCq6m/A0U.eQ80Jq55uO1vM7c4.6Y1z5/5G7J1K1.', // AdminPass123!
+    role: 'patient'
+  }
+];
+
+// 1. CUSTOMER REGISTRATION
 const register = async (req, res) => {
   try {
-    const { name, email, password, phone, role } = req.body;
+    const { name, username, email, phone, password, confirmPassword } = req.body;
+
     if (!name || !email || !password) {
-      return res.status(400).json({ success: false, message: 'Name, email, and password are required' });
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Name, email, and password are required.' 
+      });
     }
 
+    if (confirmPassword && password !== confirmPassword) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Password and Confirm Password do not match.' 
+      });
+    }
+
+    const cleanEmail = String(email).trim().toLowerCase();
+    const cleanUsername = (username || cleanEmail.split('@')[0]).trim().toLowerCase();
+
+    // Hash password with bcrypt before saving
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     if (getIsConnected()) {
-      const existing = await User.findOne({ where: { email: email.toLowerCase() } });
-      if (existing) {
-        return res.status(400).json({ success: false, message: 'Account already exists with this email' });
+      // Check if email exists in customers table
+      const existingEmail = await Customer.findOne({ where: { email: cleanEmail } });
+      if (existingEmail) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'An account with this email already exists.' 
+        });
       }
-      const user = await User.create({ name, email: email.toLowerCase(), password, phone, role: role || 'patient' });
-      const token = jwt.sign({ id: user.id, email: user.email, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
+
+      // Save customer record in customers table with bcrypt hashed password
+      const customer = await Customer.create({
+        name: String(name).trim(),
+        username: cleanUsername,
+        email: cleanEmail,
+        phone: phone ? String(phone).trim() : '',
+        password: hashedPassword
+      });
+
       return res.status(201).json({
         success: true,
-        token,
-        user: { id: user.id, name: user.name, email: user.email, role: user.role, phone: user.phone, avatar: user.avatar }
+        message: 'Registration successful! Please login with your credentials.',
+        customer: {
+          id: customer.id,
+          name: customer.name,
+          username: customer.username,
+          email: customer.email,
+          phone: customer.phone
+        }
       });
     } else {
-      const exists = memoryUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-      if (exists) {
-        return res.status(400).json({ success: false, message: 'Account already exists with this email' });
+      const existsEmail = memoryCustomers.find(c => c.email.toLowerCase() === cleanEmail);
+      if (existsEmail) {
+        return res.status(400).json({ success: false, message: 'An account with this email already exists.' });
       }
-      const newUser = {
-        id: memoryUsers.length + 1,
-        name,
-        email,
-        password,
-        phone: phone || '',
-        role: role || 'patient',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400'
+
+      const newCust = {
+        id: memoryCustomers.length + 1,
+        name: String(name).trim(),
+        username: cleanUsername,
+        email: cleanEmail,
+        phone: phone ? String(phone).trim() : '',
+        password: hashedPassword,
+        role: 'patient'
       };
-      memoryUsers.push(newUser);
-      const token = jwt.sign({ id: newUser.id, email: newUser.email, role: newUser.role, name: newUser.name }, JWT_SECRET, { expiresIn: '7d' });
+      memoryCustomers.push(newCust);
+
       return res.status(201).json({
         success: true,
-        token,
-        user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role, phone: newUser.phone, avatar: newUser.avatar }
+        message: 'Registration successful! Please login with your credentials.',
+        customer: {
+          id: newCust.id,
+          name: newCust.name,
+          username: newCust.username,
+          email: newCust.email,
+          phone: newCust.phone
+        }
       });
     }
   } catch (error) {
@@ -71,57 +129,272 @@ const register = async (req, res) => {
   }
 };
 
+// 2. CUSTOMER LOGIN (STRICT DATABASE BCRYPT AUTHENTICATION)
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
-      return res.status(400).json({ success: false, message: 'Please provide email and password' });
+    const { email, username, password } = req.body;
+    const loginEmail = String(email || username || '').trim().toLowerCase();
+
+    // REJECT IMMEDIATELY if email or password missing
+    if (!loginEmail || !password) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Invalid email or password' 
+      });
     }
 
+    let user = null;
+
     if (getIsConnected()) {
-      const user = await User.findOne({ where: { email: email.toLowerCase() } });
-      if (!user || !(await user.comparePassword(password))) {
-        return res.status(401).json({ success: false, message: 'Invalid credentials' });
-      }
-      const token = jwt.sign({ id: user.id, email: user.email, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
-      return res.json({
-        success: true,
-        token,
-        user: { id: user.id, name: user.name, email: user.email, role: user.role, phone: user.phone, avatar: user.avatar }
+      const { Op } = require('sequelize');
+      // Step 1: Find user in customers table by email
+      user = await Customer.findOne({
+        where: {
+          [Op.or]: [
+            { email: loginEmail },
+            { username: loginEmail }
+          ]
+        }
       });
-    } else {
-      const user = memoryUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+      // Fallback: Check legacy User table
       if (!user) {
-        return res.status(401).json({ success: false, message: 'Invalid credentials. Try admin@pearldental.com / AdminPass123!' });
+        user = await User.findOne({
+          where: {
+            [Op.or]: [
+              { email: loginEmail }
+            ]
+          }
+        });
       }
-      const token = jwt.sign({ id: user.id, email: user.email, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
-      return res.json({
-        success: true,
-        token,
-        user: { id: user.id, name: user.name, email: user.email, role: user.role, phone: user.phone, avatar: user.avatar }
+    } else {
+      user = memoryCustomers.find(
+        c => c.email.toLowerCase() === loginEmail || c.username.toLowerCase() === loginEmail
+      );
+    }
+
+    // STEP 2: REJECT LOGIN IMMEDIATELY IF USER DOES NOT EXIST
+    if (!user) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Invalid email or password' 
       });
     }
+
+    // STEP 3: Compare entered password with stored bcrypt hash using bcrypt.compare()
+    const storedHash = user.password;
+    const isPasswordValid = await bcrypt.compare(password, storedHash);
+
+    // STEP 4: REJECT LOGIN IMMEDIATELY IF BCRYPT MATCH FAILS
+    if (!isPasswordValid) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Invalid email or password' 
+      });
+    }
+
+    // STEP 5: ONLY WHEN BOTH EMAIL MATCH AND BCRYPT PASSWORD MATCH -> CREATE JWT & SUCCEED
+    const token = jwt.sign(
+      { id: user.id, username: user.username || user.email.split('@')[0], email: user.email, name: user.name, role: user.role || 'patient' },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: 'Login successful!',
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        username: user.username || user.email.split('@')[0],
+        email: user.email,
+        phone: user.phone || '',
+        role: user.role || 'patient'
+      }
+    });
+
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(401).json({ 
+      success: false, 
+      message: 'Invalid email or password' 
+    });
   }
 };
 
+// 3. ADMIN LOGIN (STRICT DATABASE BCRYPT AUTHENTICATION)
+const adminLogin = async (req, res) => {
+  try {
+    const { email, username, password } = req.body;
+    const adminIdentifier = String(email || username || '').trim().toLowerCase();
+
+    if (!adminIdentifier || !password) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Invalid email or password' 
+      });
+    }
+
+    let admin = null;
+
+    if (getIsConnected()) {
+      const { Op } = require('sequelize');
+      admin = await Admin.findOne({
+        where: {
+          [Op.or]: [
+            { email: adminIdentifier },
+            { username: adminIdentifier }
+          ]
+        }
+      });
+    } else {
+      admin = memoryAdmins.find(
+        a => a.email.toLowerCase() === adminIdentifier || a.username.toLowerCase() === adminIdentifier
+      );
+    }
+
+    if (!admin) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Invalid email or password' 
+      });
+    }
+
+    const storedHash = admin.password;
+    const isPasswordValid = await bcrypt.compare(password, storedHash);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Invalid email or password' 
+      });
+    }
+
+    const token = jwt.sign(
+      { id: admin.id, username: admin.username, email: admin.email, name: admin.name, role: 'admin' },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: 'Admin authentication successful!',
+      token,
+      user: {
+        id: admin.id,
+        name: admin.name,
+        username: admin.username,
+        email: admin.email,
+        role: 'admin'
+      }
+    });
+
+  } catch (error) {
+    return res.status(401).json({ 
+      success: false, 
+      message: 'Invalid email or password' 
+    });
+  }
+};
+
+// 4. GET AUTHENTICATED USER PROFILE
 const getMe = async (req, res) => {
   try {
     const userId = req.user.id;
+    const role = req.user.role;
+
     if (getIsConnected()) {
-      const user = await User.findByPk(userId, { attributes: { exclude: ['password'] } });
-      if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-      return res.json({ success: true, user });
+      if (role === 'admin') {
+        const admin = await Admin.findByPk(userId, { attributes: { exclude: ['password'] } });
+        if (!admin) return res.status(404).json({ success: false, message: 'Admin profile not found' });
+        return res.json({ success: true, user: { ...admin.toJSON(), role: 'admin' } });
+      } else {
+        const customer = await Customer.findByPk(userId, { attributes: { exclude: ['password'] } });
+        if (!customer) return res.status(404).json({ success: false, message: 'Customer profile not found' });
+        return res.json({ success: true, user: { ...customer.toJSON(), role: 'patient' } });
+      }
     } else {
-      const user = memoryUsers.find(u => u.id == userId);
-      if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-      const { password, ...safeUser } = user;
-      return res.json({ success: true, user: safeUser });
+      if (role === 'admin') {
+        const admin = memoryAdmins.find(a => a.id == userId);
+        if (!admin) return res.status(404).json({ success: false, message: 'Admin profile not found' });
+        const { password, ...safeAdmin } = admin;
+        return res.json({ success: true, user: safeAdmin });
+      } else {
+        const customer = memoryCustomers.find(c => c.id == userId);
+        if (!customer) return res.status(404).json({ success: false, message: 'Customer profile not found' });
+        const { password, ...safeCustomer } = customer;
+        return res.json({ success: true, user: safeCustomer });
+      }
     }
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-module.exports = { register, login, getMe };
+// 5. UPDATE PERMITTED CUSTOMER PROFILE
+const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { name, phone } = req.body;
+
+    if (getIsConnected()) {
+      const customer = await Customer.findByPk(userId);
+      if (!customer) return res.status(404).json({ success: false, message: 'Customer not found' });
+
+      if (name) customer.name = name.trim();
+      if (phone !== undefined) customer.phone = phone.trim();
+
+      await customer.save();
+      return res.json({
+        success: true,
+        message: 'Profile updated successfully',
+        user: {
+          id: customer.id,
+          name: customer.name,
+          username: customer.username,
+          email: customer.email,
+          phone: customer.phone,
+          role: 'patient'
+        }
+      });
+    } else {
+      const customer = memoryCustomers.find(c => c.id == userId);
+      if (!customer) return res.status(404).json({ success: false, message: 'Customer not found' });
+
+      if (name) customer.name = name.trim();
+      if (phone !== undefined) customer.phone = phone.trim();
+
+      return res.json({
+        success: true,
+        message: 'Profile updated successfully',
+        user: {
+          id: customer.id,
+          name: customer.name,
+          username: customer.username,
+          email: customer.email,
+          phone: customer.phone,
+          role: 'patient'
+        }
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// 6. ADMIN GET ALL CUSTOMERS
+const getAllCustomers = async (req, res) => {
+  try {
+    if (getIsConnected()) {
+      const customers = await Customer.findAll({ attributes: { exclude: ['password'] } });
+      return res.json({ success: true, customers });
+    } else {
+      const safeCustomers = memoryCustomers.map(({ password, ...rest }) => rest);
+      return res.json({ success: true, customers: safeCustomers });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+module.exports = { register, login, adminLogin, getMe, updateProfile, getAllCustomers };

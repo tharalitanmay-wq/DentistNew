@@ -1,3 +1,7 @@
+-- ========================================================
+-- Pearl Dental Care - MySQL Database Schema & Seed Script
+-- ========================================================
+
 -- Create Database if not exists
 CREATE DATABASE IF NOT EXISTS pearl_dental;
 USE pearl_dental;
@@ -11,9 +15,36 @@ DROP TABLE IF EXISTS Galleries;
 DROP TABLE IF EXISTS Testimonials;
 DROP TABLE IF EXISTS FAQs;
 DROP TABLE IF EXISTS Settings;
+DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS admins;
 DROP TABLE IF EXISTS Users;
 
--- Create Users Table
+-- ========================================================
+-- 1. Admins Table
+-- ========================================================
+CREATE TABLE admins (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  username VARCHAR(255) NOT NULL UNIQUE,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ========================================================
+-- 2. Customers Table
+-- ========================================================
+CREATE TABLE customers (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  username VARCHAR(255) NOT NULL UNIQUE,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  phone VARCHAR(255) DEFAULT '',
+  password VARCHAR(255) NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Legacy Users Table (for system backward compatibility)
 CREATE TABLE Users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
@@ -103,7 +134,19 @@ CREATE TABLE Blogs (
   updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Insert Sample Users
+-- ========================================================
+-- Seed Initial Data
+-- ========================================================
+
+-- Insert Sample Admin Account (Password: AdminPass123! hashed with bcrypt)
+INSERT INTO admins (id, name, username, email, password) VALUES
+(1, 'Master Admin', 'admin', 'admin@pearldental.com', '$2a$10$wE99V9n8tE5fCq6m/A0U.eQ80Jq55uO1vM7c4.6Y1z5/5G7J1K1.');
+
+-- Insert Sample Customer Account (Password: AdminPass123! hashed with bcrypt)
+INSERT INTO customers (id, name, username, email, phone, password) VALUES
+(1, 'Johnathan Miller', 'jmiller', 'patient@example.com', '+1 (555) 234-5678', '$2a$10$wE99V9n8tE5fCq6m/A0U.eQ80Jq55uO1vM7c4.6Y1z5/5G7J1K1.');
+
+-- Insert Legacy Users
 INSERT INTO Users (id, name, email, password, role, phone) VALUES
 (1, 'Dr. Evelyn Sterling (Admin)', 'admin@pearldental.com', '$2a$10$wE99V9n8tE5fCq6m/A0U.eQ80Jq55uO1vM7c4.6Y1z5/5G7J1K1.', 'admin', '+1 (800) 555-PEARL'),
 (2, 'Johnathan Miller', 'patient@example.com', '$2a$10$wE99V9n8tE5fCq6m/A0U.eQ80Jq55uO1vM7c4.6Y1z5/5G7J1K1.', 'patient', '+1 (555) 234-5678');
@@ -121,10 +164,10 @@ INSERT INTO Services (id, name, category, description, priceRange, estimatedPric
 
 -- Insert Sample Appointments
 INSERT INTO Appointments (id, patientName, patientEmail, patientPhone, doctorId, doctorName, serviceId, serviceName, date, timeSlot, notes, status, userId) VALUES
-(1, 'Victoria Sterling-Hayes', 'victoria@example.com', '+1 (555) 888-9900', '1', 'Dr. Evelyn Sterling', '1', 'Signature Porcelain Veneers', '2026-08-05', '11:00 AM', 'Consultation for 8 upper veneers and smile simulation.', 'Confirmed', '2'),
-(2, 'Harrison Ford-Blake', 'harrison@example.com', '+1 (555) 777-6655', '2', 'Dr. Julian Vance', '2', '3D Computer-Guided Dental Implants', '2026-08-10', '02:00 PM', 'Single molar implant consultation with 3D CBCT scan review.', 'Pending', '3');
+(1, 'Victoria Sterling-Hayes', 'victoria@example.com', '+1 (555) 888-9900', '1', 'Dr. Evelyn Sterling', '1', 'Signature Porcelain Veneers', '2026-08-05', '11:00 AM', 'Consultation for 8 upper veneers and smile simulation.', 'Confirmed', '1'),
+(2, 'Harrison Ford-Blake', 'harrison@example.com', '+1 (555) 777-6655', '2', 'Dr. Julian Vance', '2', '3D Computer-Guided Dental Implants', '2026-08-15', '02:00 PM', 'Single molar implant consultation with 3D CBCT scan review.', 'Pending', '1');
 
--- Verify Created Tables
+-- Verify Database Tables
 SHOW TABLES;
-SELECT * FROM Doctors;
-SELECT * FROM Services;
+SELECT * FROM admins;
+SELECT * FROM customers;

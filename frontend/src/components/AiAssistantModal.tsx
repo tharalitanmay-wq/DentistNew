@@ -1,10 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Bot, X, Send, Sparkles, User, Calendar, RefreshCw } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
 import Link from 'next/link';
 
 export default function AiAssistantModal() {
+  const pathname = usePathname();
+  const { theme } = useTheme();
+
+  if (pathname === '/login' || pathname === '/register' || pathname === '/signin') {
+    return null;
+  }
+  const isLight = theme === 'light';
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
@@ -37,7 +46,6 @@ export default function AiAssistantModal() {
         setMessages(prev => [...prev, { sender: 'ai', text: 'I am currently operating in offline mode. For immediate consultation, please call our Concierge at +1 (800) 555-PEARL.' }]);
       }
     } catch (err) {
-      // Local intelligent response fallback
       setTimeout(() => {
         let reply = "Thank you for asking! Pearl Dental Care offers bespoke porcelain veneers, computer-guided implants, and 3D Invisalign aligners.";
         if (userMsg.toLowerCase().includes('cost') || userMsg.toLowerCase().includes('price')) {
@@ -57,28 +65,32 @@ export default function AiAssistantModal() {
       {/* Floating Trigger Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-24 z-40 p-3.5 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-bold shadow-xl shadow-cyan-500/30 hover:scale-110 transition-all flex items-center space-x-2 border border-white/20"
+        className={`fixed bottom-6 right-24 z-40 p-3.5 rounded-full font-extrabold shadow-xl hover:scale-110 transition-all flex items-center space-x-2 border ${
+          isLight
+            ? 'bg-gradient-to-r from-cyan-500 to-sky-400 text-white border-cyan-300/50 shadow-cyan-500/30'
+            : 'bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 text-slate-950 border-yellow-200 shadow-amber-400/30'
+        }`}
         title="Pearl AI Dental Assistant"
       >
-        <Bot className="w-6 h-6 text-slate-950" />
-        <span className="hidden md:inline text-xs tracking-wider uppercase font-extrabold pr-1">AI Assistant</span>
+        <Bot className={`w-6 h-6 ${isLight ? 'text-white' : 'text-slate-950'}`} />
+        <span className={`hidden md:inline text-xs tracking-wider uppercase font-extrabold pr-1 ${isLight ? 'text-white' : 'text-slate-950'}`}>AI Assistant</span>
       </button>
 
       {/* Drawer / Modal */}
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-end sm:p-6 bg-slate-950/60 backdrop-blur-md">
-          <div className="w-full sm:w-[420px] h-[550px] bg-navy-900 border border-cyan-500/30 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden relative">
+          <div className="w-full sm:w-[420px] h-[550px] bg-navy-900 border border-yellow-400/30 rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden relative">
             
             {/* Header */}
             <div className="p-4 bg-gradient-to-r from-navy-950 via-navy-800 to-navy-950 border-b border-white/10 flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
-                  <Bot className="w-5 h-5" />
+                <div className="p-2 rounded-xl bg-amber-400/20 text-amber-400 border border-amber-400/30">
+                  <Bot className="w-5 h-5 text-amber-400" />
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-white flex items-center">
                     <span>Pearl Dental AI</span>
-                    <Sparkles className="w-3.5 h-3.5 text-cyan-400 ml-1.5" />
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400 ml-1.5" />
                   </h4>
                   <span className="text-[10px] text-emerald-400 flex items-center">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1 animate-ping" />
@@ -104,7 +116,7 @@ export default function AiAssistantModal() {
                   <div
                     className={`max-w-[80%] p-3 rounded-2xl ${
                       m.sender === 'user'
-                        ? 'bg-cyan-500 text-slate-950 font-medium rounded-br-none shadow-md'
+                        ? 'bg-gradient-to-r from-yellow-400 to-amber-400 text-slate-950 font-bold rounded-br-none shadow-md'
                         : 'bg-navy-800 text-slate-200 border border-white/10 rounded-bl-none shadow-md'
                     }`}
                   >
@@ -115,7 +127,7 @@ export default function AiAssistantModal() {
               {loading && (
                 <div className="flex justify-start">
                   <div className="bg-navy-800 p-3 rounded-2xl text-slate-400 text-xs flex items-center space-x-2">
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-cyan-400" />
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-amber-400" />
                     <span>Analyzing clinical query...</span>
                   </div>
                 </div>
@@ -126,19 +138,19 @@ export default function AiAssistantModal() {
             <div className="px-4 py-2 bg-navy-950/80 border-t border-white/5 flex gap-2 overflow-x-auto text-[10px]">
               <button
                 onClick={() => setInput('What is the cost of Porcelain Veneers?')}
-                className="px-2.5 py-1 rounded-full bg-navy-800 text-cyan-400 border border-white/10 hover:border-cyan-400 whitespace-nowrap"
+                className="px-2.5 py-1 rounded-full bg-navy-800 text-amber-400 border border-white/10 hover:border-amber-400 whitespace-nowrap"
               >
                 💰 Veneer Pricing
               </button>
               <button
                 onClick={() => setInput('Do you handle dental emergencies?')}
-                className="px-2.5 py-1 rounded-full bg-navy-800 text-cyan-400 border border-white/10 hover:border-cyan-400 whitespace-nowrap"
+                className="px-2.5 py-1 rounded-full bg-navy-800 text-amber-400 border border-white/10 hover:border-amber-400 whitespace-nowrap"
               >
                 🚨 Emergency Care
               </button>
               <button
-                onClick={() => setInput('How to book an appointment with Dr. Sterling?')}
-                className="px-2.5 py-1 rounded-full bg-navy-800 text-cyan-400 border border-white/10 hover:border-cyan-400 whitespace-nowrap"
+                onClick={() => setInput('How to book an appointment with Dr. Sharma?')}
+                className="px-2.5 py-1 rounded-full bg-navy-800 text-amber-400 border border-white/10 hover:border-amber-400 whitespace-nowrap"
               >
                 📅 Doctor Availability
               </button>
@@ -151,13 +163,13 @@ export default function AiAssistantModal() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask about treatments, pricing, or appointments..."
-                className="flex-1 px-3.5 py-2 text-xs bg-navy-900 border border-white/15 rounded-xl text-white focus:outline-none focus:border-cyan-400"
+                className="flex-1 px-3.5 py-2 text-xs bg-navy-900 border border-white/15 rounded-xl text-white focus:outline-none focus:border-amber-400"
               />
               <button
                 type="submit"
-                className="p-2 rounded-xl bg-cyan-500 text-slate-950 font-bold hover:bg-cyan-400 transition-colors"
+                className="p-2 rounded-xl bg-gradient-to-r from-yellow-400 to-amber-400 text-slate-950 font-bold hover:brightness-110 transition-colors"
               >
-                <Send className="w-4 h-4" />
+                <Send className="w-4 h-4 text-slate-950" />
               </button>
             </form>
 

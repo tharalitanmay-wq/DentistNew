@@ -1,9 +1,16 @@
 'use client';
 
 import React from 'react';
+import { usePathname } from 'next/navigation';
 import { MessageCircle } from 'lucide-react';
 
 export default function WhatsAppButton() {
+  const pathname = usePathname();
+
+  if (pathname === '/login' || pathname === '/register' || pathname === '/signin') {
+    return null;
+  }
+
   const phoneNumber = '18005555864';
   const defaultText = encodeURIComponent('Hello Pearl Dental Care! I would like to inquire about a luxury smile consultation.');
 

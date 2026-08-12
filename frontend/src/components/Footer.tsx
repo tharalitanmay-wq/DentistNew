@@ -2,12 +2,18 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Sparkles, Phone, Mail, MapPin, Clock, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import ToothIcon from '@/components/ToothIcon';
 
 export default function Footer() {
   const { theme } = useTheme();
+  const pathname = usePathname();
+
+  if (pathname === '/login' || pathname === '/register' || pathname === '/signin') {
+    return null;
+  }
 
   return (
     <footer className={`relative text-slate-400 pt-20 pb-10 border-t transition-colors ${

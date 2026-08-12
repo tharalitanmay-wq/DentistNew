@@ -1,6 +1,8 @@
-const { Op } = require('sequelize');
+const { Op, fn, col, where } = require('sequelize');
 const Appointment = require('../models/Appointment');
 const { getIsConnected } = require('../config/db');
+const { JWT_SECRET } = require('../middleware/auth');
+const jwt = require('jsonwebtoken');
 
 const memoryAppointments = [
   {
@@ -16,7 +18,7 @@ const memoryAppointments = [
     timeSlot: '11:00 AM',
     notes: 'Consultation for 8 upper veneers and smile simulation.',
     status: 'Confirmed',
-    userId: '2',
+    userId: '1',
     reportFile: '',
     createdAt: new Date().toISOString()
   },
@@ -33,7 +35,7 @@ const memoryAppointments = [
     timeSlot: '02:00 PM',
     notes: 'Single molar implant consultation with 3D CBCT scan review.',
     status: 'Pending',
-    userId: '3',
+    userId: '1',
     reportFile: '',
     createdAt: new Date().toISOString()
   }
@@ -52,34 +54,48 @@ const createAppointment = async (req, res) => {
       reportFile = '/uploads/' + req.file.filename;
     }
 
-    const userId = req.user ? String(req.user.id) : '';
+    // Try decoding auth token if passed in Authorization header
+    let decodedUser = req.user;
+    const authHeader = req.headers.authorization;
+    if (!decodedUser && authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        const token = authHeader.split(' ')[1];
+        decodedUser = jwt.verify(token, JWT_SECRET);
+      } catch (err) {
+        // ignore token decode errors
+      }
+    }
+
+    const userId = decodedUser ? String(decodedUser.id) : '';
+    const cleanEmail = patientEmail.trim().toLowerCase();
 
     if (getIsConnected()) {
       const appt = await Appointment.create({
-        patientName,
-        patientEmail,
-        patientPhone,
+        patientName: patientName.trim(),
+        patientEmail: cleanEmail,
+        patientPhone: patientPhone.trim(),
         doctorId: doctorId ? String(doctorId) : '',
-        doctorName,
+        doctorName: doctorName.trim(),
         serviceId: serviceId ? String(serviceId) : '',
-        serviceName,
+        serviceName: serviceName.trim(),
         date,
         timeSlot,
         notes: notes || '',
         reportFile,
-        userId
+        userId,
+        status: 'Pending'
       });
       return res.status(201).json({ success: true, message: 'Appointment booked successfully!', appointment: appt });
     } else {
       const newAppt = {
         id: memoryAppointments.length + 1,
-        patientName,
-        patientEmail,
-        patientPhone,
+        patientName: patientName.trim(),
+        patientEmail: cleanEmail,
+        patientPhone: patientPhone.trim(),
         doctorId: doctorId ? String(doctorId) : '',
-        doctorName,
+        doctorName: doctorName.trim(),
         serviceId: serviceId ? String(serviceId) : '',
-        serviceName,
+        serviceName: serviceName.trim(),
         date,
         timeSlot,
         notes: notes || '',
@@ -98,19 +114,28 @@ const createAppointment = async (req, res) => {
 
 const getMyAppointments = async (req, res) => {
   try {
-    const userId = String(req.user.id);
-    const userEmail = req.user.email;
+    const userId = req.user ? String(req.user.id) : '';
+    const userEmail = req.user && req.user.email ? req.user.email.trim().toLowerCase() : '';
+    const userName = req.user && req.user.name ? req.user.name.trim().toLowerCase() : '';
 
     if (getIsConnected()) {
       const appts = await Appointment.findAll({
         where: {
-          [Op.or]: [{ userId: userId }, { patientEmail: userEmail }]
+          [Op.or]: [
+            ...(userId ? [{ userId: userId }] : []),
+            ...(userEmail ? [where(fn('LOWER', col('patientEmail')), userEmail)] : []),
+            ...(userName ? [where(fn('LOWER', col('patientName')), userName)] : [])
+          ]
         },
         order: [['createdAt', 'DESC']]
       });
       return res.json({ success: true, appointments: appts });
     } else {
-      const appts = memoryAppointments.filter(a => String(a.userId) === userId || a.patientEmail === userEmail);
+      const appts = memoryAppointments.filter(a => 
+        (userId && String(a.userId) === userId) ||
+        (userEmail && a.patientEmail && a.patientEmail.toLowerCase() === userEmail) ||
+        (userName && a.patientName && a.patientName.toLowerCase() === userName)
+      );
       return res.json({ success: true, appointments: appts });
     }
   } catch (error) {

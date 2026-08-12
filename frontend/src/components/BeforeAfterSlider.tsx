@@ -76,13 +76,13 @@ export default function BeforeAfterSlider({
 
   return (
     <div className={`relative w-full max-w-4xl mx-auto rounded-2xl overflow-hidden glass-card p-3 sm:p-4 border shadow-xl transition-all ${
-      isLight ? 'bg-white/90 border-slate-200 shadow-slate-200/50' : 'bg-slate-900/80 border-white/15 shadow-cyan-950/20'
+      isLight ? 'bg-white/90 border-slate-200 shadow-slate-200/50' : 'bg-slate-900/80 border-white/15 shadow-black/40'
     }`}>
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-3 border-b border-slate-200 dark:border-white/10 mb-3">
         <div>
-          <div className="inline-flex items-center space-x-1.5 text-cyan-600 dark:text-cyan-400 text-[10px] font-bold uppercase tracking-widest mb-0.5">
-            <Sparkles className="w-3 h-3" />
+          <div className="inline-flex items-center space-x-1.5 text-amber-600 dark:text-yellow-400 text-[10px] font-bold uppercase tracking-widest mb-0.5">
+            <Sparkles className="w-3 h-3 text-amber-500" />
             <span>Real Patient Transformations</span>
           </div>
           <h3 className={`text-base sm:text-lg font-serif font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
@@ -99,7 +99,7 @@ export default function BeforeAfterSlider({
             onClick={() => setViewMode('slider')}
             className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
               viewMode === 'slider'
-                ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
+                ? 'bg-gradient-to-r from-yellow-400 to-amber-500 text-slate-950 shadow-md shadow-amber-400/20'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -110,7 +110,7 @@ export default function BeforeAfterSlider({
             onClick={() => setViewMode('side-by-side')}
             className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
               viewMode === 'side-by-side'
-                ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
+                ? 'bg-gradient-to-r from-yellow-400 to-amber-500 text-slate-950 shadow-md shadow-amber-400/20'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -129,8 +129,8 @@ export default function BeforeAfterSlider({
               onClick={() => setActivePresetIndex(idx)}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
                 activePresetIndex === idx
-                  ? 'bg-cyan-500/10 border-cyan-500 text-cyan-600 dark:text-cyan-400'
-                  : 'bg-transparent border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400 hover:border-cyan-500/50'
+                  ? 'bg-amber-400/10 border-amber-400 text-amber-600 dark:text-yellow-400'
+                  : 'bg-transparent border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400 hover:border-amber-400/50'
               }`}
             >
               {preset.title}
@@ -156,8 +156,8 @@ export default function BeforeAfterSlider({
               alt="After Treatment Smile Transformation"
               className="w-full h-full object-cover object-center"
             />
-            <div className="absolute top-4 right-4 bg-cyan-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg border border-white/20 flex items-center space-x-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <div className="absolute top-4 right-4 bg-amber-500 text-slate-950 text-[11px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg border border-white/20 flex items-center space-x-1.5">
+              <span className="w-2 h-2 rounded-full bg-slate-950 animate-pulse"></span>
               <span>AFTER TREATMENT</span>
             </div>
           </div>
@@ -179,11 +179,11 @@ export default function BeforeAfterSlider({
 
           {/* SLIDER DIVIDER LINE & HANDLE */}
           <div
-            className="absolute inset-y-0 w-0.5 bg-gradient-to-b from-cyan-300 via-white to-cyan-300 pointer-events-none shadow-[0_0_15px_rgba(6,182,212,0.8)]"
+            className="absolute inset-y-0 w-0.5 bg-gradient-to-b from-yellow-300 via-white to-yellow-300 pointer-events-none shadow-[0_0_15px_rgba(250,204,21,0.8)]"
             style={{ left: `${sliderPos}%` }}
           >
-            <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-11 h-11 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center shadow-2xl border-2 border-white ring-4 ring-cyan-500/30">
-              <MoveHorizontal className="w-5 h-5 font-bold" />
+            <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-11 h-11 rounded-full bg-gradient-to-r from-yellow-400 to-amber-500 text-slate-950 flex items-center justify-center shadow-2xl border-2 border-white ring-4 ring-amber-400/30">
+              <MoveHorizontal className="w-5 h-5 font-bold text-slate-950" />
             </div>
           </div>
 
@@ -211,18 +211,18 @@ export default function BeforeAfterSlider({
           </div>
 
           {/* AFTER PHOTO */}
-          <div className="relative h-[150px] sm:h-[200px] rounded-xl overflow-hidden border border-cyan-500/30 dark:border-cyan-400/40 shadow-lg shadow-cyan-500/10 group">
+          <div className="relative h-[150px] sm:h-[200px] rounded-xl overflow-hidden border border-amber-400/40 shadow-lg shadow-amber-400/10 group">
             <img
               src={currentAfter}
               alt="After Treatment Smile Transformation"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            <div className="absolute top-4 right-4 bg-cyan-600 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-md border border-white/20 flex items-center space-x-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-400 to-amber-500 text-slate-950 text-xs font-extrabold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-md border border-white/20 flex items-center space-x-1.5">
+              <span className="w-2 h-2 rounded-full bg-slate-950 animate-pulse"></span>
               <span>AFTER TRANSFORMATION</span>
             </div>
             <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 to-transparent p-4 text-white">
-              <p className="text-xs font-medium text-cyan-300">Final Clinical Result</p>
+              <p className="text-xs font-medium text-amber-300">Final Clinical Result</p>
             </div>
           </div>
         </div>
@@ -239,7 +239,7 @@ export default function BeforeAfterSlider({
                 : 'bg-slate-800/50 border-white/5 text-slate-300'
             }`}
           >
-            <CheckCircle2 className="w-4 h-4 text-cyan-500 flex-shrink-0" />
+            <CheckCircle2 className="w-4 h-4 text-amber-500 flex-shrink-0" />
             <span>{detail}</span>
           </div>
         ))}

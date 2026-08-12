@@ -2,17 +2,20 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Calendar, Clock, User, Sparkles, CheckCircle2, Upload, ArrowRight, Lock, AlertCircle, LogIn, UserPlus } from 'lucide-react';
+import { Calendar, Clock, User, Sparkles, CheckCircle2, Upload, ArrowRight, Lock, Eye, EyeOff, AlertCircle, LogIn, UserPlus } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import Link from 'next/link';
 
 function AppointmentContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { user, login, isLoading } = useAuth();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   const [step, setStep] = useState(1);
-  const [selectedDoctor, setSelectedDoctor] = useState(searchParams.get('doctor') || 'Dr. Evelyn Sterling');
+  const [selectedDoctor, setSelectedDoctor] = useState(searchParams.get('doctor') || 'Dr. Ananya Sharma');
   const [selectedService, setSelectedService] = useState(searchParams.get('service') || 'Signature Porcelain Veneers');
   const [selectedDate, setSelectedDate] = useState('2026-08-05');
   const [selectedSlot, setSelectedSlot] = useState('11:00 AM');
@@ -22,6 +25,7 @@ function AppointmentContent() {
   const [inlineAuthTab, setInlineAuthTab] = useState<'login' | 'register'>('login');
   const [authEmail, setAuthEmail] = useState('');
   const [authPassword, setAuthPassword] = useState('');
+  const [showAuthPassword, setShowAuthPassword] = useState(false);
   const [authName, setAuthName] = useState('');
   const [authPhone, setAuthPhone] = useState('');
   const [authError, setAuthError] = useState('');
@@ -50,9 +54,9 @@ function AppointmentContent() {
   }, [user]);
 
   const doctors = [
-    { name: 'Dr. Evelyn Sterling', role: 'Cosmetic Dentist & Director', img: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=300' },
-    { name: 'Dr. Julian Vance', role: 'Lead Implant Specialist', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=300' },
-    { name: 'Dr. Aria Chen', role: 'Invisalign & Orthodontist', img: 'https://images.unsplash.com/photo-1594824813566-78a9c30f40d2?auto=format&fit=crop&q=80&w=300' }
+    { name: 'Dr. Ananya Sharma', role: 'Cosmetic Dentist & Director', img: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=300' },
+    { name: 'Dr. Rajesh Kapoor', role: 'Lead Implant Specialist', img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=300' },
+    { name: 'Dr. Vikramaditya Verma', role: 'Invisalign & Orthodontist', img: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=300' }
   ];
 
   const services = [
@@ -78,20 +82,13 @@ function AppointmentContent() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: authEmail, password: authPassword })
         });
-        const data = await res.json();
-        if (data.success) {
+        if (res.ok && data.success) {
           login(data.token, data.user);
         } else {
-          setAuthError(data.message || 'Invalid credentials');
+          setAuthError(data.message || 'Invalid email or password');
         }
       } catch (err) {
-        // Fallback login
-        login('mock_jwt_token_123', {
-          id: 'usr-1',
-          name: authEmail.split('@')[0] || 'Patient User',
-          email: authEmail,
-          role: 'patient'
-        });
+        setAuthError('Invalid email or password');
       } finally {
         setAuthSubmitting(false);
       }
@@ -182,23 +179,29 @@ function AppointmentContent() {
       <div className="max-w-xl mx-auto px-4 py-16 space-y-8">
         {/* Header Warning */}
         <div className="text-center space-y-3">
-          <div className="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto border border-amber-500/30 shadow-lg">
+          <div className="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-500 flex items-center justify-center mx-auto border border-amber-500/30 shadow-lg">
             <Lock className="w-8 h-8" />
           </div>
-          <span className="text-xs font-bold uppercase tracking-widest text-amber-400">Sign In Required</span>
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-white">Login to Book Appointment</h1>
-          <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto">
+          <span className="text-xs font-bold uppercase tracking-widest text-amber-500">Sign In Required</span>
+          <h1 className={`text-3xl sm:text-4xl font-serif font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
+            Login to Book Appointment
+          </h1>
+          <p className={`text-xs sm:text-sm max-w-md mx-auto ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
             You must be logged in to your patient account to schedule a consultation with our specialists.
           </p>
         </div>
 
         {/* Auth Box */}
-        <div className="glass-card rounded-3xl p-8 border border-white/10 space-y-6 shadow-2xl">
-          <div className="flex bg-navy-900 rounded-xl p-1 border border-white/10">
+        <div className={`rounded-3xl p-8 border space-y-6 shadow-2xl transition-all ${
+          isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'glass-card border-white/10 shadow-black/80 bg-slate-900/90'
+        }`}>
+          <div className={`flex rounded-xl p-1 border ${isLight ? 'bg-slate-100 border-slate-200' : 'bg-navy-950 border-white/10'}`}>
             <button
               onClick={() => { setInlineAuthTab('login'); setAuthError(''); setAuthSuccess(''); }}
               className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 ${
-                inlineAuthTab === 'login' ? 'bg-cyan-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'
+                inlineAuthTab === 'login' 
+                  ? 'bg-cyan-500 text-slate-950 shadow-md font-extrabold' 
+                  : isLight ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-white'
               }`}
             >
               <LogIn className="w-3.5 h-3.5" />
@@ -207,7 +210,9 @@ function AppointmentContent() {
             <button
               onClick={() => { setInlineAuthTab('register'); setAuthError(''); setAuthSuccess(''); }}
               className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 ${
-                inlineAuthTab === 'register' ? 'bg-cyan-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'
+                inlineAuthTab === 'register' 
+                  ? 'bg-cyan-500 text-slate-950 shadow-md font-extrabold' 
+                  : isLight ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-white'
               }`}
             >
               <UserPlus className="w-3.5 h-3.5" />
@@ -216,15 +221,15 @@ function AppointmentContent() {
           </div>
 
           {authSuccess && (
-            <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-400 flex items-center space-x-2">
-              <CheckCircle2 className="w-4 h-4 shrink-0" />
+            <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-600 dark:text-emerald-400 flex items-center space-x-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-500" />
               <span>{authSuccess}</span>
             </div>
           )}
 
           {authError && (
-            <div className="p-3.5 bg-red-500/10 border border-red-500/30 rounded-xl text-xs text-red-400 flex items-center space-x-2">
-              <AlertCircle className="w-4 h-4 shrink-0" />
+            <div className="p-3.5 bg-red-500/10 border border-red-500/30 rounded-xl text-xs text-red-600 dark:text-red-400 flex items-center space-x-2">
+              <AlertCircle className="w-4 h-4 shrink-0 text-red-500" />
               <span>{authError}</span>
             </div>
           )}
@@ -232,51 +237,77 @@ function AppointmentContent() {
           <form onSubmit={handleInlineAuth} className="space-y-4">
             {inlineAuthTab === 'register' && (
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Full Name</label>
+                <label className={`block text-xs font-semibold mb-1 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+                  Full Name
+                </label>
                 <input
                   type="text"
                   required
                   value={authName}
                   onChange={(e) => setAuthName(e.target.value)}
                   placeholder="Johnathan Miller"
-                  className="w-full px-4 py-2.5 bg-navy-900 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400"
+                  className={`w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${
+                    isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
+                  }`}
                 />
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+              <label className={`block text-xs font-semibold mb-1 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+                Email Address
+              </label>
               <input
                 type="email"
                 required
                 value={authEmail}
                 onChange={(e) => setAuthEmail(e.target.value)}
                 placeholder="patient@example.com"
-                className="w-full px-4 py-2.5 bg-navy-900 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400"
+                className={`w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${
+                  isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
+                }`}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Password</label>
-              <input
-                type="password"
-                required
-                value={authPassword}
-                onChange={(e) => setAuthPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full px-4 py-2.5 bg-navy-900 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400"
-              />
+              <label className={`block text-xs font-semibold mb-1 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showAuthPassword ? 'text' : 'password'}
+                  required
+                  value={authPassword}
+                  onChange={(e) => setAuthPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className={`w-full pl-4 pr-10 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${
+                    isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowAuthPassword(!showAuthPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-cyan-500 transition-colors focus:outline-none"
+                  title={showAuthPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showAuthPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
 
             {inlineAuthTab === 'register' && (
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Phone Number</label>
+                <label className={`block text-xs font-semibold mb-1 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+                  Phone Number
+                </label>
                 <input
                   type="tel"
                   value={authPhone}
                   onChange={(e) => setAuthPhone(e.target.value)}
                   placeholder="+1 (555) 000-0000"
-                  className="w-full px-4 py-2.5 bg-navy-900 border border-white/15 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-400"
+                  className={`w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${
+                    isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
+                  }`}
                 />
               </div>
             )}
@@ -284,7 +315,7 @@ function AppointmentContent() {
             <button
               type="submit"
               disabled={authSubmitting}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-sky-300 text-slate-950 font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-lg shadow-cyan-500/25"
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-400 text-slate-950 font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-lg shadow-cyan-500/25"
             >
               {authSubmitting
                 ? 'Processing...'
@@ -294,9 +325,9 @@ function AppointmentContent() {
             </button>
           </form>
 
-          <div className="text-center pt-2 border-t border-white/10 text-xs text-slate-400 flex justify-between">
-            <Link href="/login" className="text-cyan-400 hover:underline">Full Login Page</Link>
-            <Link href="/register" className="text-cyan-400 hover:underline">Full Register Page</Link>
+          <div className="text-center pt-2 border-t border-slate-200 dark:border-white/10 text-xs text-slate-400 flex justify-between">
+            <Link href="/login" className="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold">Full Login Page</Link>
+            <Link href="/register" className="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold">Full Register Page</Link>
           </div>
         </div>
       </div>

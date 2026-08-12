@@ -6,7 +6,6 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import AiAssistantModal from '@/components/AiAssistantModal';
-import CookieConsent from '@/components/CookieConsent';
 import Cursor from '@/components/Cursor/Cursor';
 
 export const metadata: Metadata = {
@@ -32,11 +31,10 @@ export default function RootLayout({
           <ThemeProvider>
             <Cursor />
             <Navbar />
-            <main className="flex-grow pt-24">{children}</main>
+            <main className="flex-grow pt-20 sm:pt-24">{children}</main>
             <Footer />
             <WhatsAppButton />
             <AiAssistantModal />
-            <CookieConsent />
           </ThemeProvider>
         </AuthProvider>
       </body>

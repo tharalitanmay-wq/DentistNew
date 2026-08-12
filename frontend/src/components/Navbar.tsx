@@ -26,7 +26,7 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = [
+  const publicNavItems = [
     { label: 'Home', href: '/' },
     { label: 'Live Queue', href: '/queue' },
     { label: 'About', href: '/about' },
@@ -36,6 +36,17 @@ export default function Navbar() {
     { label: 'Blog', href: '/blog' },
     { label: 'Contact', href: '/contact' },
   ];
+
+  const loggedInNavItems = [
+    { label: 'Home', href: '/' },
+    { label: 'Dashboard', href: '/dashboard' },
+    { label: 'Live Queue', href: '/queue' },
+    { label: 'Services', href: '/services' },
+    { label: 'Doctors', href: '/doctors' },
+    { label: 'Book Appointment', href: '/appointment' },
+  ];
+
+  const navItems = user ? loggedInNavItems : publicNavItems;
 
   const handleLogout = () => {
     logout();
@@ -56,6 +67,7 @@ export default function Navbar() {
       }`}>
         <div className="flex items-center space-x-6">
           <span className="flex items-center text-cyan-600 dark:text-cyan-400 font-medium">
+            <Sparkles className="w-3.5 h-3.5 mr-1.5 animate-pulse text-cyan-500" />
             Complimentary 3D Cosmetic Smile Simulation for New Patients
           </span>
           <span className="flex items-center text-slate-600 dark:text-slate-400">
@@ -71,29 +83,33 @@ export default function Navbar() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between mt-1">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-3 group py-1">
-          <ToothIcon className="w-7 h-7 text-cyan-600 dark:text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
+        <Link href={user ? "/dashboard" : "/"} className="flex items-center space-x-3 group py-1">
+          <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 group-hover:border-cyan-400 group-hover:bg-cyan-500/20 transition-all duration-300 shadow-sm shadow-cyan-500/20">
+            <ToothIcon className="w-5 h-5 text-cyan-600 dark:text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
+          </div>
           <div className="flex flex-col justify-center">
-            <span className="text-2xl font-serif font-extrabold tracking-tight text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors leading-none">
+            <span className="text-xl font-serif font-extrabold tracking-tight text-slate-900 dark:text-white group-hover:text-cyan-500 transition-colors leading-none">
               PEARL
             </span>
-            <span className="text-[9px] tracking-[0.32em] text-cyan-600 dark:text-cyan-400 uppercase font-bold mt-1 leading-none">
+            <span className="text-[9px] tracking-[0.35em] text-cyan-600 dark:text-cyan-400 uppercase font-bold mt-1 leading-none">
               Dental Studio
             </span>
           </div>
         </Link>
 
-        {/* Desktop React Bits GooeyNav Integration */}
-        <div className="hidden md:block">
-          <GooeyNav
-            items={navItems}
-            particleCount={18}
-            particleDistances={[80, 12]}
-            particleR={250}
-            animationTime={500}
-            timeVariance={600}
-          />
-        </div>
+        {/* Desktop React Bits GooeyNav Integration - Rendered only when NOT logged in */}
+        {!user && (
+          <div className="hidden md:block">
+            <GooeyNav
+              items={navItems}
+              particleCount={18}
+              particleDistances={[80, 12]}
+              particleR={250}
+              animationTime={500}
+              timeVariance={600}
+            />
+          </div>
+        )}
 
         {/* Action Buttons */}
         <div className="hidden sm:flex items-center space-x-3">
@@ -112,173 +128,142 @@ export default function Navbar() {
 
           {/* User Account / Login / Logout */}
           {user ? (
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3">
+              {/* VIP Portal Status Indicator */}
+              <div className={`hidden lg:flex items-center space-x-2 px-3 py-1.5 rounded-full text-[11px] font-medium border ${
+                theme === 'light'
+                  ? 'bg-slate-100/80 border-slate-200 text-slate-700'
+                  : 'bg-navy-950/80 border-white/10 text-slate-300'
+              }`}>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400/50" />
+                <span className="font-semibold tracking-wide uppercase text-[10px] text-cyan-600 dark:text-cyan-400">VIP Concierge Active</span>
+              </div>
+
+              {/* User Avatar & Dashboard Link */}
               <Link
                 href="/dashboard"
-                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-all ${
+                className={`group relative flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full border transition-all duration-300 shadow-sm ${
                   theme === 'light'
-                    ? 'bg-slate-100 border-cyan-500/40 text-cyan-700 hover:bg-cyan-50'
-                    : 'bg-navy-800 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500 hover:text-navy-950'
+                    ? 'bg-white border-slate-200 text-slate-800 hover:border-cyan-500/50 hover:shadow-cyan-500/10'
+                    : 'bg-navy-900/90 border-white/10 text-white hover:border-cyan-400/50 hover:shadow-cyan-400/10'
                 }`}
               >
-                <User className="w-3.5 h-3.5" />
-                <span>{user.name.split(' ')[0]}</span>
+                <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-cyan-500 to-sky-300 text-slate-950 flex items-center justify-center font-bold text-[11px] shadow-sm">
+                  {user.name ? user.name[0].toUpperCase() : 'P'}
+                </div>
+                <div className="flex flex-col text-left">
+                  <span className="text-xs font-bold leading-none tracking-tight group-hover:text-cyan-500 transition-colors">
+                    {user.name.split(' ')[0]}
+                  </span>
+                  <span className="text-[9px] text-slate-400 leading-none font-medium mt-0.5">
+                    Patient Portal
+                  </span>
+                </div>
               </Link>
+
+              {/* Executive Logout Button */}
               <button
                 onClick={handleLogout}
-                className="flex items-center space-x-1 px-3 py-1.5 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs font-bold border border-red-500/30 transition-all"
-                title="Logout of Account"
+                className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-500 dark:text-red-400 text-xs font-bold border border-red-500/20 hover:border-red-500/40 transition-all duration-300 shadow-sm group"
+                title="Sign Out of Patient Concierge"
               >
-                <LogOut className="w-3.5 h-3.5" />
+                <LogOut className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform duration-300" />
                 <span>Logout</span>
               </button>
             </div>
           ) : (
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3">
               <Link
                 href="/login"
-                className={`text-xs px-3 py-1.5 rounded-full transition-all font-medium ${
-                  theme === 'light' ? 'text-slate-700 hover:text-cyan-600' : 'text-slate-300 hover:text-cyan-400'
+                className={`text-xs px-4 py-2 rounded-full transition-all font-bold ${
+                  theme === 'light' 
+                    ? 'text-slate-800 hover:text-cyan-600 hover:bg-slate-100' 
+                    : 'text-slate-200 hover:text-cyan-400 hover:bg-white/5'
                 }`}
               >
                 Sign In
               </Link>
-              <Link
-                href="/register"
-                className="text-xs px-3 py-1.5 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30 font-bold hover:bg-cyan-500 hover:text-slate-950 transition-all"
-              >
-                Register
+
+              <Link href="/appointment">
+                <button className={`px-5 py-2.5 rounded-full font-extrabold text-xs uppercase tracking-wider transition-all flex items-center space-x-1.5 border shadow-lg hover:scale-105 ${
+                  theme === 'light'
+                    ? 'bg-gradient-to-r from-cyan-500 to-sky-400 text-white border-cyan-300/50 shadow-cyan-500/25 hover:brightness-110'
+                    : 'bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 text-slate-950 border-yellow-200 shadow-amber-400/30 hover:brightness-110'
+                }`}>
+                  <Calendar className={`w-3.5 h-3.5 ${theme === 'light' ? 'text-white' : 'text-slate-950'}`} />
+                  <span>BOOK APPOINTMENT</span>
+                </button>
               </Link>
             </div>
           )}
-
-          {/* React Bits SpecularButton Integration for BOOK APPOINTMENT */}
-          <SpecularButton
-            size="sm"
-            radius={999}
-            tint="#0284c7"
-            tintOpacity={0.9}
-            blur={8}
-            textColor="#ffffff"
-            lineColor="#ffffff"
-            baseColor="#0369a1"
-            intensity={1.2}
-            shineSize={12}
-            shineFade={35}
-            thickness={1.5}
-            speed={0.4}
-            followMouse={true}
-            autoAnimate={true}
-            onClick={() => router.push('/appointment')}
-            className="font-bold text-xs uppercase tracking-wider shadow-lg shadow-cyan-500/30 font-sans"
-          >
-            <Calendar className="w-4 h-4 mr-1 text-white" />
-            <span>BOOK APPOINTMENT</span>
-          </SpecularButton>
         </div>
 
-        {/* Mobile Hamburger Toggle */}
-        <div className="flex md:hidden items-center space-x-2">
+        {/* Mobile Menu Toggle Button */}
+        <div className="flex sm:hidden items-center space-x-2">
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-full bg-slate-100 dark:bg-navy-800 border border-slate-300 dark:border-white/10"
+            className="p-2 rounded-full border border-white/10 text-slate-300"
           >
             {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
           </button>
+          
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-xl bg-slate-100 dark:bg-navy-800 border border-slate-300 dark:border-white/10"
+            className={`p-2 rounded-xl border transition-colors ${
+              theme === 'light' ? 'bg-slate-100 border-slate-300 text-slate-800' : 'bg-navy-800 border-white/10 text-white'
+            }`}
           >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu Drawer */}
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className={`md:hidden backdrop-blur-2xl border-b px-6 py-6 space-y-4 ${
-          theme === 'light' ? 'bg-white/95 border-slate-200' : 'bg-navy-900/95 border-white/10'
+        <div className={`sm:hidden border-b py-4 px-6 space-y-3 transition-colors ${
+          theme === 'light' ? 'bg-white border-slate-200' : 'bg-navy-950 border-white/10'
         }`}>
-          <nav className="flex flex-col space-y-2">
-            {navItems.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`px-4 py-2.5 rounded-xl text-sm font-medium ${
-                  pathname === link.href
-                    ? 'bg-cyan-500 text-slate-950 font-bold'
-                    : theme === 'light' ? 'text-slate-800 hover:bg-slate-100' : 'text-slate-300 hover:bg-navy-800'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setMobileMenuOpen(false)}
+              className={`block text-xs font-semibold py-2 transition-colors ${
+                pathname === item.href ? 'text-cyan-500' : theme === 'light' ? 'text-slate-700' : 'text-slate-300'
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
 
-            {user ? (
-              <>
-                <Link
-                  href="/dashboard"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-4 py-2.5 rounded-xl text-sm font-medium text-cyan-600 border border-cyan-500/30 flex items-center justify-between"
-                >
-                  <span>Patient Dashboard ({user.name})</span>
-                  <User className="w-4 h-4" />
-                </Link>
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    handleLogout();
-                  }}
-                  className="w-full px-4 py-2.5 rounded-xl text-sm font-bold text-red-400 bg-red-500/10 border border-red-500/30 flex items-center justify-between"
-                >
-                  <span>Logout Account</span>
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </>
-            ) : (
-              <div className="grid grid-cols-2 gap-2 pt-2">
-                <Link
-                  href="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-center border border-white/10 text-slate-300"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/register"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-center bg-cyan-500 text-slate-950"
-                >
-                  Register
-                </Link>
-              </div>
-            )}
-
-            <div className="pt-2">
-              <SpecularButton
-                size="md"
-                radius={999}
-                tint="#0284c7"
-                tintOpacity={0.9}
-                blur={8}
-                textColor="#ffffff"
-                lineColor="#ffffff"
-                baseColor="#0369a1"
-                intensity={1.2}
-                speed={0.4}
-                autoAnimate={true}
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  router.push('/appointment');
-                }}
-                className="w-full font-bold text-xs uppercase tracking-wider"
+          {user ? (
+            <div className="pt-2 border-t border-slate-200 dark:border-white/10 flex justify-between items-center">
+              <span className="text-xs text-cyan-400 font-bold">Logged in as {user.name}</span>
+              <button
+                onClick={handleLogout}
+                className="text-xs font-bold text-red-400 hover:underline"
               >
-                <Calendar className="w-4 h-4 mr-1 text-white" />
-                <span>BOOK APPOINTMENT</span>
-              </SpecularButton>
+                Logout
+              </button>
             </div>
-          </nav>
+          ) : (
+            <div className="pt-2 border-t border-slate-200 dark:border-white/10 flex space-x-2">
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex-1 py-2 text-center text-xs font-bold rounded-xl bg-slate-100 dark:bg-navy-800 text-cyan-400"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/appointment"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex-1 py-2 text-center text-xs font-bold rounded-xl bg-cyan-500 text-slate-950"
+              >
+                Book
+              </Link>
+            </div>
+          )}
         </div>
       )}
     </header>

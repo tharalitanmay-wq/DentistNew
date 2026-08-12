@@ -118,25 +118,25 @@ export default function HomePage() {
 
   const doctors = [
     {
-      name: 'Dr. Evelyn Sterling',
-      role: 'Chief Cosmetic Dentist',
-      degree: 'DDS Harvard • AACD Accredited',
-      bio: 'Master of facial smile aesthetics and ultra-thin ceramic veneer artistry.',
+      name: 'Dr. Ananya Sharma',
+      role: 'Chief Cosmetic Dentist & Founder',
+      degree: 'MDS AIIMS New Delhi • AACD Fellow',
+      bio: 'Master of digital smile aesthetics, ultra-thin ceramic veneers, and laser dentistry.',
       img: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=600'
     },
     {
-      name: 'Dr. Julian Vance',
-      role: 'Implant Surgeon',
-      degree: 'DMD Columbia • Johns Hopkins Fellow',
-      bio: 'Pioneer in computer-guided implantology and full-mouth rehabilitation.',
+      name: 'Dr. Rajesh Kapoor',
+      role: 'Lead Implant Surgeon',
+      degree: 'MDS Manipal • ICOI Master Fellow',
+      bio: 'Pioneer in painless 3D computer-guided dental implants and full-mouth rehabilitation.',
       img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=600'
     },
     {
-      name: 'Dr. Aria Chen',
-      role: 'Orthodontic Specialist',
-      degree: 'DDS UPenn • MS NYU',
-      bio: 'Diamond Plus Invisalign provider specializing in adult facial symmetry.',
-      img: 'https://images.unsplash.com/photo-1594824813566-78a9c30f40d2?auto=format&fit=crop&q=80&w=600'
+      name: 'Dr. Vikramaditya Verma',
+      role: 'Chief Orthodontic Specialist',
+      degree: 'MDS KGMU Lucknow • Diamond Plus Aligner Specialist',
+      bio: 'Expert in invisible aligners, adult teeth straightening, and facial harmony alignment.',
+      img: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=600'
     }
   ];
 
@@ -210,28 +210,17 @@ export default function HomePage() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <SpecularButton
-              size="lg"
-              radius={999}
-              tint="#0284c7"
-              tintOpacity={0.95}
-              blur={12}
-              textColor="#ffffff"
-              lineColor="#ffffff"
-              baseColor="#0369a1"
-              intensity={1.3}
-              shineSize={15}
-              shineFade={35}
-              thickness={1.5}
-              speed={0.4}
-              followMouse={true}
-              autoAnimate={true}
+            <button
               onClick={() => router.push('/appointment')}
-              className="w-full sm:w-auto font-bold text-xs uppercase tracking-wider shadow-xl shadow-cyan-500/30"
+              className={`w-full sm:w-auto px-8 py-4 rounded-full font-extrabold text-xs uppercase tracking-wider transition-all flex items-center justify-center space-x-2 border shadow-xl hover:scale-105 ${
+                isLight
+                  ? 'bg-gradient-to-r from-cyan-500 to-sky-400 text-white border-cyan-300/50 shadow-cyan-500/30 hover:brightness-110'
+                  : 'bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 text-slate-950 border-yellow-200 shadow-amber-400/30 hover:brightness-110'
+              }`}
             >
-              <Calendar className="w-4 h-4 mr-1.5 text-white" />
+              <Calendar className={`w-4 h-4 ${isLight ? 'text-white' : 'text-slate-950'}`} />
               <span>BOOK APPOINTMENT</span>
-            </SpecularButton>
+            </button>
 
             <Link
               href="/services"

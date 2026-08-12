@@ -10,7 +10,7 @@ const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
   host: dbHost,
   port: dbPort,
   dialect: 'mysql',
-  logging: false, // Set to console.log to debug SQL queries
+  logging: false,
   pool: {
     max: 10,
     min: 0,
@@ -35,6 +35,16 @@ const connectDB = async () => {
     await rootSequelize.close();
 
     await sequelize.authenticate();
+
+    // Import models to ensure Sequelize knows about customers and admins tables
+    require('../models/Customer');
+    require('../models/Admin');
+    require('../models/User');
+    require('../models/Doctor');
+    require('../models/Service');
+    require('../models/Appointment');
+    require('../models/Blog');
+
     await sequelize.sync({ alter: true });
     isConnected = true;
     console.log(`[MySQL Database] Connected successfully to ${dbHost}:${dbPort}/${dbName}`);
