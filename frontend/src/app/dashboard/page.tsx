@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
+import { getApiUrl } from '@/config/api';
 import { 
   Calendar, 
   User, 
@@ -21,9 +22,10 @@ import {
   Award
 } from 'lucide-react';
 import Link from 'next/link';
+import ProfilePhotoUpload from '@/components/ProfilePhotoUpload';
 
 export default function DashboardPage() {
-  const { user, token, login, logout, isLoading } = useAuth();
+  const { user, token, login, logout, updateUser, isLoading } = useAuth();
   const { theme } = useTheme();
   const isLight = theme === 'light';
 
@@ -41,13 +43,32 @@ export default function DashboardPage() {
   useEffect(() => {
     if (user && token) {
       fetchAppointments();
+      fetchProfile();
     }
   }, [user, token]);
+
+  const fetchProfile = async () => {
+    try {
+      const res = await fetch(getApiUrl('/api/profile'), {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success && data.user) {
+        updateUser({
+          profile_image_key: data.user.profile_image_key,
+          profile_image_url: data.user.profile_image_url,
+          avatar: data.user.profile_image_url || data.user.avatar
+        });
+      }
+    } catch (e) {
+      // Ignore network fallback errors
+    }
+  };
 
   const fetchAppointments = async () => {
     setLoadingAppts(true);
     try {
-      const res = await fetch('http://localhost:5000/api/appointments/my', {
+      const res = await fetch(getApiUrl('/api/appointments/my'), {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -81,11 +102,12 @@ export default function DashboardPage() {
     if (isLoginTab) {
       // LOGIN SUBMISSION
       try {
-        const res = await fetch('http://localhost:5000/api/auth/login', {
+        const res = await fetch(getApiUrl('/api/auth/login'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
+        const data = await res.json();
         if (res.ok && data.success) {
           login(data.token, data.user);
         } else {
@@ -97,7 +119,7 @@ export default function DashboardPage() {
     } else {
       // REGISTER SUBMISSION -> NEXT PAGE IS LOGIN!
       try {
-        const res = await fetch('http://localhost:5000/api/auth/register', {
+        const res = await fetch(getApiUrl('/api/auth/register'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, password, phone })
@@ -271,8 +293,12 @@ export default function DashboardPage() {
         <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
         
         <div className="flex items-center space-x-5 relative z-10">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 to-sky-300 text-slate-950 flex items-center justify-center font-serif font-bold text-2xl shadow-lg shadow-cyan-500/20">
-            {user.name ? user.name[0].toUpperCase() : 'P'}
+          <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gradient-to-tr from-cyan-500 to-sky-300 text-slate-950 flex items-center justify-center font-serif font-bold text-2xl shadow-lg shadow-cyan-500/20 shrink-0">
+            {user.profile_image_url || (user.avatar && !user.avatar.includes('unsplash') ? user.avatar : null) ? (
+              <img src={user.profile_image_url || user.avatar} alt={user.name} className="w-full h-full object-cover" />
+            ) : (
+              <span>{user.name ? user.name[0].toUpperCase() : 'P'}</span>
+            )}
           </div>
           <div className="space-y-1">
             <div className="flex items-center space-x-3">
@@ -311,6 +337,15 @@ export default function DashboardPage() {
             + Book Appointment
           </Link>
         </div>
+      </div>
+
+      {/* Profile Photo Upload Section */}
+      <div className={`rounded-3xl p-6 sm:p-8 border shadow-xl transition-all ${
+        isLight
+          ? 'bg-white border-slate-200 shadow-slate-200/50'
+          : 'glass-card border-white/10 shadow-black/50'
+      }`}>
+        <ProfilePhotoUpload isLight={isLight} />
       </div>
 
       {/* Corporate Quick Executive Stats Bar */}

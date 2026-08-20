@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Calendar, Clock, User, Sparkles, CheckCircle2, Upload, ArrowRight, Lock, Eye, EyeOff, AlertCircle, LogIn, UserPlus } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
+import { getApiUrl } from '@/config/api';
 import Link from 'next/link';
 
 function AppointmentContent() {
@@ -77,11 +78,12 @@ function AppointmentContent() {
 
     if (inlineAuthTab === 'login') {
       try {
-        const res = await fetch('http://localhost:5000/api/auth/login', {
+        const res = await fetch(getApiUrl('/api/auth/login'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: authEmail, password: authPassword })
         });
+        const data = await res.json();
         if (res.ok && data.success) {
           login(data.token, data.user);
         } else {
@@ -95,7 +97,7 @@ function AppointmentContent() {
     } else {
       // Inline Registration -> Next step is Login
       try {
-        const res = await fetch('http://localhost:5000/api/auth/register', {
+        const res = await fetch(getApiUrl('/api/auth/register'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name: authName, email: authEmail, password: authPassword, phone: authPhone })
@@ -136,7 +138,7 @@ function AppointmentContent() {
         formData.append('reportFile', file);
       }
 
-      const res = await fetch('http://localhost:5000/api/appointments', {
+      const res = await fetch(getApiUrl('/api/appointments'), {
         method: 'POST',
         headers: user ? { Authorization: `Bearer ${localStorage.getItem('lumina_token')}` } : {},
         body: formData

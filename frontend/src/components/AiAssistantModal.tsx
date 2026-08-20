@@ -4,13 +4,16 @@ import React, { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Bot, X, Send, Sparkles, User, Calendar, RefreshCw } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+import { useAuth } from '@/context/AuthContext';
+import { getApiUrl } from '@/config/api';
 import Link from 'next/link';
 
 export default function AiAssistantModal() {
   const pathname = usePathname();
   const { theme } = useTheme();
+  const { user } = useAuth();
 
-  if (pathname === '/login' || pathname === '/register' || pathname === '/signin') {
+  if (user || pathname === '/login' || pathname === '/register' || pathname === '/signin' || pathname.startsWith('/dashboard')) {
     return null;
   }
   const isLight = theme === 'light';
@@ -34,7 +37,7 @@ export default function AiAssistantModal() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:5000/api/ai-chat/query', {
+      const res = await fetch(getApiUrl('/api/ai-chat/query'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userMsg })

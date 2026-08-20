@@ -9,6 +9,8 @@ interface User {
   role: string;
   phone?: string;
   avatar?: string;
+  profile_image_key?: string | null;
+  profile_image_url?: string | null;
 }
 
 interface AuthContextType {
@@ -16,6 +18,7 @@ interface AuthContextType {
   token: string | null;
   login: (token: string, user: User) => void;
   logout: () => void;
+  updateUser: (updatedUserPartial: Partial<User>) => void;
   isLoading: boolean;
 }
 
@@ -24,6 +27,7 @@ const AuthContext = createContext<AuthContextType>({
   token: null,
   login: () => {},
   logout: () => {},
+  updateUser: () => {},
   isLoading: true,
 });
 
@@ -53,6 +57,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem('lumina_user', JSON.stringify(newUser));
   };
 
+  const updateUser = (updatedUserPartial: Partial<User>) => {
+    setUser(prev => {
+      if (!prev) return null;
+      const updated = { ...prev, ...updatedUserPartial };
+      localStorage.setItem('lumina_user', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   const logout = () => {
     setToken(null);
     setUser(null);
@@ -61,7 +74,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, token, login, logout, updateUser, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

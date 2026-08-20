@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Send, Sparkles, CheckCircle2 } from 'lucide-react';
+import { getApiUrl } from '@/config/api';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -19,7 +20,7 @@ export default function ContactPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await fetch('http://localhost:5000/api/contact', {
+      await fetch(getApiUrl('/api/contact'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)

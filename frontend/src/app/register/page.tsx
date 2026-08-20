@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { UserPlus, User, AtSign, Lock, Eye, EyeOff, Mail, Phone, CheckCircle2, AlertCircle, ArrowRight } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 
+import { getApiUrl } from '@/config/api';
+
 export default function RegisterPage() {
   const { user } = useAuth();
   const router = useRouter();
@@ -50,7 +52,7 @@ export default function RegisterPage() {
     setSubmitting(true);
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/register', {
+      const res = await fetch(getApiUrl('/api/auth/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, username, email, phone, password, confirmPassword })

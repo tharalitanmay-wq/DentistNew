@@ -5,6 +5,7 @@ const Admin = require('../models/Admin');
 const User = require('../models/User');
 const { getIsConnected } = require('../config/db');
 const { JWT_SECRET } = require('../middleware/auth');
+const { generatePresignedUrl } = require('../utils/s3Service');
 
 // In-memory fallback stores when MySQL is offline
 const memoryAdmins = [
@@ -26,7 +27,8 @@ const memoryCustomers = [
     email: 'patient@example.com',
     phone: '+1 (555) 234-5678',
     password: '$2a$10$wE99V9n8tE5fCq6m/A0U.eQ80Jq55uO1vM7c4.6Y1z5/5G7J1K1.', // AdminPass123!
-    role: 'patient'
+    role: 'patient',
+    profile_image_key: null
   },
   {
     id: 2,
@@ -35,9 +37,12 @@ const memoryCustomers = [
     email: 'sahil@gmail.com',
     phone: '+1 (555) 999-8888',
     password: '$2a$10$wE99V9n8tE5fCq6m/A0U.eQ80Jq55uO1vM7c4.6Y1z5/5G7J1K1.', // AdminPass123!
-    role: 'patient'
+    role: 'patient',
+    profile_image_key: null
   }
 ];
+
+global.memoryCustomersStore = memoryCustomers;
 
 // 1. CUSTOMER REGISTRATION
 const register = async (req, res) => {
@@ -66,13 +71,29 @@ const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     if (getIsConnected()) {
-      // Check if email exists in customers table
-      const existingEmail = await Customer.findOne({ where: { email: cleanEmail } });
-      if (existingEmail) {
-        return res.status(400).json({ 
-          success: false, 
-          message: 'An account with this email already exists.' 
-        });
+      const { Op } = require('sequelize');
+      // Check if email or username already exists in customers table
+      const existingAccount = await Customer.findOne({ 
+        where: { 
+          [Op.or]: [
+            { email: cleanEmail },
+            { username: cleanUsername }
+          ] 
+        } 
+      });
+
+      if (existingAccount) {
+        if (existingAccount.email.toLowerCase() === cleanEmail) {
+          return res.status(400).json({ 
+            success: false, 
+            message: 'An account with this email already exists.' 
+          });
+        } else {
+          return res.status(400).json({ 
+            success: false, 
+            message: 'This username is already taken. Please enter a different username.' 
+          });
+        }
       }
 
       // Save customer record in customers table with bcrypt hashed password
@@ -125,7 +146,8 @@ const register = async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error('[Registration Failure]:', error);
+    res.status(500).json({ success: false, message: error.message || 'Registration failed.' });
   }
 };
 
@@ -200,6 +222,12 @@ const login = async (req, res) => {
       { expiresIn: '7d' }
     );
 
+    const profileImageKey = user.profile_image_key || null;
+    let profileImageUrl = null;
+    if (profileImageKey) {
+      profileImageUrl = await generatePresignedUrl(profileImageKey);
+    }
+
     return res.status(200).json({
       success: true,
       message: 'Login successful!',
@@ -210,7 +238,10 @@ const login = async (req, res) => {
         username: user.username || user.email.split('@')[0],
         email: user.email,
         phone: user.phone || '',
-        role: user.role || 'patient'
+        role: user.role || 'patient',
+        profile_image_key: profileImageKey,
+        profile_image_url: profileImageUrl,
+        avatar: profileImageUrl || user.avatar || null
       }
     });
 
@@ -311,7 +342,20 @@ const getMe = async (req, res) => {
       } else {
         const customer = await Customer.findByPk(userId, { attributes: { exclude: ['password'] } });
         if (!customer) return res.status(404).json({ success: false, message: 'Customer profile not found' });
-        return res.json({ success: true, user: { ...customer.toJSON(), role: 'patient' } });
+        const custObj = customer.toJSON();
+        let presignedUrl = null;
+        if (custObj.profile_image_key) {
+          presignedUrl = await generatePresignedUrl(custObj.profile_image_key);
+        }
+        return res.json({
+          success: true,
+          user: {
+            ...custObj,
+            role: 'patient',
+            profile_image_url: presignedUrl,
+            avatar: presignedUrl || custObj.avatar || null
+          }
+        });
       }
     } else {
       if (role === 'admin') {
@@ -323,7 +367,18 @@ const getMe = async (req, res) => {
         const customer = memoryCustomers.find(c => c.id == userId);
         if (!customer) return res.status(404).json({ success: false, message: 'Customer profile not found' });
         const { password, ...safeCustomer } = customer;
-        return res.json({ success: true, user: safeCustomer });
+        let presignedUrl = null;
+        if (safeCustomer.profile_image_key) {
+          presignedUrl = await generatePresignedUrl(safeCustomer.profile_image_key);
+        }
+        return res.json({
+          success: true,
+          user: {
+            ...safeCustomer,
+            profile_image_url: presignedUrl,
+            avatar: presignedUrl || safeCustomer.avatar || null
+          }
+        });
       }
     }
   } catch (error) {

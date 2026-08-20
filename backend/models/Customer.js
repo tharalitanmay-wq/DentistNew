@@ -32,6 +32,11 @@ const Customer = sequelize.define('Customer', {
   password: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  profile_image_key: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: null
   }
 }, {
   tableName: 'customers',

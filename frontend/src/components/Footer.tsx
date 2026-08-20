@@ -5,13 +5,17 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Sparkles, Phone, Mail, MapPin, Clock, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+import { useAuth } from '@/context/AuthContext';
 import ToothIcon from '@/components/ToothIcon';
+
+import { getApiUrl } from '@/config/api';
 
 export default function Footer() {
   const { theme } = useTheme();
+  const { user } = useAuth();
   const pathname = usePathname();
 
-  if (pathname === '/login' || pathname === '/register' || pathname === '/signin') {
+  if (user || pathname === '/login' || pathname === '/register' || pathname === '/signin' || pathname.startsWith('/dashboard')) {
     return null;
   }
 
@@ -128,7 +132,7 @@ export default function Footer() {
           <div className="flex items-center space-x-6">
             <Link href="/privacy" className="hover:text-slate-700 dark:hover:text-slate-300">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-slate-700 dark:hover:text-slate-300">Terms of Service</Link>
-            <a href="http://localhost:3001" target="_blank" rel="noreferrer" className="text-cyan-600 dark:text-cyan-400 font-semibold hover:underline flex items-center space-x-1">
+            <a href={getApiUrl('/admin')} target="_blank" rel="noreferrer" className="text-cyan-600 dark:text-cyan-400 font-semibold hover:underline flex items-center space-x-1">
               <span>Admin CMS Portal</span>
               <ArrowRight className="w-3 h-3 ml-0.5" />
             </a>

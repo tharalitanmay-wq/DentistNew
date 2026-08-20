@@ -3,11 +3,13 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { MessageCircle } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 export default function WhatsAppButton() {
   const pathname = usePathname();
+  const { user } = useAuth();
 
-  if (pathname === '/login' || pathname === '/register' || pathname === '/signin') {
+  if (user || pathname === '/login' || pathname === '/register' || pathname === '/signin' || pathname.startsWith('/dashboard')) {
     return null;
   }
 

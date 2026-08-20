@@ -35,6 +35,11 @@ const User = sequelize.define('User', {
   avatar: {
     type: DataTypes.STRING,
     defaultValue: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400'
+  },
+  profile_image_key: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    defaultValue: null
   }
 }, {
   timestamps: true,

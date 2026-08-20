@@ -61,25 +61,27 @@ export default function Navbar() {
           : 'bg-navy-900/80 backdrop-blur-xl border-b border-white/10 py-3 shadow-2xl' 
         : 'bg-transparent py-5'
     }`}>
-      {/* Top Banner Announcement */}
-      <div className={`hidden lg:flex justify-between items-center px-8 pb-2 border-b text-xs tracking-wider ${
-        theme === 'light' ? 'border-slate-200 text-slate-600' : 'border-white/5 text-slate-400'
-      }`}>
-        <div className="flex items-center space-x-6">
-          <span className="flex items-center text-cyan-600 dark:text-cyan-400 font-medium">
-            <Sparkles className="w-3.5 h-3.5 mr-1.5 animate-pulse text-cyan-500" />
-            Complimentary 3D Cosmetic Smile Simulation for New Patients
-          </span>
-          <span className="flex items-center text-slate-600 dark:text-slate-400">
-            <Phone className="w-3.5 h-3.5 mr-1.5 text-cyan-600 dark:text-cyan-400" />
-            Concierge Emergency: +1 (800) 999-DENT
-          </span>
+      {/* Top Banner Announcement - Visible only on Home Page */}
+      {pathname === '/' && (
+        <div className={`hidden lg:flex justify-between items-center px-8 pb-2 border-b text-xs tracking-wider ${
+          theme === 'light' ? 'border-slate-200 text-slate-600' : 'border-white/5 text-slate-400'
+        }`}>
+          <div className="flex items-center space-x-6">
+            <span className="flex items-center text-cyan-600 dark:text-cyan-400 font-medium">
+              <Sparkles className="w-3.5 h-3.5 mr-1.5 animate-pulse text-cyan-500" />
+              Complimentary 3D Cosmetic Smile Simulation for New Patients
+            </span>
+            <span className="flex items-center text-slate-600 dark:text-slate-400">
+              <Phone className="w-3.5 h-3.5 mr-1.5 text-cyan-600 dark:text-cyan-400" />
+              Concierge Emergency: +1 (800) 999-DENT
+            </span>
+          </div>
+          <div className="flex items-center space-x-4">
+            <span className="text-slate-600 dark:text-slate-400">740 Park Ave, New York</span>
+            <span className="text-cyan-600 dark:text-cyan-400 font-semibold">Mon - Sat: 8am - 7pm</span>
+          </div>
         </div>
-        <div className="flex items-center space-x-4">
-          <span className="text-slate-600 dark:text-slate-400">740 Park Ave, New York</span>
-          <span className="text-cyan-600 dark:text-cyan-400 font-semibold">Mon - Sat: 8am - 7pm</span>
-        </div>
-      </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between mt-1">
         {/* Logo */}
@@ -97,19 +99,17 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop React Bits GooeyNav Integration - Rendered only when NOT logged in */}
-        {!user && (
-          <div className="hidden md:block">
-            <GooeyNav
-              items={navItems}
-              particleCount={18}
-              particleDistances={[80, 12]}
-              particleR={250}
-              animationTime={500}
-              timeVariance={600}
-            />
-          </div>
-        )}
+        {/* Desktop React Bits GooeyNav Integration */}
+        <div className="hidden md:block">
+          <GooeyNav
+            items={navItems}
+            particleCount={18}
+            particleDistances={[80, 12]}
+            particleR={250}
+            animationTime={500}
+            timeVariance={600}
+          />
+        </div>
 
         {/* Action Buttons */}
         <div className="hidden sm:flex items-center space-x-3">
@@ -148,8 +148,12 @@ export default function Navbar() {
                     : 'bg-navy-900/90 border-white/10 text-white hover:border-cyan-400/50 hover:shadow-cyan-400/10'
                 }`}
               >
-                <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-cyan-500 to-sky-300 text-slate-950 flex items-center justify-center font-bold text-[11px] shadow-sm">
-                  {user.name ? user.name[0].toUpperCase() : 'P'}
+                <div className="w-6 h-6 rounded-full overflow-hidden bg-gradient-to-tr from-cyan-500 to-sky-300 text-slate-950 flex items-center justify-center font-bold text-[11px] shadow-sm shrink-0">
+                  {user.profile_image_url || (user.avatar && !user.avatar.includes('unsplash') ? user.avatar : null) ? (
+                    <img src={user.profile_image_url || user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span>{user.name ? user.name[0].toUpperCase() : 'P'}</span>
+                  )}
                 </div>
                 <div className="flex flex-col text-left">
                   <span className="text-xs font-bold leading-none tracking-tight group-hover:text-cyan-500 transition-colors">

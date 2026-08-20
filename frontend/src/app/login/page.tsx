@@ -20,6 +20,7 @@ import {
   Fingerprint
 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+import { getApiUrl } from '@/config/api';
 
 function LoginContent() {
   const { user, login } = useAuth();
@@ -43,7 +44,7 @@ function LoginContent() {
   useEffect(() => {
     if (user) {
       if (user.role === 'admin') {
-        window.location.href = 'http://localhost:5000/admin';
+        window.location.href = getApiUrl('/admin');
       } else {
         router.push('/dashboard');
       }
@@ -68,7 +69,7 @@ function LoginContent() {
     setSubmitting(true);
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch(getApiUrl('/api/auth/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -79,7 +80,7 @@ function LoginContent() {
       if (res.ok && data.success) {
         login(data.token, data.user);
         if (data.user?.role === 'admin') {
-          window.location.href = 'http://localhost:5000/admin';
+          window.location.href = getApiUrl('/admin');
         } else {
           router.push('/dashboard');
         }

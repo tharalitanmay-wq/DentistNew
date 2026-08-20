@@ -21,6 +21,7 @@ const faqRoutes = require('./routes/faqRoutes');
 const settingRoutes = require('./routes/settingRoutes');
 const aiChatRoutes = require('./routes/aiChatRoutes');
 const queueRoutes = require('./routes/queueRoutes');
+const profileRoutes = require('./routes/profileRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -50,6 +51,7 @@ app.use('/uploads', express.static(uploadsDir));
 
 // Register Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/profile', profileRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/doctors', doctorRoutes);
 app.use('/api/services', serviceRoutes);

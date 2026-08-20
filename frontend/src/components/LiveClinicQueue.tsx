@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Clock, CheckCircle2, Sparkles, RefreshCw, AlertCircle, MapPin, Hash } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+import { getApiUrl } from '@/config/api';
 
 export default function LiveClinicQueue() {
   const { theme } = useTheme();
@@ -24,7 +25,7 @@ export default function LiveClinicQueue() {
 
   const fetchLiveQueue = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/queue/today');
+      const res = await fetch(getApiUrl('/api/queue/today'));
       const data = await res.json();
       if (data.success) {
         setQueueData({
