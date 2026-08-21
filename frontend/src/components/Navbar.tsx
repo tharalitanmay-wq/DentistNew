@@ -18,6 +18,11 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Hide Navbar completely on Login and Registration pages
+  if (pathname === '/login' || pathname === '/register' || pathname === '/signin') {
+    return null;
+  }
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
