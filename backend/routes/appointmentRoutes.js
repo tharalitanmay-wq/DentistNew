@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { createAppointment, getMyAppointments, getAllAppointments, updateAppointmentStatus, deleteAppointment } = require('../controllers/appointmentController');
 const { authenticate, requireRole } = require('../middleware/auth');
-const upload = require('../middleware/upload');
+const { upload } = require('../middleware/upload');
 
 // Public or Patient authenticated creation with file report attachment option
 router.post('/', upload.single('reportFile'), createAppointment);

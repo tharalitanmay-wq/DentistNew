@@ -69,8 +69,8 @@ export default function RegisterPage() {
         setAuthError(data.message || 'Registration failed. Please check your inputs.');
         setSubmitting(false);
       }
-    } catch (err) {
-      setAuthError('Registration failed. Please try again.');
+    } catch (err: any) {
+      setAuthError(err?.message || 'Registration failed. Unable to connect to server. Please ensure the backend is running.');
       setSubmitting(false);
     }
   };

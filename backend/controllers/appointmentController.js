@@ -3,6 +3,8 @@ const Appointment = require('../models/Appointment');
 const { getIsConnected } = require('../config/db');
 const { JWT_SECRET } = require('../middleware/auth');
 const jwt = require('jsonwebtoken');
+const path = require('path');
+const fs = require('fs');
 
 const memoryAppointments = [
   {
@@ -51,7 +53,18 @@ const createAppointment = async (req, res) => {
 
     let reportFile = '';
     if (req.file) {
-      reportFile = '/uploads/' + req.file.filename;
+      if (req.file.filename) {
+        reportFile = '/uploads/' + req.file.filename;
+      } else if (req.file.buffer) {
+        const ext = path.extname(req.file.originalname || '') || '.pdf';
+        const fileName = `report-${Date.now()}-${Math.random().toString(36).substring(2, 7)}${ext}`;
+        const uploadDir = path.join(__dirname, '../uploads');
+        if (!fs.existsSync(uploadDir)) {
+          fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        fs.writeFileSync(path.join(uploadDir, fileName), req.file.buffer);
+        reportFile = '/uploads/' + fileName;
+      }
     }
 
     // Try decoding auth token if passed in Authorization header

@@ -100,6 +100,7 @@ const uploadSinglePhoto = (req, res, next) => {
 };
 
 module.exports = {
+  upload,
   uploadSinglePhoto,
   validateImageBuffer,
   MAX_FILE_SIZE
