@@ -36,11 +36,13 @@ import {
   ChevronDown
 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import ProfilePhotoUpload from '@/components/ProfilePhotoUpload';
 import ToothIcon from '@/components/ToothIcon';
 
 export default function DashboardPage() {
   const { user, token, login, logout, updateUser, isLoading } = useAuth();
+  const router = useRouter();
   const { theme, toggleTheme } = useTheme();
   const isLight = theme === 'light';
 
@@ -182,6 +184,7 @@ export default function DashboardPage() {
 
   const handleLogout = () => {
     logout();
+    router.push('/');
   };
 
   // Greeting helper based on local time
