@@ -41,7 +41,8 @@ app.use(express.urlencoded({ extended: true }));
 // Rate Limiter
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 2000,
+  max: 5000,
+  skip: (req) => req.path.startsWith('/profile') || req.path.startsWith('/auth'),
   message: { success: false, message: 'Too many requests from this IP, please try again later.' }
 });
 app.use('/api', limiter);
