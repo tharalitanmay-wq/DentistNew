@@ -156,6 +156,7 @@
 }
 
 .gooey-nav-container .effect.text {
+  display: none !important;
   color: #334155;
   font-size: 0.75rem;
   font-weight: 700;
