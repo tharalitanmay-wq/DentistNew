@@ -46,6 +46,7 @@ export default function Navbar() {
     { label: 'Book Appointment', href: '/appointment' },
   ];
 
+  const showGooeyNav = !user && pathname !== '/register' && pathname !== '/login' && pathname !== '/signin';
   const navItems = user ? loggedInNavItems : publicNavItems;
 
   const handleLogout = () => {
@@ -99,17 +100,19 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop React Bits GooeyNav Integration */}
-        <div className="hidden md:block">
-          <GooeyNav
-            items={navItems}
-            particleCount={18}
-            particleDistances={[80, 12]}
-            particleR={250}
-            animationTime={500}
-            timeVariance={600}
-          />
-        </div>
+        {/* Desktop React Bits GooeyNav Integration - Hidden after login and during registration/login */}
+        {showGooeyNav && (
+          <div className="hidden md:block">
+            <GooeyNav
+              items={navItems}
+              particleCount={18}
+              particleDistances={[80, 12]}
+              particleR={250}
+              animationTime={500}
+              timeVariance={600}
+            />
+          </div>
+        )}
 
         {/* Action Buttons */}
         <div className="hidden sm:flex items-center space-x-3">
