@@ -45,8 +45,8 @@ export default function LiveClinicQueue() {
 
   useEffect(() => {
     fetchLiveQueue();
-    // Auto-refresh live count every 5 seconds
-    const interval = setInterval(fetchLiveQueue, 5000);
+    // Auto-refresh live count every 15 seconds
+    const interval = setInterval(fetchLiveQueue, 15000);
     return () => clearInterval(interval);
   }, []);
 

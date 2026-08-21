@@ -41,7 +41,7 @@ app.use(express.urlencoded({ extended: true }));
 // Rate Limiter
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 300,
+  max: 2000,
   message: { success: false, message: 'Too many requests from this IP, please try again later.' }
 });
 app.use('/api', limiter);
