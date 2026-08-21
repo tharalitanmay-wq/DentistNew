@@ -37,6 +37,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import ProfilePhotoUpload from '@/components/ProfilePhotoUpload';
+import ToothIcon from '@/components/ToothIcon';
 
 export default function DashboardPage() {
   const { user, token, login, logout, updateUser, isLoading } = useAuth();
@@ -101,25 +102,25 @@ export default function DashboardPage() {
       setAppointments([
         {
           _id: 'app-101',
-          doctorName: 'Sagar Mane',
-          serviceName: 'Climate Change and Environmental Sustainability: Protecting the Future of Our Planet',
+          doctorName: 'Dr. Julian Vance',
+          serviceName: '3D Computer-Guided Dental Implants',
           date: '2026-08-15',
           timeSlot: '02:00 PM',
-          status: 'DRAFT',
-          typeTag: 'ARTICLE',
-          notes: 'Comprehensive clinical research report and environmental impact assessment.',
+          status: 'Confirmed',
+          typeTag: 'IMPLANT',
+          notes: 'Single molar implant consultation with 3D CBCT scan review and treatment plan.',
           reportFile: '/uploads/sample-dental-report.pdf',
           createdAt: '18 min ago'
         },
         {
           _id: 'app-102',
           doctorName: 'Dr. Evelyn Sterling',
-          serviceName: 'Signature Porcelain Veneers & Cosmetic Smile Design',
+          serviceName: 'Signature Porcelain Veneers',
           date: '2026-08-28',
           timeSlot: '11:00 AM',
-          status: 'PUBLISHED',
-          typeTag: 'BLOG',
-          notes: 'Full arch smile transformation review and diagnostic mockup.',
+          status: 'Confirmed',
+          typeTag: 'COSMETIC',
+          notes: 'Full arch smile transformation review, shade selection, and diagnostic mockup.',
           reportFile: '/uploads/sample-dental-report.pdf',
           createdAt: '5 days ago'
         }
@@ -207,7 +208,7 @@ export default function DashboardPage() {
       <div className="min-h-screen bg-[#fdf6e2] dark:bg-[#0c0f17] flex flex-col items-center justify-center space-y-4">
         <div className="w-12 h-12 rounded-full border-3 border-[#7a6448] border-t-transparent animate-spin" />
         <span className="text-xs uppercase tracking-widest text-[#7a6448] dark:text-amber-400 font-bold font-serif">
-          Loading Patient Desk...
+          Loading Patient Concierge...
         </span>
       </div>
     );
@@ -218,17 +219,17 @@ export default function DashboardPage() {
     return (
       <div className="min-h-screen bg-[#fdf6e2] dark:bg-[#0c0f17] flex items-center justify-center p-4">
         <div className={`max-w-md w-full rounded-3xl p-8 border space-y-6 shadow-xl transition-all ${
-          isLight ? 'bg-[#fffef8] border-[#ebdcb8] shadow-amber-900/5' : 'bg-slate-900 border-white/10 shadow-black/50'
+          isLight ? 'bg-[#fffdf8] border-[#ebdcb8] shadow-amber-900/5' : 'bg-slate-900 border-white/10 shadow-black/50'
         }`}>
           <div className="text-center space-y-2">
             <div className="w-14 h-14 rounded-2xl bg-[#f5e7b2] text-[#5c4a33] dark:text-amber-400 flex items-center justify-center mx-auto border border-[#ebdcb8] shadow-sm">
-              <User className="w-7 h-7" />
+              <ToothIcon className="w-7 h-7" />
             </div>
             <h2 className={`text-2xl font-serif font-bold tracking-tight ${isLight ? 'text-[#2c221b]' : 'text-white'}`}>
-              Vritant Archive Desk
+              Pearl Dental Studio Portal
             </h2>
             <p className={`text-xs ${isLight ? 'text-[#705f4e]' : 'text-slate-400'}`}>
-              Sign in to access system administration, appointments & archives
+              Sign in to manage consultations, digital 3D scans, and clinical reports
             </p>
           </div>
 
@@ -278,7 +279,7 @@ export default function DashboardPage() {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Tanvi Mane"
+                  placeholder="Tanmay"
                   className={`w-full px-4 py-3 border rounded-xl text-xs focus:outline-none focus:border-[#7a6448] transition-all ${
                     isLight ? 'bg-[#f8f3e8] border-[#ebdcb8] text-[#2c221b]' : 'bg-slate-950 border-white/15 text-white'
                   }`}
@@ -293,7 +294,7 @@ export default function DashboardPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="patient@example.com"
+                placeholder="tanmay@gmail.com"
                 className={`w-full px-4 py-3 border rounded-xl text-xs focus:outline-none focus:border-[#7a6448] transition-all ${
                   isLight ? 'bg-[#f8f3e8] border-[#ebdcb8] text-[#2c221b]' : 'bg-slate-950 border-white/15 text-white'
                 }`}
@@ -333,7 +334,7 @@ export default function DashboardPage() {
               type="submit"
               className="w-full py-3.5 rounded-xl bg-[#28231d] text-[#e5d5b7] font-serif font-bold text-xs uppercase tracking-wider hover:bg-[#383028] transition-all shadow-md mt-2"
             >
-              {isLoginTab ? 'Sign In to Desk' : 'Create Account'}
+              {isLoginTab ? 'Sign In to Portal' : 'Create Patient Account'}
             </button>
           </form>
         </div>
@@ -341,22 +342,23 @@ export default function DashboardPage() {
     );
   }
 
-  // 2. AUTHENTICATED DESK DASHBOARD (100% MATCHING REFERENCE UI)
-  const firstName = user.name ? user.name.split(' ')[0] : 'Tanvi';
+  // 2. AUTHENTICATED PEARL DENTAL CONCIERGE DASHBOARD (MATCHING DESK ARCHITECTURE & DENTAL REQUIREMENT)
+  const firstName = user.name ? user.name.split(' ')[0] : 'Patient';
 
   return (
     <div className="flex min-h-screen bg-[#fdf6e2] dark:bg-[#090d16] text-[#2c221b] dark:text-slate-100 font-sans selection:bg-amber-500/20">
 
-      {/* LEFT SIDEBAR (Dark Charcoal/Brown Sidebar matching Vritant reference) */}
+      {/* LEFT SIDEBAR (Dark Charcoal/Brown Sidebar tailored for Pearl Dental Studio) */}
       <aside className="w-64 bg-[#181512] dark:bg-[#0c0f17] text-[#d6c7b2] flex flex-col justify-between border-r border-[#29231d] shrink-0 hidden md:flex min-h-screen sticky top-0 h-screen overflow-y-auto">
         <div className="p-6 space-y-7">
           {/* Logo & Header */}
           <div className="space-y-1">
-            <h2 className="text-2xl font-serif italic font-bold text-[#e8d7ba] tracking-tight">
-              Vritant
+            <h2 className="text-2xl font-serif font-bold text-[#e8d7ba] tracking-tight flex items-center space-x-2">
+              <ToothIcon className="w-5 h-5 text-cyan-400 shrink-0" />
+              <span>Pearl</span>
             </h2>
-            <p className="text-[9px] tracking-[0.3em] text-[#786958] uppercase font-semibold">
-              ARCHIVE DESK
+            <p className="text-[9px] tracking-[0.25em] text-[#786958] uppercase font-semibold">
+              DENTAL CONCIERGE
             </p>
           </div>
 
@@ -373,15 +375,15 @@ export default function DashboardPage() {
               }`}
             >
               <LayoutDashboard className="w-4 h-4 text-[#c4b193]" />
-              <span>Dashboard</span>
+              <span>Dashboard Overview</span>
             </button>
 
             <Link
               href="/appointment"
               className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#a3937d] hover:text-[#e8d7ba] hover:bg-[#231d17] transition-all"
             >
-              <Upload className="w-4 h-4 text-[#8c7b68]" />
-              <span>Upload Article</span>
+              <Calendar className="w-4 h-4 text-[#8c7b68]" />
+              <span>Book Appointment</span>
             </Link>
 
             <button
@@ -392,41 +394,38 @@ export default function DashboardPage() {
                   : 'text-[#a3937d] hover:text-[#e8d7ba] hover:bg-[#231d17]'
               }`}
             >
-              <BookOpen className="w-4 h-4 text-[#8c7b68]" />
-              <span>Upload Blogs</span>
+              <Stethoscope className="w-4 h-4 text-[#8c7b68]" />
+              <span>My Consultations & Notes</span>
             </button>
 
-            <div className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-[#a3937d] hover:text-[#e8d7ba] hover:bg-[#231d17] cursor-pointer transition-all">
+            <Link
+              href="/queue"
+              className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-[#a3937d] hover:text-[#e8d7ba] hover:bg-[#231d17] transition-all"
+            >
               <div className="flex items-center space-x-3">
-                <Video className="w-4 h-4 text-[#8c7b68]" />
-                <span>Upload Media</span>
+                <Activity className="w-4 h-4 text-[#8c7b68] animate-pulse" />
+                <span>Live Clinic Queue</span>
               </div>
-              <ChevronDown className="w-3.5 h-3.5 text-[#695847]" />
-            </div>
+              <span className="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-mono font-bold">
+                Live
+              </span>
+            </Link>
 
-            <div className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-[#a3937d] hover:text-[#e8d7ba] hover:bg-[#231d17] cursor-pointer transition-all">
-              <div className="flex items-center space-x-3">
-                <Layers className="w-4 h-4 text-[#8c7b68]" />
-                <span>Unpublished Work</span>
-              </div>
-              <ChevronDown className="w-3.5 h-3.5 text-[#695847]" />
-            </div>
+            <Link
+              href="/services"
+              className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#a3937d] hover:text-[#e8d7ba] hover:bg-[#231d17] transition-all"
+            >
+              <Sparkles className="w-4 h-4 text-[#8c7b68]" />
+              <span>Cosmetic Services</span>
+            </Link>
 
-            <div className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-[#a3937d] hover:text-[#e8d7ba] hover:bg-[#231d17] cursor-pointer transition-all">
-              <div className="flex items-center space-x-3">
-                <FileText className="w-4 h-4 text-[#8c7b68]" />
-                <span>Published Work</span>
-              </div>
-              <ChevronDown className="w-3.5 h-3.5 text-[#695847]" />
-            </div>
-
-            <div className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-[#a3937d] hover:text-[#e8d7ba] hover:bg-[#231d17] cursor-pointer transition-all">
-              <div className="flex items-center space-x-3">
-                <Activity className="w-4 h-4 text-[#8c7b68]" />
-                <span>Homepage Management</span>
-              </div>
-              <ChevronDown className="w-3.5 h-3.5 text-[#695847]" />
-            </div>
+            <Link
+              href="/doctors"
+              className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#a3937d] hover:text-[#e8d7ba] hover:bg-[#231d17] transition-all"
+            >
+              <Users className="w-4 h-4 text-[#8c7b68]" />
+              <span>Our Specialists</span>
+            </Link>
 
             <button
               onClick={() => setActiveTab('profile')}
@@ -436,35 +435,29 @@ export default function DashboardPage() {
                   : 'text-[#a3937d] hover:text-[#e8d7ba] hover:bg-[#231d17]'
               }`}
             >
-              <Users className="w-4 h-4 text-[#8c7b68]" />
-              <span>Update Our Team</span>
+              <User className="w-4 h-4 text-[#8c7b68]" />
+              <span>Profile & Settings</span>
             </button>
 
             <Link
-              href="/doctors"
+              href="/contact"
               className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#a3937d] hover:text-[#e8d7ba] hover:bg-[#231d17] transition-all"
             >
-              <User className="w-4 h-4 text-[#8c7b68]" />
-              <span>Update Our Authors</span>
+              <PhoneCall className="w-4 h-4 text-[#8c7b68]" />
+              <span>Emergency Direct Line</span>
             </Link>
-
-            <div className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#a3937d] hover:text-[#e8d7ba] hover:bg-[#231d17] cursor-pointer transition-all">
-              <Sparkles className="w-4 h-4 text-[#8c7b68]" />
-              <span>Theme Management</span>
-            </div>
-
-            <div className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#a3937d] hover:text-[#e8d7ba] hover:bg-[#231d17] cursor-pointer transition-all">
-              <Shield className="w-4 h-4 text-[#8c7b68]" />
-              <span>Access Control</span>
-            </div>
 
           </nav>
         </div>
 
         {/* Sidebar Footer Circle Avatar */}
         <div className="p-4 border-t border-[#29231d] flex items-center justify-between">
-          <div className="w-9 h-9 rounded-full bg-[#241d17] border border-[#3d3328] text-[#e8d7ba] flex items-center justify-center font-serif font-bold text-sm shadow-inner">
-            N
+          <div className="w-9 h-9 rounded-full bg-[#241d17] border border-[#3d3328] text-[#e8d7ba] flex items-center justify-center font-serif font-bold text-sm shadow-inner overflow-hidden">
+            {user.profile_image_url ? (
+              <img src={user.profile_image_url} alt={user.name} className="w-full h-full object-cover" />
+            ) : (
+              <span>{firstName[0]}</span>
+            )}
           </div>
           <button
             onClick={handleLogout}
@@ -489,7 +482,7 @@ export default function DashboardPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search archive..."
+              placeholder="Search appointments, doctors, notes..."
               className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-xs focus:outline-none transition-all ${
                 isLight 
                   ? 'bg-[#f5e7b2] border border-[#e2d398] text-[#3d2e1b] placeholder:text-[#806b4d] focus:border-[#7a6448]' 
@@ -511,19 +504,19 @@ export default function DashboardPage() {
             </button>
 
             <div className="flex items-center space-x-3 text-right">
-              <div className="w-9 h-9 rounded-full bg-[#f2e2be] text-[#3d2e1b] flex items-center justify-center font-serif font-bold text-xs border border-[#decb9f]">
+              <div className="w-9 h-9 rounded-full bg-[#f2e2be] text-[#3d2e1b] flex items-center justify-center font-serif font-bold text-xs border border-[#decb9f] overflow-hidden">
                 {user.profile_image_url || (user.avatar && !user.avatar.includes('unsplash') ? user.avatar : null) ? (
-                  <img src={user.profile_image_url || user.avatar} alt={user.name} className="w-full h-full object-cover rounded-full" />
+                  <img src={user.profile_image_url || user.avatar} alt={user.name} className="w-full h-full object-cover" />
                 ) : (
-                  <User className="w-4 h-4 text-[#5c4a35]" />
+                  <span>{firstName[0]}</span>
                 )}
               </div>
               <div className="hidden sm:block">
                 <span className="block text-xs font-serif font-bold text-[#2c221b] dark:text-white leading-none">
-                  {user.name || 'Tanvi Mane'}
+                  {user.name}
                 </span>
                 <span className="text-[10px] text-[#705e49] dark:text-slate-400 font-medium leading-none">
-                  Super Admin
+                  Patient Portal
                 </span>
               </div>
             </div>
@@ -537,7 +530,7 @@ export default function DashboardPage() {
               {getGreeting()}, {firstName}.
             </h1>
             <p className="text-xs text-[#705e49] dark:text-slate-400">
-              Here is what's happening in the system administration and archives right now.
+              Welcome to your Pearl Dental Studio concierge portal & clinical records.
             </p>
           </div>
 
@@ -563,90 +556,90 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* 8-METRIC STAT CARDS GRID (Exact 4x2 Layout from Reference Image) */}
+        {/* 8-METRIC STAT CARDS GRID (Tailored Specifically for Pearl Dental Studio) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           
-          {/* Card 1: ARTICLES */}
+          {/* Card 1: APPOINTMENTS */}
           <div className={`rounded-2xl p-5 border shadow-xs transition-all ${
             isLight ? 'bg-[#fffdf8] border-[#ebdcb8]' : 'bg-slate-900 border-white/10'
           }`}>
             <div className="flex items-center space-x-3.5">
               <div className="p-3 rounded-xl bg-[#f8eed6] text-[#7a603a] border border-[#ecd9ab]">
-                <FileText className="w-5 h-5" />
+                <Calendar className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#85735d] dark:text-slate-400 block">ARTICLES</span>
-                <span className="text-xl font-serif font-bold text-[#2c221b] dark:text-white">11</span>
-                <span className="text-[11px] text-[#85735d] dark:text-slate-400 ml-1.5">published</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#85735d] dark:text-slate-400 block">APPOINTMENTS</span>
+                <span className="text-xl font-serif font-bold text-[#2c221b] dark:text-white">{appointments.length}</span>
+                <span className="text-[11px] text-[#85735d] dark:text-slate-400 ml-1.5">scheduled</span>
               </div>
             </div>
           </div>
 
-          {/* Card 2: BLOGS */}
+          {/* Card 2: TREATMENT PLANS */}
           <div className={`rounded-2xl p-5 border shadow-xs transition-all ${
             isLight ? 'bg-[#fffdf8] border-[#ebdcb8]' : 'bg-slate-900 border-white/10'
           }`}>
             <div className="flex items-center space-x-3.5">
               <div className="p-3 rounded-xl bg-[#e5f4e7] text-[#3b7544] border border-[#c4e6c9]">
-                <BookOpen className="w-5 h-5" />
+                <Stethoscope className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#85735d] dark:text-slate-400 block">BLOGS</span>
-                <span className="text-xl font-serif font-bold text-[#2c221b] dark:text-white">0</span>
-                <span className="text-[11px] text-[#85735d] dark:text-slate-400 ml-1.5">live posts</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#85735d] dark:text-slate-400 block">TREATMENT PLANS</span>
+                <span className="text-xl font-serif font-bold text-[#2c221b] dark:text-white">3</span>
+                <span className="text-[11px] text-[#85735d] dark:text-slate-400 ml-1.5">active procedures</span>
               </div>
             </div>
           </div>
 
-          {/* Card 3: PODCASTS */}
+          {/* Card 3: DENTAL REPORTS */}
           <div className={`rounded-2xl p-5 border shadow-xs transition-all ${
             isLight ? 'bg-[#fffdf8] border-[#ebdcb8]' : 'bg-slate-900 border-white/10'
           }`}>
             <div className="flex items-center space-x-3.5">
               <div className="p-3 rounded-xl bg-[#efe6f8] text-[#694285] border border-[#d9c4ec]">
-                <Mic className="w-5 h-5" />
+                <FileText className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#85735d] dark:text-slate-400 block">PODCASTS</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#85735d] dark:text-slate-400 block">DENTAL REPORTS</span>
                 <span className="text-xl font-serif font-bold text-[#2c221b] dark:text-white">4</span>
-                <span className="text-[11px] text-[#85735d] dark:text-slate-400 ml-1.5">episodes live</span>
+                <span className="text-[11px] text-[#85735d] dark:text-slate-400 ml-1.5">PDF scans ready</span>
               </div>
             </div>
           </div>
 
-          {/* Card 4: INTERVIEWS */}
+          {/* Card 4: SPECIALISTS */}
           <div className={`rounded-2xl p-5 border shadow-xs transition-all ${
             isLight ? 'bg-[#fffdf8] border-[#ebdcb8]' : 'bg-slate-900 border-white/10'
           }`}>
             <div className="flex items-center space-x-3.5">
               <div className="p-3 rounded-xl bg-[#e3f0f7] text-[#336888] border border-[#c5e1f0]">
-                <Video className="w-5 h-5" />
+                <Users className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#85735d] dark:text-slate-400 block">INTERVIEWS</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#85735d] dark:text-slate-400 block">SPECIALISTS</span>
                 <span className="text-xl font-serif font-bold text-[#2c221b] dark:text-white">6</span>
-                <span className="text-[11px] text-[#85735d] dark:text-slate-400 ml-1.5">published</span>
+                <span className="text-[11px] text-[#85735d] dark:text-slate-400 ml-1.5">assigned dentists</span>
               </div>
             </div>
           </div>
 
-          {/* Card 5: SHORT MEDIA */}
+          {/* Card 5: SMILE SIMULATIONS */}
           <div className={`rounded-2xl p-5 border shadow-xs transition-all ${
             isLight ? 'bg-[#fffdf8] border-[#ebdcb8]' : 'bg-slate-900 border-white/10'
           }`}>
             <div className="flex items-center space-x-3.5">
               <div className="p-3 rounded-xl bg-[#f8efe0] text-[#7d5d2d] border border-[#edd7b6]">
-                <Layers className="w-5 h-5" />
+                <Sparkles className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#85735d] dark:text-slate-400 block">SHORT MEDIA</span>
-                <span className="text-xl font-serif font-bold text-[#2c221b] dark:text-white">0</span>
-                <span className="text-[11px] text-[#85735d] dark:text-slate-400 ml-1.5">pieces live</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#85735d] dark:text-slate-400 block">SMILE SIMULATIONS</span>
+                <span className="text-xl font-serif font-bold text-[#2c221b] dark:text-white">2</span>
+                <span className="text-[11px] text-[#85735d] dark:text-slate-400 ml-1.5">3D mockups</span>
               </div>
             </div>
           </div>
 
-          {/* Card 6: PENDING DRAFTS */}
+          {/* Card 6: NEXT CONSULTATION */}
           <div className={`rounded-2xl p-5 border shadow-xs transition-all ${
             isLight ? 'bg-[#fffdf8] border-[#ebdcb8]' : 'bg-slate-900 border-white/10'
           }`}>
@@ -655,54 +648,56 @@ export default function DashboardPage() {
                 <Clock className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#85735d] dark:text-slate-400 block">PENDING DRAFTS</span>
-                <span className="text-xl font-serif font-bold text-[#2c221b] dark:text-white">12</span>
-                <span className="text-[11px] text-[#85735d] dark:text-slate-400 ml-1.5">awaiting review</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#85735d] dark:text-slate-400 block">NEXT CONSULTATION</span>
+                <span className="text-xl font-serif font-bold text-[#2c221b] dark:text-white">
+                  {appointments[0] ? appointments[0].date.split('-')[2] || '15' : 'None'}
+                </span>
+                <span className="text-[11px] text-[#85735d] dark:text-slate-400 ml-1.5">upcoming visit</span>
               </div>
             </div>
           </div>
 
-          {/* Card 7: TOTAL PUBLISHED */}
+          {/* Card 7: MEMBERSHIP TIER */}
           <div className={`rounded-2xl p-5 border shadow-xs transition-all ${
             isLight ? 'bg-[#fffdf8] border-[#ebdcb8]' : 'bg-slate-900 border-white/10'
           }`}>
             <div className="flex items-center space-x-3.5">
               <div className="p-3 rounded-xl bg-[#e6f4ed] text-[#2c6e49] border border-[#c4e7d4]">
-                <BookOpen className="w-5 h-5" />
+                <Award className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#85735d] dark:text-slate-400 block">TOTAL PUBLISHED</span>
-                <span className="text-xl font-serif font-bold text-[#2c221b] dark:text-white">21</span>
-                <span className="text-[11px] text-[#85735d] dark:text-slate-400 ml-1.5">across all types</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#85735d] dark:text-slate-400 block">MEMBERSHIP TIER</span>
+                <span className="text-xl font-serif font-bold text-[#2c221b] dark:text-white">VIP</span>
+                <span className="text-[11px] text-[#85735d] dark:text-slate-400 ml-1.5">Platinum level</span>
               </div>
             </div>
           </div>
 
-          {/* Card 8: CONTRIBUTORS */}
+          {/* Card 8: CLINIC QUEUE */}
           <div className={`rounded-2xl p-5 border shadow-xs transition-all ${
             isLight ? 'bg-[#fffdf8] border-[#ebdcb8]' : 'bg-slate-900 border-white/10'
           }`}>
             <div className="flex items-center space-x-3.5">
               <div className="p-3 rounded-xl bg-[#e5f5f2] text-[#2b7067] border border-[#c2e8e3]">
-                <Users className="w-5 h-5" />
+                <Activity className="w-5 h-5 animate-pulse" />
               </div>
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#85735d] dark:text-slate-400 block">CONTRIBUTORS</span>
-                <span className="text-xl font-serif font-bold text-[#2c221b] dark:text-white">6</span>
-                <span className="text-[11px] text-[#85735d] dark:text-slate-400 ml-1.5">unique authors</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#85735d] dark:text-slate-400 block">CLINIC QUEUE</span>
+                <span className="text-xl font-serif font-bold text-[#2c221b] dark:text-white">Live</span>
+                <span className="text-[11px] text-[#85735d] dark:text-slate-400 ml-1.5">real-time wait</span>
               </div>
             </div>
           </div>
 
         </div>
 
-        {/* BOTTOM WORKSPACE (Two Columns Layout matching reference image) */}
+        {/* BOTTOM WORKSPACE (Two Columns Layout tailored for Dental Consultations) */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-4">
 
-          {/* LEFT COLUMN: RECENT SUBMISSIONS (2 Columns wide) */}
+          {/* LEFT COLUMN: RECENT CONSULTATIONS (2 Columns wide) */}
           <div className="lg:col-span-2 space-y-4">
             <h2 className="text-xl font-serif font-normal text-[#2c221b] dark:text-white">
-              Recent Submissions
+              Recent Consultations & Clinical Reports
             </h2>
 
             {loadingAppts ? (
@@ -710,14 +705,14 @@ export default function DashboardPage() {
                 isLight ? 'bg-[#fffdf8] border-[#ebdcb8] text-slate-600' : 'bg-slate-900 border-white/10 text-slate-400'
               }`}>
                 <div className="w-6 h-6 rounded-full border-2 border-[#7a6448] border-t-transparent animate-spin mx-auto" />
-                <p>Loading recent submissions...</p>
+                <p>Loading clinical consultations...</p>
               </div>
             ) : filteredAppointments.length === 0 ? (
               <div className={`rounded-2xl p-8 text-center space-y-3 border ${
                 isLight ? 'bg-[#fffdf8] border-[#ebdcb8]' : 'bg-slate-900 border-white/10'
               }`}>
-                <FileText className="w-8 h-8 text-[#7a6448]/40 mx-auto" />
-                <p className="text-xs text-[#705e49] dark:text-slate-400">No submissions matching your query.</p>
+                <Stethoscope className="w-8 h-8 text-[#7a6448]/40 mx-auto" />
+                <p className="text-xs text-[#705e49] dark:text-slate-400">No consultations matching your query.</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -734,10 +729,10 @@ export default function DashboardPage() {
                     <div className="flex items-center justify-between text-xs">
                       <div className="flex items-center space-x-2">
                         <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-[#f8eed6] text-[#7a603a] border border-[#ecd9ab]">
-                          {appt.typeTag || 'ARTICLE'}
+                          {appt.typeTag || 'CONSULTATION'}
                         </span>
-                        <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-[#fdf0e6] text-[#9c5836] border border-[#f5d7c3]">
-                          {appt.status || 'DRAFT'}
+                        <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-[#e5f4e7] text-[#2c6e49] border border-[#c4e7d4]">
+                          {appt.status || 'CONFIRMED'}
                         </span>
                       </div>
                       <span className="text-[11px] text-[#8c7b68] dark:text-slate-400 font-mono">
@@ -745,13 +740,13 @@ export default function DashboardPage() {
                       </span>
                     </div>
 
-                    {/* Title & Author */}
+                    {/* Title & Specialist */}
                     <div className="flex items-start space-x-3.5 pt-1">
                       <div className="p-3 rounded-xl bg-[#f8eed6] text-[#7a603a] border border-[#ecd9ab] shrink-0 mt-0.5">
-                        <FileText className="w-5 h-5" />
+                        <Stethoscope className="w-5 h-5" />
                       </div>
                       <div className="space-y-1">
-                        <h3 className="text-base font-serif font-normal text-[#2c221b] dark:text-white leading-snug">
+                        <h3 className="text-base font-serif font-bold text-[#2c221b] dark:text-white leading-snug">
                           {appt.serviceName}
                         </h3>
                         <p className="text-xs text-[#705e49] dark:text-slate-400">
@@ -760,7 +755,7 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    {/* Notes & Actions */}
+                    {/* Clinical Consultation Notes */}
                     {appt.notes && (
                       <p className="text-xs text-[#524436] dark:text-slate-300 bg-[#f8f3e6] dark:bg-slate-950 p-3.5 rounded-xl border border-[#ebdcb8] dark:border-white/5">
                         {appt.notes}
@@ -778,7 +773,7 @@ export default function DashboardPage() {
                         className="flex items-center space-x-1.5 text-xs font-bold text-[#7a603a] dark:text-cyan-400 hover:underline"
                       >
                         <Download className="w-3.5 h-3.5" />
-                        <span>Download Article PDF</span>
+                        <span>Download Dental Report (PDF)</span>
                       </a>
                     </div>
                   </div>
@@ -802,8 +797,8 @@ export default function DashboardPage() {
                     : 'bg-slate-900 border-white/10 hover:bg-slate-800 text-white'
                 }`}
               >
-                <FileText className="w-4.5 h-4.5 text-[#6e583c] shrink-0" />
-                <span className="text-xs font-semibold font-sans">Review Articles</span>
+                <Stethoscope className="w-4.5 h-4.5 text-[#6e583c] shrink-0" />
+                <span className="text-xs font-semibold font-sans">Review Consultations</span>
               </button>
 
               <button
@@ -811,7 +806,7 @@ export default function DashboardPage() {
                   if (appointments[0]?.reportFile) {
                     window.open(`http://localhost:5000${appointments[0].reportFile}`, '_blank');
                   } else {
-                    alert('No medical report file attached yet.');
+                    alert('No dental report file attached yet.');
                   }
                 }}
                 className={`w-full p-4 rounded-xl border text-left flex items-center space-x-3 transition-all ${
@@ -820,8 +815,8 @@ export default function DashboardPage() {
                     : 'bg-slate-900 border-white/10 hover:bg-slate-800 text-white'
                 }`}
               >
-                <Mic className="w-4.5 h-4.5 text-[#6e583c] shrink-0" />
-                <span className="text-xs font-semibold font-sans">Review Podcasts</span>
+                <FileText className="w-4.5 h-4.5 text-[#6e583c] shrink-0" />
+                <span className="text-xs font-semibold font-sans">View X-Ray & Reports</span>
               </button>
 
               <Link
@@ -832,9 +827,21 @@ export default function DashboardPage() {
                     : 'bg-slate-900 border-white/10 hover:bg-slate-800 text-white'
                 }`}
               >
-                <Video className="w-4.5 h-4.5 text-[#6e583c] shrink-0" />
-                <span className="text-xs font-semibold font-sans">Review Interviews</span>
+                <Calendar className="w-4.5 h-4.5 text-[#6e583c] shrink-0" />
+                <span className="text-xs font-semibold font-sans">Schedule Consultation</span>
               </Link>
+
+              <button
+                onClick={() => setActiveTab('profile')}
+                className={`w-full p-4 rounded-xl border text-left flex items-center space-x-3 transition-all ${
+                  isLight 
+                    ? 'bg-[#fffdf8] border-[#ebdcb8] hover:bg-[#f8f3e6] text-[#2c221b]' 
+                    : 'bg-slate-900 border-white/10 hover:bg-slate-800 text-white'
+                }`}
+              >
+                <User className="w-4.5 h-4.5 text-[#6e583c] shrink-0" />
+                <span className="text-xs font-semibold font-sans">Upload Profile Photo</span>
+              </button>
             </div>
           </div>
 
