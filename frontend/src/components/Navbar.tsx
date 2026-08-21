@@ -129,15 +129,6 @@ export default function Navbar() {
           {/* User Account / Login / Logout */}
           {user ? (
             <div className="flex items-center space-x-3">
-              {/* VIP Portal Status Indicator */}
-              <div className={`hidden lg:flex items-center space-x-2 px-3 py-1.5 rounded-full text-[11px] font-medium border ${
-                theme === 'light'
-                  ? 'bg-slate-100/80 border-slate-200 text-slate-700'
-                  : 'bg-navy-950/80 border-white/10 text-slate-300'
-              }`}>
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400/50" />
-                <span className="font-semibold tracking-wide uppercase text-[10px] text-cyan-600 dark:text-cyan-400">VIP Concierge Active</span>
-              </div>
 
               {/* User Avatar & Dashboard Link */}
               <Link
