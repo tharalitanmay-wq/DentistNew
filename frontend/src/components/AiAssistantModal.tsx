@@ -40,7 +40,7 @@ export default function AiAssistantModal() {
       const res = await fetch(getApiUrl('/api/ai-chat/query'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMsg })
+        body: JSON.stringify({ message: userMsg, history: messages })
       });
       const data = await res.json();
       if (data.success) {
