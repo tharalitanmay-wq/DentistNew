@@ -24,26 +24,24 @@ const handleAiQuery = async (req, res) => {
         clinicContext += '\n\nOur Expert Doctors:\n' + doctors.map(d => `- ${d.name} (${d.title}): Specializes in ${d.specialization}, ${d.experience} exp. Consultation fee: $${d.consultationFee}`).join('\n');
       }
     } catch (dbErr) {
-      // Database context optional, proceed without error
+      // Database context optional
     }
 
-    // System prompt with strict website & dental-only guardrails
-    const systemPrompt = `You are Pearl Dental AI, the virtual dental assistant for Pearl Dental Studio (Lumina Dental Care).
-Your goal is to guide visitors with warm, professional, high-end dental advice, procedure details, doctor recommendations, pricing, emergency dental guidance, and appointment scheduling.
+    // System prompt: Smart, helpful, answers ANY question while representing Pearl Dental Studio
+    const systemPrompt = `You are Pearl Dental AI, an intelligent, friendly, and highly knowledgeable AI assistant representing Pearl Dental Studio (Lumina Dental Care).
 
-CLINIC INFORMATION:
-- Name: Pearl Dental Studio / Lumina Dental Care
+YOUR CORE BEHAVIOR:
+- Answer ANY question the user asks clearly, accurately, and helpfully (whether it is about dentistry, oral health, general knowledge, technology, advice, lifestyle, or anything else).
+- Always maintain a warm, polite, professional tone.
+- Whenever relevant or appropriate, seamlessly connect your answer back to Pearl Dental Studio's services, doctors, pricing, or appointment booking.
+
+CLINIC INFORMATION & CONTEXT:
+- Clinic Name: Pearl Dental Studio / Lumina Dental Care
 - Address: 740 Park Avenue, Manhattan, NYC
 - General Phone: +1 (800) 555-PEARL
 - Emergency Hotline: +1 (800) 999-DENT
 - Working Hours: Mon-Fri: 8:00 AM - 7:00 PM, Sat: 9:00 AM - 4:00 PM (Emergency 24/7)
-${clinicContext}
-
-STRICT GUARDRAIL RULE (CRITICAL):
-You MUST ONLY answer questions related to Pearl Dental Studio, dentistry, tooth/mouth health, dental procedures (veneers, implants, Invisalign, whitening, root canals, crowns, braces, cleaning), pricing, appointments, clinic location, and doctors.
-IF THE USER ASKS ANYTHING UNRELATED TO DENTISTRY OR THIS CLINIC (e.g. programming, mathematics, general history, recipes, weather, sports, politics, movie trivia, etc.):
-You MUST politely decline and reply:
-"I am Pearl Dental AI, specialized exclusively in dental care, smile transformations, and services at Pearl Dental Studio. How may I assist you with your dental health, treatment options, or booking an appointment today?"`;
+${clinicContext}`;
 
     // 2. Call Google Gemini API if API key exists
     if (apiKey && apiKey !== 'YOUR_GEMINI_API_KEY_HERE') {
@@ -66,13 +64,17 @@ You MUST politely decline and reply:
               }
             ],
             generationConfig: {
-              temperature: 0.5,
-              maxOutputTokens: 400
+              temperature: 0.7,
+              maxOutputTokens: 600
             }
           })
         });
 
         const data = await response.json();
+
+        if (!response.ok) {
+          console.error('Gemini API Error Response:', response.status, JSON.stringify(data));
+        }
 
         if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
           const aiReply = data.candidates[0].content.parts[0].text;
@@ -87,24 +89,20 @@ You MUST politely decline and reply:
           });
         }
       } catch (geminiError) {
-        console.error('Gemini API call failed, using fallback:', geminiError.message);
+        console.error('Gemini API fetch failed:', geminiError.message);
       }
+    } else {
+      console.warn('GEMINI_API_KEY is not set or invalid in environment variables.');
     }
 
-    // 3. Fallback logic if GEMINI_API_KEY is not configured or fails
+    // 3. Fallback response if GEMINI_API_KEY is missing or fails
     const lower = userPrompt.toLowerCase();
-    let reply = "Thank you for reaching out to Pearl Dental Care. ";
+    let reply = "Hello! I am Pearl Dental AI Assistant. ";
 
-    // Basic keyword guardrail for fallback mode
-    const dentalKeywords = ['dental', 'tooth', 'teeth', 'veneer', 'implant', 'invisalign', 'whitening', 'cost', 'price', 'pain', 'emergency', 'doctor', 'book', 'appointment', 'clean', 'braces', 'crown', 'fill', 'gum', 'smile', 'hello', 'hi', 'hey'];
-    const isDentalRelated = dentalKeywords.some(kw => lower.includes(kw));
-
-    if (!isDentalRelated) {
-      reply = "I am Pearl Dental AI, specialized exclusively in dental care, smile transformations, and services at Pearl Dental Studio. How may I assist you with your dental health, treatment options, or booking an appointment today?";
-    } else if (lower.includes('veneer') || lower.includes('porcelain') || lower.includes('smile makeover')) {
-      reply += "Dr. Evelyn Sterling specializes in bespoke Porcelain Veneers using 3D Digital Smile Design. Veneers cost around $1,200 - $2,500 per tooth and last 15-20 years with natural light translucency. Would you like to schedule a 3D smile design consultation?";
+    if (lower.includes('veneer') || lower.includes('porcelain') || lower.includes('smile makeover')) {
+      reply += "Dr. Evelyn Sterling specializes in bespoke Porcelain Veneers using 3D Digital Smile Design. Veneers cost around $1,200 - $2,500 per tooth and last 15-20 years. Would you like to schedule a 3D smile design consultation?";
     } else if (lower.includes('implant') || lower.includes('missing tooth') || lower.includes('tooth loss')) {
-      reply += "Dr. Julian Vance leads our Implantology department using 3D Computer-Guided Titanium and Zirconia implants ($2,500 - $4,800). Would you like us to book a CBCT consultation?";
+      reply += "Dr. Julian Vance leads our Implantology department using 3D Computer-Guided Titanium and Zirconia implants ($2,500 - $4,800). Would you like to book a CBCT consultation?";
     } else if (lower.includes('invisalign') || lower.includes('braces') || lower.includes('align') || lower.includes('straight')) {
       reply += "Dr. Aria Chen is our Diamond Plus Invisalign Provider. Clear aligners average 6 to 12 months with invisible comfort ($3,500 - $6,500). We can provide an immediate 3D iTero digital preview!";
     } else if (lower.includes('price') || lower.includes('cost') || lower.includes('fee')) {
@@ -112,7 +110,7 @@ You MUST politely decline and reply:
     } else if (lower.includes('pain') || lower.includes('emergency')) {
       reply += "⚠️ If you are experiencing severe pain or swelling, please call our 24/7 Emergency Line immediately at +1 (800) 999-DENT!";
     } else {
-      reply += "Pearl Dental Care provides world-class cosmetic, implant, and restorative dentistry at 740 Park Avenue, NYC. How may I assist you with your treatment or appointment booking today?";
+      reply += `Thank you for asking! As your Pearl Dental AI Assistant, I can answer your questions, provide details on treatments, pricing, and book your appointment at our 740 Park Avenue, NYC studio. How can I help you today?`;
     }
 
     return res.json({
