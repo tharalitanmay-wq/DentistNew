@@ -24,16 +24,16 @@ const handleAiQuery = async (req, res) => {
         clinicContext += '\n\nOur Expert Doctors:\n' + doctors.map(d => `- ${d.name} (${d.title}): Specializes in ${d.specialization}, ${d.experience} exp. Consultation fee: $${d.consultationFee}`).join('\n');
       }
     } catch (dbErr) {
-      // Database context optional
+      // Optional context
     }
 
-    // System prompt: Smart, helpful, answers ANY question while representing Pearl Dental Studio
+    // System prompt: Full AI Assistant representing Pearl Dental Studio
     const systemPrompt = `You are Pearl Dental AI, an intelligent, friendly, and highly knowledgeable AI assistant representing Pearl Dental Studio (Lumina Dental Care).
 
 YOUR CORE BEHAVIOR:
-- Answer ANY question the user asks clearly, accurately, and helpfully (whether it is about dentistry, oral health, general knowledge, technology, advice, lifestyle, or anything else).
+- Answer ANY question the user asks clearly, accurately, and helpfully (whether it is about dentistry, oral health, general knowledge, advice, lifestyle, or anything else).
 - Always maintain a warm, polite, professional tone.
-- Whenever relevant or appropriate, seamlessly connect your answer back to Pearl Dental Studio's services, doctors, pricing, or appointment booking.
+- Whenever relevant, connect your answer back to Pearl Dental Studio's services, doctors, pricing, or appointment booking.
 
 CLINIC INFORMATION & CONTEXT:
 - Clinic Name: Pearl Dental Studio / Lumina Dental Care
@@ -45,54 +45,68 @@ ${clinicContext}`;
 
     // 2. Call Google Gemini API if API key exists
     if (apiKey && apiKey !== 'YOUR_GEMINI_API_KEY_HERE') {
-      try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            systemInstruction: {
-              parts: [{ text: systemPrompt }]
-            },
-            contents: [
-              ...(Array.isArray(history) ? history.map(h => ({
-                role: h.sender === 'user' ? 'user' : 'model',
-                parts: [{ text: h.text }]
-              })) : []),
-              {
-                role: 'user',
-                parts: [{ text: userPrompt }]
+      // Gemini API requires contents to start with 'user' role and alternate user/model/user/model
+      let validContents = [];
+      if (Array.isArray(history)) {
+        for (const h of history) {
+          if (!h.text || typeof h.text !== 'string') continue;
+          const role = h.sender === 'user' ? 'user' : 'model';
+          // Skip leading model messages
+          if (validContents.length === 0 && role !== 'user') continue;
+          // Avoid duplicate consecutive roles
+          if (validContents.length > 0 && validContents[validContents.length - 1].role === role) continue;
+          validContents.push({ role, parts: [{ text: h.text }] });
+        }
+      }
+
+      // Add current user prompt (ensure last message is user role)
+      if (validContents.length > 0 && validContents[validContents.length - 1].role === 'user') {
+        validContents[validContents.length - 1] = { role: 'user', parts: [{ text: userPrompt }] };
+      } else {
+        validContents.push({ role: 'user', parts: [{ text: userPrompt }] });
+      }
+
+      // Try Gemini models (gemini-1.5-flash, gemini-2.0-flash, gemini-1.5-pro)
+      const modelsToTry = ['gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro'];
+
+      for (const model of modelsToTry) {
+        try {
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              systemInstruction: { parts: [{ text: systemPrompt }] },
+              contents: validContents,
+              generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 600
               }
-            ],
-            generationConfig: {
-              temperature: 0.7,
-              maxOutputTokens: 600
-            }
-          })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          console.error('Gemini API Error Response:', response.status, JSON.stringify(data));
-        }
-
-        if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-          const aiReply = data.candidates[0].content.parts[0].text;
-          return res.json({
-            success: true,
-            reply: aiReply,
-            suggestedActions: [
-              { label: 'Book Appointment', action: '/appointment' },
-              { label: 'View Services & Pricing', action: '/services' },
-              { label: 'Our Doctors', action: '/doctors' }
-            ]
+            })
           });
+
+          const data = await response.json();
+
+          if (response.ok && data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+            const aiReply = data.candidates[0].content.parts[0].text;
+            console.log(`Successfully generated AI response using model: ${model}`);
+            return res.json({
+              success: true,
+              reply: aiReply,
+              suggestedActions: [
+                { label: 'Book Appointment', action: '/appointment' },
+                { label: 'View Services & Pricing', action: '/services' },
+                { label: 'Our Doctors', action: '/doctors' }
+              ]
+            });
+          } else {
+            console.error(`Gemini model ${model} error response (${response.status}):`, JSON.stringify(data));
+          }
+        } catch (mErr) {
+          console.error(`Error calling Gemini model ${model}:`, mErr.message);
         }
-      } catch (geminiError) {
-        console.error('Gemini API fetch failed:', geminiError.message);
       }
     } else {
-      console.warn('GEMINI_API_KEY is not set or invalid in environment variables.');
+      console.warn('GEMINI_API_KEY is missing or unconfigured in .env');
     }
 
     // 3. Fallback response if GEMINI_API_KEY is missing or fails
