@@ -59,23 +59,17 @@ ${clinicContext}`;
         }
       }
 
-      // Add current user prompt (ensure last message is user role)
+      // Ensure history ends with 'model' before adding current user message so turns strictly alternate
       if (validContents.length > 0 && validContents[validContents.length - 1].role === 'user') {
-        validContents[validContents.length - 1] = { role: 'user', parts: [{ text: userPrompt }] };
-      } else {
-        validContents.push({ role: 'user', parts: [{ text: userPrompt }] });
+        validContents.pop();
       }
+      validContents.push({ role: 'user', parts: [{ text: userPrompt }] });
 
-      // Try active & latest Gemini models with automatic fallbacks
+      // Active working Google Gemini models
       const modelsToTry = [
-        'gemini-flash-latest',
         'gemini-3.6-flash',
-        'gemini-2.5-flash',
-        'gemini-2.5-flash-lite',
-        'gemini-2.0-flash',
-        'gemini-1.5-flash',
-        'gemini-1.5-flash-latest',
-        'gemini-1.5-pro'
+        'gemini-3.5-flash-lite',
+        'gemini-flash-latest'
       ];
 
       for (const model of modelsToTry) {
