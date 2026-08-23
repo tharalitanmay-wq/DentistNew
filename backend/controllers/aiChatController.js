@@ -66,8 +66,17 @@ ${clinicContext}`;
         validContents.push({ role: 'user', parts: [{ text: userPrompt }] });
       }
 
-      // Try Gemini models (gemini-1.5-flash, gemini-2.0-flash, gemini-1.5-pro)
-      const modelsToTry = ['gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro'];
+      // Try active & latest Gemini models with automatic fallbacks
+      const modelsToTry = [
+        'gemini-flash-latest',
+        'gemini-3.6-flash',
+        'gemini-2.5-flash',
+        'gemini-2.5-flash-lite',
+        'gemini-2.0-flash',
+        'gemini-1.5-flash',
+        'gemini-1.5-flash-latest',
+        'gemini-1.5-pro'
+      ];
 
       for (const model of modelsToTry) {
         try {
