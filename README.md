@@ -37,22 +37,41 @@ This automatically builds the Admin dashboard static export and starts the 2 pro
 
 ---
 
-### Production PM2 Launch (2 Processes Only)
+### Production PM2 Launch
 
+#### Option A: Quick 1-Command PM2 Launch (Recommended)
 ```bash
 # 1. Build Admin export inside admin/
-cd admin
-npm install
-npm run build
+cd admin && npm install && npm run build && cd ..
 
-# 2. Start PM2 for Backend & Frontend only
-pm2 delete admin # (If admin was previously running as process 3)
+# 2. Build Frontend inside frontend/
+cd frontend && npm install && npm run build && cd ..
 
+# 3. Start both Backend & Frontend via PM2 ecosystem configuration
+pm2 start ecosystem.config.js
+
+# 4. Save PM2 configuration to survive server reboots
+pm2 save
+```
+
+#### Option B: Manual PM2 Command Launch
+```bash
+# 1. Build Admin export inside admin/
+cd admin && npm install && npm run build
+
+# 2. Build Frontend inside frontend/
+cd ../frontend && npm install && npm run build
+
+# 3. Start Backend with PM2
 cd ../backend
-pm2 start server.js --name backend
+pm2 start server.js --name "backend"
 
+# 4. Start Frontend with PM2
 cd ../frontend
 pm2 start npm --name "frontend" -- run start
+
+# 5. Save PM2 configuration
+pm2 save
 ```
 
 ---
