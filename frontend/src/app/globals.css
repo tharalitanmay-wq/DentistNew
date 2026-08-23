@@ -5,65 +5,68 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #f8faf7;
-  --bg-card: #ffffff;
-  --text-main: #141f12;
-  --accent-primary: #86a57d;
-  --accent-glow: rgba(134, 165, 125, 0.35);
+  --bg-primary: #86a57d;
+  --bg-card: rgba(255, 255, 255, 0.94);
+  --text-main: #0f172a;
+  --accent-primary: #0f172a;
+  --accent-glow: rgba(15, 23, 42, 0.25);
 }
 
 .light {
-  --bg-primary: #f8faf7;
-  --bg-card: #ffffff;
-  --text-main: #141f12;
-  --accent-primary: #86a57d;
-  --accent-glow: rgba(134, 165, 125, 0.35);
+  --bg-primary: #86a57d;
+  --bg-card: rgba(255, 255, 255, 0.94);
+  --text-main: #0f172a;
+  --accent-primary: #0f172a;
+  --accent-glow: rgba(15, 23, 42, 0.25);
 }
 
 .dark {
-  --bg-primary: #0e170c;
-  --bg-card: #152213;
+  --bg-primary: #121c11;
+  --bg-card: #1b291a;
   --text-main: #f5f8f4;
   --accent-primary: #86a57d;
   --accent-glow: rgba(134, 165, 125, 0.45);
 }
 
 html.dark, html.dark body {
-  background-color: #0e170c !important;
+  background-color: #121c11 !important;
   color: #f5f8f4 !important;
 }
 
 html.light, html.light body {
-  background-color: #f8faf7 !important;
-  color: #141f12 !important;
+  background-color: #86a57d !important;
+  color: #0f172a !important;
 }
 
 body {
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
   transition: background-color 0.4s ease, color 0.4s ease;
+  background-color: #86a57d;
 }
 
 /* Glassmorphism Cards */
 .glass-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  color: #0f172a;
 }
 
 .dark .glass-card {
-  background: rgba(21, 34, 19, 0.92);
+  background: rgba(27, 41, 26, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(134, 165, 125, 0.25);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  color: #f5f8f4;
 }
 
 /* Dynamic Theme Accent Classes */
 .light .text-theme-accent {
-  color: #54734b !important;
+  color: #0f172a !important;
 }
 
 .dark .text-theme-accent {
@@ -71,7 +74,7 @@ body {
 }
 
 .light .bg-theme-accent {
-  background-color: #6c8e63 !important;
+  background-color: #0f172a !important;
   color: #ffffff !important;
 }
 
@@ -82,12 +85,12 @@ body {
 
 /* Luxury Glow Effects */
 .glow-cyan {
-  box-shadow: 0 0 25px rgba(134, 165, 125, 0.4);
+  box-shadow: 0 0 25px rgba(15, 23, 42, 0.25);
 }
 
 /* Gradient Text */
 .light .gradient-text {
-  background: linear-gradient(135deg, #1f331c 0%, #54734b 50%, #86a57d 100%);
+  background: linear-gradient(135deg, #070d1e 0%, #1e293b 50%, #0f172a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

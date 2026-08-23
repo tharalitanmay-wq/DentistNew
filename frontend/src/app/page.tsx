@@ -178,33 +178,33 @@ export default function HomePage() {
   return (
     <div className="space-y-24 pb-20">
 
-      {/* Light Luxury Hero Section */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 -mt-24 pt-36 bg-slate-50 dark:bg-navy-950">
-        {/* Background Image with Light Overlay */}
+      {/* Luxury Sage Green Hero Section */}
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 -mt-24 pt-36 bg-[#86a57d] dark:bg-navy-950">
+        {/* Background Image with Sage Green Overlay */}
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=2000"
             alt="Pearl Dental Care"
             className={`w-full h-full object-cover transition-all duration-1000 ${
-              isLight ? 'brightness-[1.1] opacity-25 scale-105' : 'brightness-[0.35] scale-105'
+              isLight ? 'brightness-[1.05] opacity-25 scale-105' : 'brightness-[0.35] scale-105'
             }`}
           />
           <div className={`absolute inset-0 ${
             isLight
-              ? 'bg-gradient-to-b from-slate-50/90 via-slate-50/70 to-slate-100'
+              ? 'bg-gradient-to-b from-[#86a57d]/90 via-[#86a57d]/75 to-[#76976d]'
               : 'bg-gradient-to-t from-navy-950 via-navy-950/70 to-transparent'
           }`} />
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-cyan-400/20 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-white/20 rounded-full blur-[120px] pointer-events-none" />
         </div>
 
         <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-serif font-bold tracking-tight leading-[1.1]">
-            <span className={isLight ? 'text-slate-900' : 'text-white'}>Precision Dentistry.</span>{' '}
-            <span className="gradient-text block mt-2">Bespoke Elegance.</span>
+            <span className={isLight ? 'text-slate-950' : 'text-white'}>Precision Dentistry.</span>{' '}
+            <span className={isLight ? 'text-slate-950 block mt-2' : 'gradient-text block mt-2'}>Bespoke Elegance.</span>
           </h1>
 
-          <p className={`text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-normal leading-relaxed ${
-            isLight ? 'text-slate-700' : 'text-slate-300'
+          <p className={`text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed ${
+            isLight ? 'text-slate-900' : 'text-slate-300'
           }`}>
             Experience world-class cosmetic dentistry, 3D computer-guided implants, and porcelain veneers in a tranquil, luxury Park Avenue studio environment.
           </p>
@@ -214,7 +214,7 @@ export default function HomePage() {
               onClick={() => router.push('/appointment')}
               className={`w-full sm:w-auto px-8 py-4 rounded-full font-extrabold text-xs uppercase tracking-wider transition-all flex items-center justify-center space-x-2 border shadow-xl hover:scale-105 ${
                 isLight
-                  ? 'bg-gradient-to-r from-cyan-500 to-sky-400 text-white border-cyan-300/50 shadow-cyan-500/30 hover:brightness-110'
+                  ? 'bg-slate-950 text-white border-slate-900 shadow-slate-950/30 hover:bg-slate-900'
                   : 'bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 text-slate-950 border-yellow-200 shadow-amber-400/30 hover:brightness-110'
               }`}
             >
@@ -226,12 +226,12 @@ export default function HomePage() {
               href="/services"
               className={`w-full sm:w-auto px-8 py-4 rounded-full text-xs font-bold uppercase tracking-wider transition-all backdrop-blur-md flex items-center justify-center space-x-2 border ${
                 isLight
-                  ? 'bg-white/90 border-slate-300 text-slate-800 hover:border-cyan-600 hover:bg-slate-50 shadow-sm'
+                  ? 'bg-white/95 border-white text-slate-950 hover:bg-white shadow-md'
                   : 'bg-navy-800/80 border-white/20 text-white hover:border-cyan-400'
               }`}
             >
               <span>Explore Treatments</span>
-              <ArrowRight className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
+              <ArrowRight className="w-4 h-4 text-slate-950 dark:text-cyan-400" />
             </Link>
           </div>
 

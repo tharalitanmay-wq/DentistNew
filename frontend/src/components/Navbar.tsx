@@ -190,7 +190,7 @@ export default function Navbar() {
               <Link href="/appointment">
                 <button className={`px-5 py-2.5 rounded-full font-extrabold text-xs uppercase tracking-wider transition-all flex items-center space-x-1.5 border shadow-lg hover:scale-105 ${
                   theme === 'light'
-                    ? 'bg-gradient-to-r from-cyan-500 to-sky-400 text-white border-cyan-300/50 shadow-cyan-500/25 hover:brightness-110'
+                    ? 'bg-slate-950 text-white border-slate-900 shadow-slate-950/30 hover:bg-slate-900'
                     : 'bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 text-slate-950 border-yellow-200 shadow-amber-400/30 hover:brightness-110'
                 }`}>
                   <Calendar className={`w-3.5 h-3.5 ${theme === 'light' ? 'text-white' : 'text-slate-950'}`} />
