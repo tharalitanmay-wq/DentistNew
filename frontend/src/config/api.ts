@@ -5,13 +5,13 @@ export const getApiUrl = (path: string = ''): string => {
   if (envUrl) {
     baseUrl = envUrl.replace(/\/+$/, '');
   } else if (typeof window !== 'undefined') {
-    // Automatically use the server hostname (e.g., http://13.205.137.98:5000)
-    baseUrl = `${window.location.protocol}//${window.location.hostname}:5000`;
+    // Relative path in browser so requests proxy over HTTPS to backend on port 5000
+    baseUrl = '';
   } else {
-    baseUrl = 'http://localhost:5000';
+    baseUrl = 'http://127.0.0.1:5000';
   }
 
-  if (!path) return baseUrl;
+  if (!path) return baseUrl || '/';
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
   return `${baseUrl}${cleanPath}`;
 };
