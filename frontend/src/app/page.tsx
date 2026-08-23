@@ -178,80 +178,88 @@ export default function HomePage() {
   return (
     <div className="space-y-24 pb-20">
 
-      {/* Luxury Sage Green Hero Section */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 -mt-24 pt-36 bg-[#86a57d] dark:bg-navy-950">
-        {/* Background Image with Sage Green Overlay */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=2000"
-            alt="Pearl Dental Care"
-            className={`w-full h-full object-cover transition-all duration-1000 ${
-              isLight ? 'brightness-[1.05] opacity-25 scale-105' : 'brightness-[0.35] scale-105'
-            }`}
-          />
-          <div className={`absolute inset-0 ${
-            isLight
-              ? 'bg-gradient-to-b from-[#86a57d]/90 via-[#86a57d]/75 to-[#76976d]'
-              : 'bg-gradient-to-t from-navy-950 via-navy-950/70 to-transparent'
-          }`} />
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-white/20 rounded-full blur-[120px] pointer-events-none" />
-        </div>
+      {/* Luminous, Open Luxury Hero Section */}
+      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 -mt-24 pt-36">
+        {/* Soft Ambient Radial Lighting */}
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-[#86a57d]/20 dark:bg-[#86a57d]/10 rounded-full blur-[140px] pointer-events-none z-0" />
+        <div className="absolute top-40 right-10 w-[400px] h-[400px] bg-emerald-200/20 dark:bg-emerald-950/20 rounded-full blur-[100px] pointer-events-none z-0" />
 
-        <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-serif font-bold tracking-tight leading-[1.1]">
-            <span className={isLight ? 'text-slate-950' : 'text-white'}>Precision Dentistry.</span>{' '}
-            <span className={isLight ? 'text-slate-950 block mt-2' : 'gradient-text block mt-2'}>Bespoke Elegance.</span>
+        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8">
+          
+          {/* Top Floating Badge */}
+          <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-[#86a57d]/15 dark:bg-[#86a57d]/20 border border-[#86a57d]/30 text-[#3a5833] dark:text-[#b0c5aa] font-semibold text-xs tracking-wider uppercase shadow-sm">
+            <Sparkles className="w-3.5 h-3.5 text-[#425e3b] dark:text-[#86a57d] animate-pulse" />
+            <span>Park Avenue Cosmetic & Implant Dental Studio</span>
+          </div>
+
+          {/* Main Headline */}
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-serif font-extrabold tracking-tight leading-[1.12]">
+            <span className={isLight ? 'text-[#1a2717]' : 'text-white'}>Precision Dentistry.</span>{' '}
+            <span className={isLight ? 'block mt-2 font-serif italic text-[#425e3b]' : 'gradient-text block mt-2'}>
+              Bespoke Elegance.
+            </span>
           </h1>
 
-          <p className={`text-sm sm:text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed ${
-            isLight ? 'text-slate-900' : 'text-slate-300'
+          {/* Subtitle */}
+          <p className={`text-base sm:text-lg max-w-2xl mx-auto font-normal leading-relaxed ${
+            isLight ? 'text-slate-600' : 'text-slate-300'
           }`}>
-            Experience world-class cosmetic dentistry, 3D computer-guided implants, and porcelain veneers in a tranquil, luxury Park Avenue studio environment.
+            Experience world-class cosmetic dentistry, 3D computer-guided implants, and porcelain veneers in a tranquil, open luxury studio environment.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-5 pt-4">
             <button
               onClick={() => router.push('/appointment')}
-              className={`w-full sm:w-auto px-8 py-4 rounded-full font-extrabold text-xs uppercase tracking-wider transition-all flex items-center justify-center space-x-2 border shadow-xl hover:scale-105 ${
+              className={`w-full sm:w-auto px-9 py-4 rounded-full font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center space-x-2 shadow-xl hover:scale-105 ${
                 isLight
-                  ? 'bg-slate-950 text-white border-slate-900 shadow-slate-950/30 hover:bg-slate-900'
+                  ? 'bg-[#3a5833] hover:bg-[#2b4426] text-white shadow-[#3a5833]/25'
                   : 'bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 text-slate-950 border-yellow-200 shadow-amber-400/30 hover:brightness-110'
               }`}
             >
-              <Calendar className={`w-4 h-4 ${isLight ? 'text-white' : 'text-slate-950'}`} />
+              <Calendar className="w-4 h-4" />
               <span>BOOK APPOINTMENT</span>
             </button>
 
             <Link
               href="/services"
-              className={`w-full sm:w-auto px-8 py-4 rounded-full text-xs font-bold uppercase tracking-wider transition-all backdrop-blur-md flex items-center justify-center space-x-2 border ${
+              className={`w-full sm:w-auto px-9 py-4 rounded-full text-xs font-bold uppercase tracking-wider transition-all backdrop-blur-md flex items-center justify-center space-x-2 border hover:scale-105 ${
                 isLight
-                  ? 'bg-white/95 border-white text-slate-950 hover:bg-white shadow-md'
+                  ? 'bg-white/90 border-[#86a57d]/30 text-[#1a2717] hover:bg-white shadow-md'
                   : 'bg-navy-800/80 border-white/20 text-white hover:border-cyan-400'
               }`}
             >
               <span>Explore Treatments</span>
-              <ArrowRight className="w-4 h-4 text-slate-950 dark:text-cyan-400" />
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
-          {/* Social Proof Stats */}
-          <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 pt-12 border-t max-w-4xl mx-auto ${
-            isLight ? 'border-slate-200' : 'border-white/10'
+          {/* Floating Open Glassmorphic Social Proof Stats Bar */}
+          <div className={`mt-16 p-8 sm:p-10 rounded-3xl backdrop-blur-xl border grid grid-cols-2 md:grid-cols-4 gap-8 shadow-2xl transition-all ${
+            isLight
+              ? 'bg-white/85 border-[#86a57d]/25 shadow-[#86a57d]/10'
+              : 'bg-navy-900/80 border-white/10 shadow-black/40'
           }`}>
-            {stats.map((s, i) => (
-              <div key={i} className="text-center space-y-1">
-                <div className={`text-2xl sm:text-3xl font-serif font-bold ${
-                  isLight ? 'text-slate-900' : 'text-white'
-                }`}>
-                  <span>{s.number}</span>
+            {stats.map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <div key={i} className="text-center space-y-1.5 flex flex-col items-center">
+                  <div className="p-2.5 rounded-2xl bg-[#86a57d]/15 dark:bg-white/5 text-[#3a5833] dark:text-[#86a57d] mb-1">
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <div className={`text-2xl sm:text-4xl font-serif font-extrabold ${
+                    isLight ? 'text-[#1a2717]' : 'text-white'
+                  }`}>
+                    <span>{s.number}</span>
+                  </div>
+                  <div className={`text-[11px] font-bold uppercase tracking-wider ${
+                    isLight ? 'text-slate-500' : 'text-slate-400'
+                  }`}>{s.label}</div>
                 </div>
-                <div className={`text-[11px] uppercase tracking-wider ${
-                  isLight ? 'text-slate-600' : 'text-slate-400'
-                }`}>{s.label}</div>
-              </div>
-            ))}
+              );
+            })}
           </div>
+
         </div>
       </section>
 

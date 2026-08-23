@@ -63,28 +63,28 @@ export default function Navbar() {
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
       scrolled 
         ? theme === 'light' 
-          ? 'bg-white/90 backdrop-blur-xl border-b border-slate-200 py-3 shadow-md' 
-          : 'bg-navy-900/80 backdrop-blur-xl border-b border-white/10 py-3 shadow-2xl' 
-        : 'bg-transparent py-5'
+          ? 'bg-white/85 backdrop-blur-xl border-b border-[#86a57d]/20 py-3 shadow-sm shadow-[#86a57d]/10' 
+          : 'bg-navy-950/85 backdrop-blur-xl border-b border-white/10 py-3 shadow-2xl' 
+        : 'bg-transparent py-4'
     }`}>
       {/* Top Banner Announcement - Visible only on Home Page */}
       {pathname === '/' && (
-        <div className={`hidden lg:flex justify-between items-center px-8 pb-2 border-b text-xs tracking-wider ${
-          theme === 'light' ? 'border-slate-200 text-slate-600' : 'border-white/5 text-slate-400'
+        <div className={`hidden lg:flex justify-between items-center px-8 pb-2 text-xs tracking-wider border-b ${
+          theme === 'light' ? 'border-[#86a57d]/15 text-slate-600' : 'border-white/5 text-slate-400'
         }`}>
           <div className="flex items-center space-x-6">
-            <span className="flex items-center text-cyan-600 dark:text-cyan-400 font-medium">
-              <Sparkles className="w-3.5 h-3.5 mr-1.5 animate-pulse text-cyan-500" />
+            <span className="flex items-center text-[#3a5833] dark:text-[#86a57d] font-medium">
+              <Sparkles className="w-3.5 h-3.5 mr-1.5 animate-pulse text-[#54734b]" />
               Complimentary 3D Cosmetic Smile Simulation for New Patients
             </span>
             <span className="flex items-center text-slate-600 dark:text-slate-400">
-              <Phone className="w-3.5 h-3.5 mr-1.5 text-cyan-600 dark:text-cyan-400" />
+              <Phone className="w-3.5 h-3.5 mr-1.5 text-[#3a5833] dark:text-[#86a57d]" />
               Concierge Emergency: +1 (800) 999-DENT
             </span>
           </div>
           <div className="flex items-center space-x-4">
             <span className="text-slate-600 dark:text-slate-400">740 Park Ave, New York</span>
-            <span className="text-cyan-600 dark:text-cyan-400 font-semibold">Mon - Sat: 8am - 7pm</span>
+            <span className="text-[#3a5833] dark:text-[#86a57d] font-semibold">Mon - Sat: 8am - 7pm</span>
           </div>
         </div>
       )}
@@ -92,14 +92,14 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between mt-1">
         {/* Logo */}
         <Link href={user ? "/dashboard" : "/"} className="flex items-center space-x-3 group py-1">
-          <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 group-hover:border-cyan-400 group-hover:bg-cyan-500/20 transition-all duration-300 shadow-sm shadow-cyan-500/20">
-            <ToothIcon className="w-5 h-5 text-cyan-600 dark:text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
+          <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-[#86a57d]/15 border border-[#86a57d]/30 group-hover:border-[#86a57d] group-hover:bg-[#86a57d]/25 transition-all duration-300 shadow-sm">
+            <ToothIcon className="w-5 h-5 text-[#3a5833] dark:text-[#86a57d] group-hover:scale-110 transition-transform duration-300" />
           </div>
           <div className="flex flex-col justify-center">
-            <span className="text-xl font-serif font-extrabold tracking-tight text-slate-900 dark:text-white group-hover:text-cyan-500 transition-colors leading-none">
+            <span className="text-xl font-serif font-extrabold tracking-tight text-[#1a2717] dark:text-white group-hover:text-[#3a5833] transition-colors leading-none">
               PEARL
             </span>
-            <span className="text-[9px] tracking-[0.35em] text-cyan-600 dark:text-cyan-400 uppercase font-bold mt-1 leading-none">
+            <span className="text-[9px] tracking-[0.35em] text-[#425e3b] dark:text-[#86a57d] uppercase font-bold mt-1 leading-none">
               Dental Studio
             </span>
           </div>
@@ -188,9 +188,9 @@ export default function Navbar() {
               </Link>
 
               <Link href="/appointment">
-                <button className={`px-5 py-2.5 rounded-full font-extrabold text-xs uppercase tracking-wider transition-all flex items-center space-x-1.5 border shadow-lg hover:scale-105 ${
+                <button className={`px-5 py-2.5 rounded-full font-extrabold text-xs uppercase tracking-wider transition-all flex items-center space-x-1.5 border shadow-md hover:scale-105 ${
                   theme === 'light'
-                    ? 'bg-slate-950 text-white border-slate-900 shadow-slate-950/30 hover:bg-slate-900'
+                    ? 'bg-[#3a5833] hover:bg-[#2b4426] text-white border-[#3a5833] shadow-[#3a5833]/20'
                     : 'bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 text-slate-950 border-yellow-200 shadow-amber-400/30 hover:brightness-110'
                 }`}>
                   <Calendar className={`w-3.5 h-3.5 ${theme === 'light' ? 'text-white' : 'text-slate-950'}`} />

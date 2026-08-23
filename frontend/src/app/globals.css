@@ -5,62 +5,64 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #86a57d;
-  --bg-card: rgba(255, 255, 255, 0.94);
-  --text-main: #0f172a;
-  --accent-primary: #0f172a;
-  --accent-glow: rgba(15, 23, 42, 0.25);
+  --bg-primary: #f6f8f5;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --text-main: #1a2717;
+  --accent-primary: #54734b;
+  --accent-glow: rgba(134, 165, 125, 0.25);
 }
 
 .light {
-  --bg-primary: #86a57d;
-  --bg-card: rgba(255, 255, 255, 0.94);
-  --text-main: #0f172a;
-  --accent-primary: #0f172a;
-  --accent-glow: rgba(15, 23, 42, 0.25);
+  --bg-primary: #f6f8f5;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --text-main: #1a2717;
+  --accent-primary: #54734b;
+  --accent-glow: rgba(134, 165, 125, 0.25);
 }
 
 .dark {
-  --bg-primary: #121c11;
-  --bg-card: #1b291a;
+  --bg-primary: #0f180d;
+  --bg-card: rgba(21, 35, 19, 0.9);
   --text-main: #f5f8f4;
   --accent-primary: #86a57d;
-  --accent-glow: rgba(134, 165, 125, 0.45);
+  --accent-glow: rgba(134, 165, 125, 0.35);
 }
 
 html.dark, html.dark body {
-  background-color: #121c11 !important;
+  background-color: #0f180d !important;
   color: #f5f8f4 !important;
 }
 
 html.light, html.light body {
-  background-color: #86a57d !important;
-  color: #0f172a !important;
+  background-color: #f6f8f5 !important;
+  color: #1a2717 !important;
 }
 
 body {
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
   transition: background-color 0.4s ease, color 0.4s ease;
-  background-color: #86a57d;
+  background-color: #f6f8f5;
 }
 
-/* Glassmorphism Cards */
+/* Luxury Open Glassmorphism Cards */
 .glass-card {
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
-  color: #0f172a;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(134, 165, 125, 0.25);
+  box-shadow: 0 20px 40px -15px rgba(26, 39, 23, 0.06);
+  border-radius: 1.5rem;
+  color: #1a2717;
 }
 
 .dark .glass-card {
-  background: rgba(27, 41, 26, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(134, 165, 125, 0.25);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  background: rgba(21, 35, 19, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(134, 165, 125, 0.2);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+  border-radius: 1.5rem;
   color: #f5f8f4;
 }
 
