@@ -37,27 +37,27 @@ export default function AiAssistantModal() {
     setLoading(true);
 
     try {
-      const res = await fetch(getApiUrl('/api/ai-chat/query'), {
+      const apiUrl = getApiUrl('/api/ai-chat/query');
+      const res = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: userMsg, history: messages })
       });
       const data = await res.json();
-      if (data.success) {
+      if (data.success && data.reply) {
         setMessages(prev => [...prev, { sender: 'ai', text: data.reply }]);
       } else {
-        setMessages(prev => [...prev, { sender: 'ai', text: 'I am currently operating in offline mode. For immediate consultation, please call our Concierge at +1 (800) 555-PEARL.' }]);
+        setMessages(prev => [...prev, { sender: 'ai', text: data.message || 'Unable to generate response from Pearl AI server.' }]);
       }
-    } catch (err) {
-      setTimeout(() => {
-        let reply = "Thank you for asking! Pearl Dental Care offers bespoke porcelain veneers, computer-guided implants, and 3D Invisalign aligners.";
-        if (userMsg.toLowerCase().includes('cost') || userMsg.toLowerCase().includes('price')) {
-          reply = "Our procedures range from $550 for Whitening to $1,400 per Porcelain Veneer and $2,800 for Dental Implants. We also offer 0% APR financing!";
-        } else if (userMsg.toLowerCase().includes('pain') || userMsg.toLowerCase().includes('emergency')) {
-          reply = "⚠️ If you have an urgent dental emergency, please call our priority hotline at +1 (800) 999-DENT immediately!";
+    } catch (err: any) {
+      console.error('AI Chat Network Error:', err);
+      setMessages(prev => [
+        ...prev,
+        {
+          sender: 'ai',
+          text: `Unable to connect to Pearl AI Backend Server (${getApiUrl('/api/ai-chat/query')}). Please ensure your backend process is running on Port 5000.`
         }
-        setMessages(prev => [...prev, { sender: 'ai', text: reply }]);
-      }, 500);
+      ]);
     } finally {
       setLoading(false);
     }

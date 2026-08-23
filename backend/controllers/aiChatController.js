@@ -113,26 +113,14 @@ ${clinicContext}`;
     }
 
     // 3. Fallback response if GEMINI_API_KEY is missing or fails
-    const lower = userPrompt.toLowerCase();
-    let reply = "Hello! I am Pearl Dental AI Assistant. ";
-
-    if (lower.includes('veneer') || lower.includes('porcelain') || lower.includes('smile makeover')) {
-      reply += "Dr. Evelyn Sterling specializes in bespoke Porcelain Veneers using 3D Digital Smile Design. Veneers cost around $1,200 - $2,500 per tooth and last 15-20 years. Would you like to schedule a 3D smile design consultation?";
-    } else if (lower.includes('implant') || lower.includes('missing tooth') || lower.includes('tooth loss')) {
-      reply += "Dr. Julian Vance leads our Implantology department using 3D Computer-Guided Titanium and Zirconia implants ($2,500 - $4,800). Would you like to book a CBCT consultation?";
-    } else if (lower.includes('invisalign') || lower.includes('braces') || lower.includes('align') || lower.includes('straight')) {
-      reply += "Dr. Aria Chen is our Diamond Plus Invisalign Provider. Clear aligners average 6 to 12 months with invisible comfort ($3,500 - $6,500). We can provide an immediate 3D iTero digital preview!";
-    } else if (lower.includes('price') || lower.includes('cost') || lower.includes('fee')) {
-      reply += "Our treatments range from laser whitening ($450) to signature porcelain veneers ($1,200+) and dental implants ($2,500+). We offer 0% interest financing!";
-    } else if (lower.includes('pain') || lower.includes('emergency')) {
-      reply += "⚠️ If you are experiencing severe pain or swelling, please call our 24/7 Emergency Line immediately at +1 (800) 999-DENT!";
-    } else {
-      reply += `Thank you for asking! As your Pearl Dental AI Assistant, I can answer your questions, provide details on treatments, pricing, and book your appointment at our 740 Park Avenue, NYC studio. How can I help you today?`;
-    }
+    const errReply = apiKey && apiKey !== 'YOUR_GEMINI_API_KEY_HERE'
+      ? "Pearl AI is currently initializing or experiencing a temporary model connectivity issue. Please try your question again in a moment."
+      : "Pearl AI requires a valid GEMINI_API_KEY in backend/.env to generate live AI responses. Please configure your API key.";
 
     return res.json({
-      success: true,
-      reply,
+      success: false,
+      message: errReply,
+      reply: errReply,
       suggestedActions: [
         { label: 'Book Appointment', action: '/appointment' },
         { label: 'View Services & Pricing', action: '/services' },
