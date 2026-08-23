@@ -150,7 +150,7 @@ export default function SyringeCursor({ hideDefaultCursor = true }: SyringeCurso
             cx="0"
             cy="0"
             r="4"
-            fill="#86a57d"
+            fill="#38bdf8"
             className="opacity-0"
           />
 
@@ -160,7 +160,7 @@ export default function SyringeCursor({ hideDefaultCursor = true }: SyringeCurso
             y1="0"
             x2="22"
             y2="22"
-            stroke={isHovered ? '#86a57d' : '#94a3b8'}
+            stroke={isHovered ? '#38bdf8' : '#94a3b8'}
             strokeWidth="2.5"
             strokeLinecap="round"
           />
@@ -174,7 +174,7 @@ export default function SyringeCursor({ hideDefaultCursor = true }: SyringeCurso
           />
           <polygon
             points="24,20 32,28 28,32 20,24"
-            fill="#6c8e63"
+            fill="#0284c7"
             opacity="0.8"
           />
 
@@ -260,8 +260,8 @@ export default function SyringeCursor({ hideDefaultCursor = true }: SyringeCurso
               width="4"
               height="20"
               rx="1.5"
-              fill="#86a57d"
-              stroke="#54734b"
+              fill="#0ea5e9"
+              stroke="#0284c7"
               strokeWidth="1.5"
             />
           </g>
@@ -269,8 +269,8 @@ export default function SyringeCursor({ hideDefaultCursor = true }: SyringeCurso
           {/* Gradient Definition for Anesthetic Liquid */}
           <defs>
             <linearGradient id="liquid-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#86a57d" stopOpacity="0.9" />
-              <stop offset="100%" stopColor="#54734b" stopOpacity="0.4" />
+              <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#0284c7" stopOpacity="0.4" />
             </linearGradient>
           </defs>
         </svg>

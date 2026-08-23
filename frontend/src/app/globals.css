@@ -5,100 +5,95 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #f6f8f5;
-  --bg-card: rgba(255, 255, 255, 0.9);
-  --text-main: #1a2717;
-  --accent-primary: #54734b;
-  --accent-glow: rgba(134, 165, 125, 0.25);
+  --bg-primary: #f8fafc;
+  --bg-card: #ffffff;
+  --text-main: #0f172a;
+  --accent-primary: #0284c7;
+  --accent-glow: rgba(2, 132, 199, 0.25);
 }
 
 .light {
-  --bg-primary: #f6f8f5;
-  --bg-card: rgba(255, 255, 255, 0.9);
-  --text-main: #1a2717;
-  --accent-primary: #54734b;
-  --accent-glow: rgba(134, 165, 125, 0.25);
+  --bg-primary: #f8fafc;
+  --bg-card: #ffffff;
+  --text-main: #0f172a;
+  --accent-primary: #0284c7;
+  --accent-glow: rgba(2, 132, 199, 0.25);
 }
 
 .dark {
-  --bg-primary: #0f180d;
-  --bg-card: rgba(21, 35, 19, 0.9);
-  --text-main: #f5f8f4;
-  --accent-primary: #86a57d;
-  --accent-glow: rgba(134, 165, 125, 0.35);
+  --bg-primary: #0b0f19;
+  --bg-card: #111827;
+  --text-main: #f8fafc;
+  --accent-primary: #facc15;
+  --accent-glow: rgba(250, 204, 21, 0.35);
 }
 
 html.dark, html.dark body {
-  background-color: #0f180d !important;
-  color: #f5f8f4 !important;
+  background-color: #0b0f19 !important;
+  color: #f8fafc !important;
 }
 
 html.light, html.light body {
-  background-color: #f6f8f5 !important;
-  color: #1a2717 !important;
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
 }
 
 body {
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
   transition: background-color 0.4s ease, color 0.4s ease;
-  background-color: #f6f8f5;
 }
 
-/* Luxury Open Glassmorphism Cards */
+/* Glassmorphism Cards */
 .glass-card {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(134, 165, 125, 0.25);
-  box-shadow: 0 20px 40px -15px rgba(26, 39, 23, 0.06);
-  border-radius: 1.5rem;
-  color: #1a2717;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
 }
 
 .dark .glass-card {
-  background: rgba(21, 35, 19, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(134, 165, 125, 0.2);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-  border-radius: 1.5rem;
-  color: #f5f8f4;
+  background: rgba(17, 24, 39, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(250, 204, 21, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
 }
 
 /* Dynamic Theme Accent Classes */
 .light .text-theme-accent {
-  color: #0f172a !important;
+  color: #0284c7 !important;
 }
 
 .dark .text-theme-accent {
-  color: #86a57d !important;
+  color: #facc15 !important;
 }
 
 .light .bg-theme-accent {
-  background-color: #0f172a !important;
+  background-color: #0284c7 !important;
   color: #ffffff !important;
 }
 
 .dark .bg-theme-accent {
-  background-color: #86a57d !important;
-  color: #0e170c !important;
+  background-color: #facc15 !important;
+  color: #0f172a !important;
 }
 
 /* Luxury Glow Effects */
 .glow-cyan {
-  box-shadow: 0 0 25px rgba(15, 23, 42, 0.25);
+  box-shadow: 0 0 25px var(--accent-glow);
 }
 
 /* Gradient Text */
 .light .gradient-text {
-  background: linear-gradient(135deg, #070d1e 0%, #1e293b 50%, #0f172a 100%);
+  background: linear-gradient(135deg, #0b132b 0%, #0284c7 50%, #0ea5e9 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .dark .gradient-text {
-  background: linear-gradient(135deg, #ffffff 0%, #86a57d 50%, #b0c5aa 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #facc15 50%, #fde047 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -115,7 +110,7 @@ body {
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #86a57d;
+  background: #0284c7;
 }
 
 .dark ::-webkit-scrollbar-track {
