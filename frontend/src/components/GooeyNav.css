@@ -16,7 +16,7 @@
     0.928 33.3%,
     0.926,
     0.933 36.8%,
-    1.001 45.6%,
+    0.901 45.6%,
     1.013,
     1.019 50.8%,
     1.018 54.4%,
@@ -25,17 +25,17 @@
     0.949 85%,
     1
   );
-  --color-1: #0ea5e9;
-  --color-2: #38bdf8;
-  --color-3: #0284c7;
-  --color-4: #0284c7;
+  --color-1: #86a57d;
+  --color-2: #6c8e63;
+  --color-3: #54734b;
+  --color-4: #425a3a;
 }
 
 .dark {
-  --color-1: #facc15;
-  --color-2: #fde047;
-  --color-3: #eab308;
-  --color-4: #ca8a04;
+  --color-1: #86a57d;
+  --color-2: #b0c5aa;
+  --color-3: #6c8e63;
+  --color-4: #54734b;
 }
 
 .gooey-nav-container {
@@ -44,15 +44,15 @@
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(15, 23, 42, 0.1);
+  border: 1px solid rgba(134, 165, 125, 0.25);
   border-radius: 100vw;
   padding: 4px 6px;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 4px 20px rgba(134, 165, 125, 0.12);
 }
 
 .dark .gooey-nav-container {
-  background: rgba(17, 24, 39, 0.85);
-  border-color: rgba(250, 204, 21, 0.2);
+  background: rgba(21, 34, 19, 0.85);
+  border-color: rgba(134, 165, 125, 0.3);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
@@ -90,35 +90,35 @@
   font-weight: 700;
   letter-spacing: 0.02em;
   text-decoration: none;
-  color: #334155;
+  color: #2d3f27;
   transition: color 0.3s ease;
   border-radius: 100vw;
 }
 
 .dark .gooey-nav-container nav ul li a {
-  color: #cbd5e1;
+  color: #e6ede3;
 }
 
 .gooey-nav-container nav ul li:focus-within:has(:focus-visible) {
-  box-shadow: 0 0 0.5px 1.5px #0284c7;
+  box-shadow: 0 0 0.5px 1.5px #86a57d;
 }
 
 .dark .gooey-nav-container nav ul li:focus-within:has(:focus-visible) {
-  box-shadow: 0 0 0.5px 1.5px #facc15;
+  box-shadow: 0 0 0.5px 1.5px #86a57d;
 }
 
-/* Light Theme Active Pill -> Original Blue */
+/* Light Theme Active Pill -> Sage Green */
 .gooey-nav-container nav ul li::after {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: 100vw;
-  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  background: linear-gradient(135deg, #86a57d, #54734b);
   opacity: 0;
   transform: scale(0);
   transition: all 0.3s ease;
   z-index: -1;
-  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.4);
+  box-shadow: 0 4px 14px rgba(134, 165, 125, 0.4);
 }
 
 .gooey-nav-container nav ul li.active a {
@@ -126,14 +126,14 @@
   font-weight: 800 !important;
 }
 
-/* Dark Theme Active Pill -> Light Yellow Gold */
+/* Dark Theme Active Pill -> Sage Green */
 .dark .gooey-nav-container nav ul li::after {
-  background: linear-gradient(135deg, #facc15, #eab308) !important;
-  box-shadow: 0 4px 14px rgba(250, 204, 21, 0.4) !important;
+  background: linear-gradient(135deg, #86a57d, #6c8e63) !important;
+  box-shadow: 0 4px 14px rgba(134, 165, 125, 0.4) !important;
 }
 
 .dark .gooey-nav-container nav ul li.active a {
-  color: #0f172a !important;
+  color: #0e170c !important;
   font-weight: 800 !important;
 }
 
@@ -192,7 +192,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  background: linear-gradient(135deg, #86a57d, #54734b);
   transform: scale(0);
   opacity: 0;
   z-index: -1;
@@ -200,7 +200,7 @@
 }
 
 .dark .gooey-nav-container .effect.filter::after {
-  background: linear-gradient(135deg, #facc15, #eab308) !important;
+  background: linear-gradient(135deg, #86a57d, #6c8e63) !important;
 }
 
 .gooey-nav-container .effect.active::after {

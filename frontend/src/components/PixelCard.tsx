@@ -137,10 +137,10 @@ const VARIANTS: Record<string, VariantConfig> = {
     noFocus: false
   },
   blue: {
-    activeColor: '#e0f2fe',
+    activeColor: '#e6ede3',
     gap: 8,
     speed: 25,
-    colors: '#38bdf8,#0ea5e9,#0284c7,#e0f2fe',
+    colors: '#86a57d,#6c8e63,#54734b,#e6ede3',
     noFocus: false
   },
   yellow: {
