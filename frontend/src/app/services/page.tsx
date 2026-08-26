@@ -4,8 +4,11 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Sparkles, ArrowRight, ShieldCheck, Zap, Clock, CheckCircle2 } from 'lucide-react';
 import CostEstimator from '@/components/CostEstimator';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function ServicesPage() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const [filter, setFilter] = useState('All');
 
   const categories = ['All', 'Cosmetic Dentistry', 'Implantology', 'Orthodontics', 'Surgery & Restorative'];
@@ -61,86 +64,132 @@ export default function ServicesPage() {
   const filtered = filter === 'All' ? services : services.filter(s => s.category === filter);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+    <div className={`min-h-screen pb-20 space-y-16 ${
+      isLight ? 'bg-[#FAF7F2] text-slate-900' : 'bg-navy-950 text-white'
+    }`}>
 
       {/* Header */}
-      <div className="text-center space-y-4 max-w-3xl mx-auto">
-        <span className="text-xs font-bold uppercase tracking-widest text-cyan-400">Pinnacle Treatments</span>
-        <h1 className="text-4xl sm:text-6xl font-serif font-bold text-white">Clinical Services</h1>
-        <p className="text-sm text-slate-300">Advanced aesthetic & implant dentistry performed with 3D digital precision.</p>
-      </div>
-
-      {/* Filter Tabs */}
-      <div className="flex flex-wrap justify-center gap-2">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setFilter(cat)}
-            className={`px-5 py-2 rounded-full text-xs font-bold transition-all border ${
-              filter === cat
-                ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-md shadow-cyan-500/20'
-                : 'bg-navy-900 text-slate-300 border-white/10 hover:border-cyan-400'
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* Services List */}
-      <div className="space-y-8">
-        {filtered.map((srv, idx) => (
-          <div
-            key={idx}
-            className="glass-card rounded-3xl p-6 sm:p-8 border border-white/10 flex flex-col lg:flex-row gap-8 items-center hover:border-cyan-500/40 transition-all shadow-xl"
-          >
-            <div className="w-full lg:w-1/3 h-64 rounded-2xl overflow-hidden relative shrink-0">
-              <img src={srv.img} alt={srv.name} className="w-full h-full object-cover" />
-              <span className="absolute top-3 left-3 bg-navy-900/90 text-cyan-400 text-[10px] font-bold px-3 py-1 rounded-full border border-cyan-500/30">
-                {srv.category}
-              </span>
-            </div>
-
-            <div className="flex-1 space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <h3 className="text-2xl font-serif font-bold text-white">{srv.name}</h3>
-                <span className="text-sm font-bold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20 w-fit">
-                  {srv.price}
-                </span>
-              </div>
-              <p className="text-xs text-slate-300 leading-relaxed">{srv.desc}</p>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                {srv.benefits.map((b, i) => (
-                  <div key={i} className="flex items-center space-x-1.5 text-[11px] text-slate-300">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                    <span>{b}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="pt-4 flex items-center justify-between border-t border-white/5">
-                <span className="text-xs text-slate-400 flex items-center">
-                  <Clock className="w-3.5 h-3.5 mr-1 text-cyan-400" />
-                  {srv.duration}
-                </span>
-                <Link
-                  href={`/appointment?service=${encodeURIComponent(srv.name)}`}
-                  className="px-6 py-2.5 rounded-full bg-gradient-to-r from-cyan-400 to-sky-300 text-slate-950 font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all flex items-center space-x-2 shadow-lg shadow-cyan-500/20"
-                >
-                  <span>Book Procedure</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Embedded Calculator */}
-      <section className="pt-12">
-        <CostEstimator />
+      <section className={`pt-28 pb-12 px-4 sm:px-6 lg:px-8 border-b ${
+        isLight ? 'bg-gradient-to-b from-white to-[#FAF7F2] border-amber-900/10' : 'bg-navy-900/60 border-white/10'
+      }`}>
+        <div className="text-center space-y-4 max-w-3xl mx-auto">
+          <span className="text-xs font-serif font-bold uppercase tracking-[0.25em] text-[#C5A059] dark:text-amber-400">
+            Pinnacle Treatments
+          </span>
+          <h1 className={`text-4xl sm:text-6xl font-serif font-bold ${
+            isLight ? 'text-[#7A2818]' : 'text-amber-200'
+          }`}>
+            Clinical Services
+          </h1>
+          <p className={`text-sm sm:text-base font-serif leading-relaxed ${
+            isLight ? 'text-slate-700' : 'text-slate-300'
+          }`}>
+            Advanced aesthetic &amp; implant dentistry performed with sub-millimeter 3D digital precision.
+          </p>
+        </div>
       </section>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+
+        {/* High-Visibility Filter Tabs */}
+        <div className="flex flex-wrap justify-center gap-3">
+          {categories.map((cat) => {
+            const isActive = filter === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => setFilter(cat)}
+                className={`px-6 py-2.5 rounded-full text-xs font-serif font-bold transition-all shadow-md transform hover:scale-105 ${
+                  isActive
+                    ? 'bg-gradient-to-r from-[#C5A059] via-[#D4AF37] to-[#B38F48] text-[#2B2110] border border-amber-300/40'
+                    : isLight
+                      ? 'bg-white border border-amber-900/15 text-slate-800 hover:border-amber-500'
+                      : 'bg-navy-900 border border-white/15 text-slate-200 hover:border-amber-400'
+                }`}
+              >
+                {cat}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Clear Services Cards List */}
+        <div className="space-y-8">
+          {filtered.map((srv, idx) => (
+            <div
+              key={idx}
+              className={`rounded-3xl p-6 sm:p-8 border flex flex-col lg:flex-row gap-8 items-center transition-all duration-300 shadow-xl ${
+                isLight
+                  ? 'bg-white border-amber-900/10 hover:border-amber-500/50'
+                  : 'bg-navy-900/80 border-white/10 hover:border-amber-400/40'
+              }`}
+            >
+              <div className="w-full lg:w-1/3 h-64 rounded-2xl overflow-hidden relative shrink-0">
+                <img src={srv.img} alt={srv.name} className="w-full h-full object-cover" />
+                <span className="absolute top-3 left-3 bg-[#2B2110]/90 text-amber-300 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-amber-400/30">
+                  {srv.category}
+                </span>
+              </div>
+
+              <div className="flex-1 space-y-4 w-full">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <h2 className={`text-2xl font-serif font-bold ${
+                    isLight ? 'text-[#7A2818]' : 'text-white'
+                  }`}>
+                    {srv.name}
+                  </h2>
+                  <span className="text-xs font-serif font-bold text-amber-700 dark:text-amber-300 bg-amber-500/10 px-3.5 py-1.5 rounded-full border border-amber-500/20 w-fit">
+                    {srv.price}
+                  </span>
+                </div>
+                
+                <p className={`text-xs leading-relaxed ${
+                  isLight ? 'text-slate-600' : 'text-slate-300'
+                }`}>
+                  {srv.desc}
+                </p>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                  {srv.benefits.map((b, i) => (
+                    <div key={i} className={`flex items-center space-x-1.5 text-[11px] font-medium ${
+                      isLight ? 'text-slate-700' : 'text-slate-300'
+                    }`}>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+                      <span>{b}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className={`pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t ${
+                  isLight ? 'border-amber-900/10' : 'border-white/10'
+                }`}>
+                  <span className={`text-xs flex items-center ${
+                    isLight ? 'text-slate-600' : 'text-slate-400'
+                  }`}>
+                    <Clock className="w-4 h-4 mr-1.5 text-amber-600 dark:text-amber-400" />
+                    {srv.duration}
+                  </span>
+                  
+                  {/* High-Visibility Action Button */}
+                  <Link
+                    href={`/appointment?service=${encodeURIComponent(srv.name)}`}
+                    className="w-full sm:w-auto px-8 py-3 rounded-full bg-gradient-to-r from-[#C5A059] via-[#D4AF37] to-[#B38F48] hover:from-[#B38F48] hover:to-[#C5A059] text-[#2B2110] font-sans font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center space-x-2 shadow-lg transform hover:scale-105 border border-amber-300/40"
+                  >
+                    <span>Book Procedure</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Embedded Calculator */}
+        <section className="pt-8">
+          <CostEstimator />
+        </section>
+
+      </div>
 
     </div>
   );

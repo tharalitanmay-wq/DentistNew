@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Sparkles, Calendar, Phone, Menu, X, Sun, Moon, User, LogOut } from 'lucide-react';
+import { Sparkles, Calendar, Phone, Menu, X, Sun, Moon, User, LogOut, Globe } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
 import SpecularButton from '@/components/SpecularButton';
@@ -67,45 +67,30 @@ export default function Navbar() {
           : 'bg-navy-900/80 backdrop-blur-xl border-b border-white/10 py-3 shadow-2xl' 
         : 'bg-transparent py-5'
     }`}>
-      {/* Top Banner Announcement - Visible only on Home Page */}
-      {pathname === '/' && (
-        <div className={`hidden lg:flex justify-between items-center px-8 pb-2 border-b text-xs tracking-wider ${
-          theme === 'light' ? 'border-slate-200 text-slate-600' : 'border-white/5 text-slate-400'
-        }`}>
-          <div className="flex items-center space-x-6">
-            <span className="flex items-center text-cyan-600 dark:text-cyan-400 font-medium">
-              <Sparkles className="w-3.5 h-3.5 mr-1.5 animate-pulse text-cyan-500" />
-              Complimentary 3D Cosmetic Smile Simulation for New Patients
-            </span>
-            <span className="flex items-center text-slate-600 dark:text-slate-400">
-              <Phone className="w-3.5 h-3.5 mr-1.5 text-cyan-600 dark:text-cyan-400" />
-              Concierge Emergency: +1 (800) 999-DENT
-            </span>
-          </div>
-          <div className="flex items-center space-x-4">
-            <span className="text-slate-600 dark:text-slate-400">740 Park Ave, New York</span>
-            <span className="text-cyan-600 dark:text-cyan-400 font-semibold">Mon - Sat: 8am - 7pm</span>
-          </div>
-        </div>
-      )}
+
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between mt-1">
         {/* Logo */}
         <Link href={user ? "/dashboard" : "/"} className="flex items-center space-x-3 group py-1">
-          <div className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 group-hover:border-cyan-400 group-hover:bg-cyan-500/20 transition-all duration-300 shadow-sm shadow-cyan-500/20">
-            <ToothIcon className="w-5 h-5 text-cyan-600 dark:text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
+          <div className="relative flex items-center justify-center w-11 h-11 rounded-full bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-600 p-0.5 shadow-md group-hover:scale-105 transition-transform duration-300">
+            <div className="w-full h-full rounded-full bg-amber-50 dark:bg-slate-900 flex items-center justify-center">
+              <ToothIcon className="w-6 h-6 text-amber-700 dark:text-amber-400 group-hover:scale-110 transition-transform duration-300" />
+            </div>
           </div>
           <div className="flex flex-col justify-center">
-            <span className="text-xl font-serif font-extrabold tracking-tight text-slate-900 dark:text-white group-hover:text-cyan-500 transition-colors leading-none">
-              PEARL
-            </span>
-            <span className="text-[9px] tracking-[0.35em] text-cyan-600 dark:text-cyan-400 uppercase font-bold mt-1 leading-none">
-              Dental Studio
+            <div className="flex items-start">
+              <span className="text-2xl font-serif font-extrabold tracking-tight text-[#7A2818] dark:text-amber-300 group-hover:text-amber-700 transition-colors leading-none">
+                Pearl Dental
+              </span>
+              <span className="text-[10px] text-amber-700 dark:text-amber-400 font-sans font-bold ml-0.5">TM</span>
+            </div>
+            <span className="text-[9px] tracking-[0.25em] text-[#8C3D2B] dark:text-amber-200 font-bold uppercase mt-1 leading-none">
+              A BOND OF SMILES
             </span>
           </div>
         </Link>
 
-        {/* Desktop React Bits GooeyNav Integration - Hidden after login and during registration/login */}
+        {/* Desktop Navigation Items */}
         {showGooeyNav && (
           <div className="hidden md:block">
             <GooeyNav
@@ -120,34 +105,32 @@ export default function Navbar() {
         )}
 
         {/* Action Buttons */}
-        <div className="hidden sm:flex items-center space-x-3">
+        <div className="hidden sm:flex items-center space-x-4">
           {/* Light/Dark Mode Switcher */}
           <button
             onClick={toggleTheme}
-            className={`p-2.5 rounded-full border transition-all hover:scale-105 ${
+            className={`p-2 rounded-full border transition-all hover:scale-105 ${
               theme === 'light'
-                ? 'bg-slate-100 border-slate-300 text-slate-800 hover:bg-slate-200'
-                : 'bg-navy-800/60 border-white/10 text-slate-300 hover:text-cyan-400'
+                ? 'bg-slate-100/80 border-slate-300 text-slate-800 hover:bg-slate-200'
+                : 'bg-navy-800/60 border-white/10 text-slate-300 hover:text-amber-400'
             }`}
             title="Toggle Light/Dark Theme"
           >
-            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
+            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-amber-800" />}
           </button>
 
-          {/* User Account / Login / Logout */}
+          {/* User Account / Login / Menu */}
           {user ? (
             <div className="flex items-center space-x-3">
-
-              {/* User Avatar & Dashboard Link */}
               <Link
                 href="/dashboard"
                 className={`group relative flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full border transition-all duration-300 shadow-sm ${
                   theme === 'light'
-                    ? 'bg-white border-slate-200 text-slate-800 hover:border-cyan-500/50 hover:shadow-cyan-500/10'
-                    : 'bg-navy-900/90 border-white/10 text-white hover:border-cyan-400/50 hover:shadow-cyan-400/10'
+                    ? 'bg-amber-50 border-amber-300 text-slate-900 hover:border-amber-500'
+                    : 'bg-navy-900/90 border-white/10 text-white hover:border-amber-400/50'
                 }`}
               >
-                <div className="w-6 h-6 rounded-full overflow-hidden bg-gradient-to-tr from-cyan-500 to-sky-300 text-slate-950 flex items-center justify-center font-bold text-[11px] shadow-sm shrink-0">
+                <div className="w-6 h-6 rounded-full overflow-hidden bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 flex items-center justify-center font-bold text-[11px] shadow-sm shrink-0">
                   {user.profile_image_url || (user.avatar && !user.avatar.includes('unsplash') ? user.avatar : null) ? (
                     <img src={user.profile_image_url || user.avatar} alt={user.name} className="w-full h-full object-cover" />
                   ) : (
@@ -155,47 +138,30 @@ export default function Navbar() {
                   )}
                 </div>
                 <div className="flex flex-col text-left">
-                  <span className="text-xs font-bold leading-none tracking-tight group-hover:text-cyan-500 transition-colors">
+                  <span className="text-xs font-serif font-bold leading-none tracking-tight group-hover:text-amber-700 transition-colors">
                     {user.name.split(' ')[0]}
-                  </span>
-                  <span className="text-[9px] text-slate-400 leading-none font-medium mt-0.5">
-                    Patient Portal
                   </span>
                 </div>
               </Link>
 
-              {/* Executive Logout Button */}
               <button
                 onClick={handleLogout}
-                className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-500 dark:text-red-400 text-xs font-bold border border-red-500/20 hover:border-red-500/40 transition-all duration-300 shadow-sm group"
-                title="Sign Out of Patient Concierge"
+                className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-xs font-bold border border-red-500/20 transition-all duration-300"
               >
-                <LogOut className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform duration-300" />
+                <LogOut className="w-3.5 h-3.5" />
                 <span>Logout</span>
               </button>
             </div>
           ) : (
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-4">
               <Link
                 href="/login"
-                className={`text-xs px-4 py-2 rounded-full transition-all font-bold ${
-                  theme === 'light' 
-                    ? 'text-slate-800 hover:text-cyan-600 hover:bg-slate-100' 
-                    : 'text-slate-200 hover:text-cyan-400 hover:bg-white/5'
+                className={`flex items-center space-x-1.5 text-xs font-serif font-bold tracking-widest uppercase transition-all px-3 py-1.5 hover:text-amber-700 ${
+                  theme === 'light' ? 'text-slate-900' : 'text-slate-100'
                 }`}
               >
-                Sign In
-              </Link>
-
-              <Link href="/appointment">
-                <button className={`px-5 py-2.5 rounded-full font-extrabold text-xs uppercase tracking-wider transition-all flex items-center space-x-1.5 border shadow-lg hover:scale-105 ${
-                  theme === 'light'
-                    ? 'bg-gradient-to-r from-cyan-500 to-sky-400 text-white border-cyan-300/50 shadow-cyan-500/25 hover:brightness-110'
-                    : 'bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 text-slate-950 border-yellow-200 shadow-amber-400/30 hover:brightness-110'
-                }`}>
-                  <Calendar className={`w-3.5 h-3.5 ${theme === 'light' ? 'text-white' : 'text-slate-950'}`} />
-                  <span>BOOK APPOINTMENT</span>
-                </button>
+                <span>LOGIN</span>
+                <Globe className="w-4 h-4 text-slate-800 dark:text-amber-300" />
               </Link>
             </div>
           )}

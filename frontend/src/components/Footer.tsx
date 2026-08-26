@@ -35,24 +35,31 @@ export default function Footer() {
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-6">
             <Link href="/" className="flex items-center space-x-3 group py-1">
-              <ToothIcon className="w-7 h-7 text-cyan-600 dark:text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
+              <div className="relative flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-600 p-0.5 shadow-md group-hover:scale-105 transition-transform duration-300">
+                <div className="w-full h-full rounded-full bg-amber-50 dark:bg-slate-900 flex items-center justify-center">
+                  <ToothIcon className="w-5 h-5 text-amber-700 dark:text-amber-400 group-hover:scale-110 transition-transform duration-300" />
+                </div>
+              </div>
               <div className="flex flex-col justify-center">
-                <span className={`text-2xl font-serif font-extrabold tracking-tight leading-none ${
-                  theme === 'light' ? 'text-slate-900' : 'text-white'
-                }`}>PEARL</span>
-                <span className="text-[9px] tracking-[0.32em] text-cyan-600 dark:text-cyan-400 uppercase font-bold mt-1 leading-none">Dental Studio</span>
+                <div className="flex items-start">
+                  <span className={`text-2xl font-serif font-extrabold tracking-tight leading-none ${
+                    theme === 'light' ? 'text-[#7A2818]' : 'text-amber-300'
+                  }`}>Pearl Dental</span>
+                  <span className="text-[10px] text-amber-700 dark:text-amber-400 font-sans font-bold ml-0.5">TM</span>
+                </div>
+                <span className="text-[9px] tracking-[0.25em] text-amber-900 dark:text-amber-200 font-bold uppercase mt-1 leading-none">A BOND OF SMILES</span>
               </div>
             </Link>
-            <p className={`text-sm leading-relaxed max-w-md ${
+            <p className={`text-sm leading-relaxed max-w-md font-serif ${
               theme === 'light' ? 'text-slate-600' : 'text-slate-400'
             }`}>
-              Pinnacle of luxury aesthetic dentistry, 3D computer-guided implants, and porcelain veneers. Redefining clinical precision in a peaceful spa environment.
+              Personalised Dental Services, 3D Computer-Guided Implants, and Porcelain Veneers. Redefining clinical precision in a serene luxury studio.
             </p>
             <div className={`flex items-center space-x-3 text-xs ${
-              theme === 'light' ? 'text-slate-700' : 'text-slate-300'
+              theme === 'light' ? 'text-amber-900' : 'text-amber-300'
             }`}>
-              <ShieldCheck className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
-              <span>AACD Accredited Master Specialists & Board Certified Surgeons</span>
+              <ShieldCheck className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+              <span>A Bond of Smiles • AACD Accredited Dental &amp; Aesthetic Excellence</span>
             </div>
           </div>
 
