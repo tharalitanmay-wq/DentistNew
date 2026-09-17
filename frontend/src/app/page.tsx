@@ -14,7 +14,7 @@ import SpecularButton from '@/components/SpecularButton';
 import PixelCard from '@/components/PixelCard';
 import LiveClinicQueue from '@/components/LiveClinicQueue';
 import LogoLoop from '@/components/LogoLoop';
-import HeroBackgroundSlider from '@/components/HeroBackgroundSlider';
+
 import { useTheme } from '@/context/ThemeContext';
 
 function AnimatedStat({
@@ -98,124 +98,75 @@ export default function HomePage() {
     { number: '99.8%', label: 'Patient Satisfaction', icon: ShieldCheck },
     { number: '5.0★', label: 'Google Rating (480+)', icon: Star },
   ];
-
   const partnerLogos = [
     {
       node: (
-        <div className="flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full bg-white dark:bg-navy-900 border border-amber-900/15 dark:border-white/10 shadow-md hover:scale-105 transition-transform shrink-0">
-          <img
-            src="https://images.unsplash.com/photo-1594824813566-78a9c30f40d2?auto=format&fit=crop&q=80&w=200"
-            alt="Invisalign Diamond"
-            className="w-7 h-7 rounded-full object-cover border border-amber-400/50 shadow-sm shrink-0"
-          />
-          <span className="text-[11px] font-serif font-bold text-[#7A2818] dark:text-amber-300 tracking-wide whitespace-nowrap">
-            Invisalign Diamond
-          </span>
+        <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white dark:bg-navy-900 border border-amber-900/15 dark:border-white/10 shadow-md hover:scale-105 transition-transform shrink-0">
+          <img src="https://images.unsplash.com/photo-1594824813566-78a9c30f40d2?auto=format&fit=crop&q=80&w=200" alt="" className="w-6 h-6 rounded-full object-cover border border-amber-400/50 shadow-sm shrink-0" />
+          <span className="text-[12px] font-sans font-semibold text-[#7A2818] dark:text-amber-300 tracking-wide whitespace-nowrap">Invisalign Diamond</span>
         </div>
       ),
       title: 'Invisalign Diamond'
     },
     {
       node: (
-        <div className="flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full bg-white dark:bg-navy-900 border border-amber-900/15 dark:border-white/10 shadow-md hover:scale-105 transition-transform shrink-0">
-          <img
-            src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&q=80&w=200"
-            alt="AACD Cosmetic Masters"
-            className="w-7 h-7 rounded-full object-cover border border-amber-400/50 shadow-sm shrink-0"
-          />
-          <span className="text-[11px] font-serif font-bold text-[#7A2818] dark:text-amber-300 tracking-wide whitespace-nowrap">
-            AACD Cosmetic Masters
-          </span>
+        <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white dark:bg-navy-900 border border-amber-900/15 dark:border-white/10 shadow-md hover:scale-105 transition-transform shrink-0">
+          <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&q=80&w=200" alt="" className="w-6 h-6 rounded-full object-cover border border-amber-400/50 shadow-sm shrink-0" />
+          <span className="text-[12px] font-sans font-semibold text-[#7A2818] dark:text-amber-300 tracking-wide whitespace-nowrap">AACD Cosmetic Masters</span>
         </div>
       ),
       title: 'AACD Cosmetic Masters'
     },
     {
       node: (
-        <div className="flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full bg-white dark:bg-navy-900 border border-amber-900/15 dark:border-white/10 shadow-md hover:scale-105 transition-transform shrink-0">
-          <img
-            src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&q=80&w=200"
-            alt="iTero 5D Scanner"
-            className="w-7 h-7 rounded-full object-cover border border-amber-400/50 shadow-sm shrink-0"
-          />
-          <span className="text-[11px] font-serif font-bold text-[#7A2818] dark:text-amber-300 tracking-wide whitespace-nowrap">
-            iTero 5D Scanner
-          </span>
+        <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white dark:bg-navy-900 border border-amber-900/15 dark:border-white/10 shadow-md hover:scale-105 transition-transform shrink-0">
+          <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&q=80&w=200" alt="" className="w-6 h-6 rounded-full object-cover border border-amber-400/50 shadow-sm shrink-0" />
+          <span className="text-[12px] font-sans font-semibold text-[#7A2818] dark:text-amber-300 tracking-wide whitespace-nowrap">iTero 5D Scanner</span>
         </div>
       ),
       title: 'iTero 5D Scanner'
     },
     {
       node: (
-        <div className="flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full bg-white dark:bg-navy-900 border border-amber-900/15 dark:border-white/10 shadow-md hover:scale-105 transition-transform shrink-0">
-          <img
-            src="https://images.unsplash.com/photo-1571772996211-2f02c9727629?auto=format&fit=crop&q=80&w=200"
-            alt="Laser Whitening Spa"
-            className="w-7 h-7 rounded-full object-cover border border-amber-400/50 shadow-sm shrink-0"
-          />
-          <span className="text-[11px] font-serif font-bold text-[#7A2818] dark:text-amber-300 tracking-wide whitespace-nowrap">
-            Laser Whitening Spa
-          </span>
+        <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white dark:bg-navy-900 border border-amber-900/15 dark:border-white/10 shadow-md hover:scale-105 transition-transform shrink-0">
+          <img src="https://images.unsplash.com/photo-1571772996211-2f02c9727629?auto=format&fit=crop&q=80&w=200" alt="" className="w-6 h-6 rounded-full object-cover border border-amber-400/50 shadow-sm shrink-0" />
+          <span className="text-[12px] font-sans font-semibold text-[#7A2818] dark:text-amber-300 tracking-wide whitespace-nowrap">Laser Whitening Spa</span>
         </div>
       ),
       title: 'Laser Whitening Spa'
     },
     {
       node: (
-        <div className="flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full bg-white dark:bg-navy-900 border border-amber-900/15 dark:border-white/10 shadow-md hover:scale-105 transition-transform shrink-0">
-          <img
-            src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=200"
-            alt="Harvard & Columbia Masters"
-            className="w-7 h-7 rounded-full object-cover border border-amber-400/50 shadow-sm shrink-0"
-          />
-          <span className="text-[11px] font-serif font-bold text-[#7A2818] dark:text-amber-300 tracking-wide whitespace-nowrap">
-            Harvard &amp; Columbia Masters
-          </span>
+        <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white dark:bg-navy-900 border border-amber-900/15 dark:border-white/10 shadow-md hover:scale-105 transition-transform shrink-0">
+          <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=200" alt="" className="w-6 h-6 rounded-full object-cover border border-amber-400/50 shadow-sm shrink-0" />
+          <span className="text-[12px] font-sans font-semibold text-[#7A2818] dark:text-amber-300 tracking-wide whitespace-nowrap">Harvard & Columbia Masters</span>
         </div>
       ),
       title: 'Harvard & Columbia Masters'
     },
     {
       node: (
-        <div className="flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full bg-white dark:bg-navy-900 border border-amber-900/15 dark:border-white/10 shadow-md hover:scale-105 transition-transform shrink-0">
-          <img
-            src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=200"
-            alt="Biolase Painless Laser"
-            className="w-7 h-7 rounded-full object-cover border border-amber-400/50 shadow-sm shrink-0"
-          />
-          <span className="text-[11px] font-serif font-bold text-[#7A2818] dark:text-amber-300 tracking-wide whitespace-nowrap">
-            Biolase Painless Laser
-          </span>
+        <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white dark:bg-navy-900 border border-amber-900/15 dark:border-white/10 shadow-md hover:scale-105 transition-transform shrink-0">
+          <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=200" alt="" className="w-6 h-6 rounded-full object-cover border border-amber-400/50 shadow-sm shrink-0" />
+          <span className="text-[12px] font-sans font-semibold text-[#7A2818] dark:text-amber-300 tracking-wide whitespace-nowrap">Biolase Painless Laser</span>
         </div>
       ),
       title: 'Biolase Painless Laser'
     },
     {
       node: (
-        <div className="flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full bg-white dark:bg-navy-900 border border-amber-900/15 dark:border-white/10 shadow-md hover:scale-105 transition-transform shrink-0">
-          <img
-            src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=200"
-            alt="3D Guided Implants"
-            className="w-7 h-7 rounded-full object-cover border border-amber-400/50 shadow-sm shrink-0"
-          />
-          <span className="text-[11px] font-serif font-bold text-[#7A2818] dark:text-amber-300 tracking-wide whitespace-nowrap">
-            3D Guided Implants
-          </span>
+        <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white dark:bg-navy-900 border border-amber-900/15 dark:border-white/10 shadow-md hover:scale-105 transition-transform shrink-0">
+          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=200" alt="" className="w-6 h-6 rounded-full object-cover border border-amber-400/50 shadow-sm shrink-0" />
+          <span className="text-[12px] font-sans font-semibold text-[#7A2818] dark:text-amber-300 tracking-wide whitespace-nowrap">3D Guided Implants</span>
         </div>
       ),
       title: '3D Guided Implants'
     },
     {
       node: (
-        <div className="flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full bg-white dark:bg-navy-900 border border-amber-900/15 dark:border-white/10 shadow-md hover:scale-105 transition-transform shrink-0">
-          <img
-            src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=200"
-            alt="Top Clinic 2026"
-            className="w-7 h-7 rounded-full object-cover border border-amber-400/50 shadow-sm shrink-0"
-          />
-          <span className="text-[11px] font-serif font-bold text-[#7A2818] dark:text-amber-300 tracking-wide whitespace-nowrap">
-            Top Clinic 2026
-          </span>
+        <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-white dark:bg-navy-900 border border-amber-900/15 dark:border-white/10 shadow-md hover:scale-105 transition-transform shrink-0">
+          <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=200" alt="" className="w-6 h-6 rounded-full object-cover border border-amber-400/50 shadow-sm shrink-0" />
+          <span className="text-[12px] font-sans font-semibold text-[#7A2818] dark:text-amber-300 tracking-wide whitespace-nowrap">Top Clinic 2026</span>
         </div>
       ),
       title: 'Top Clinic 2026'
@@ -315,102 +266,122 @@ export default function HomePage() {
   return (
     <div className="space-y-24 pb-20">
 
-      {/* SubhLagan Theme Luxury Dental Hero Section */}
-      <section className="relative min-h-[90vh] flex flex-col justify-between overflow-hidden px-4 sm:px-6 lg:px-8 -mt-24 pt-32 pb-8 bg-[#FAF7F2] dark:bg-navy-950">
-        {/* Animated Hero Background Slideshow with Preloading, Crossfade & Subtle Overlay */}
-        <HeroBackgroundSlider />
+      {/* HERO SECTION — Left-Aligned Split Layout */}
+      <section className="relative min-h-[92vh] flex items-center overflow-hidden -mt-24 pt-24 bg-gradient-to-br from-[#0B2B3A] via-[#0D3347] to-[#0A1F2E]">
 
-        {/* Hero Content Box */}
-        <div className="relative z-10 max-w-3xl mx-auto text-center my-auto space-y-4 pt-8">
-          {/* Main Title - Compact elegant font size */}
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-serif tracking-tight leading-[1.2] text-[#7A2818] dark:text-amber-200">
-            <span className="relative inline-block pb-1.5 drop-shadow-sm">
-              Personalised Dental Services
-              <span className="absolute bottom-0 left-0 w-full h-[1.5px] bg-gradient-to-r from-transparent via-[#C5A059] to-transparent" />
-            </span>
-          </h1>
+        {/* Right side — Static Dental Image */}
+        <div className="absolute inset-y-0 right-0 w-full lg:w-[55%] z-0">
+          <img
+            src="/dental-hero.jpg"
+            alt="Professional dentist at Pearl Dental Care clinic"
+            className="w-full h-full object-cover object-center"
+          />
+          {/* Gradient fade from left so text is readable */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0B2B3A] via-[#0B2B3A]/70 to-transparent" />
+        </div>
 
-          {/* Subtitle tag with script tildes - Compact */}
-          <div className="flex items-center justify-center space-x-2 text-[#8C3D2B] dark:text-amber-300 font-serif italic text-sm sm:text-lg">
-            <span className="text-[#C5A059]/80">~</span>
-            <span>Exclusively for</span>
-            <span className="text-[#C5A059]/80">~</span>
-          </div>
+        {/* Left side — Hero Content */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-16">
+          <div className="max-w-xl lg:max-w-2xl space-y-7">
 
-          {/* Tagline Specialties - Compact elegant font size */}
-          <p className="text-xs sm:text-base md:text-lg font-serif text-[#7A2818] dark:text-amber-100 max-w-2xl mx-auto leading-relaxed tracking-wide drop-shadow-sm">
-            Porcelain Veneers, 3D Implants, Invisalign &amp; Esteemed Patients
-          </p>
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-[#C5A059]/20 border border-[#C5A059]/40 rounded-full px-4 py-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#C5A059] animate-pulse" />
+              <span className="text-[#F0C97A] font-sans text-xs font-semibold tracking-widest uppercase">
+                Trusted by 12,400+ Patients
+              </span>
+            </div>
 
-          {/* Dual Action Buttons matching reference */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pt-6">
-            <button
-              onClick={() => router.push('/appointment')}
-              className="w-full sm:w-auto px-10 py-4 rounded-sm bg-gradient-to-r from-[#C5A059] via-[#D4AF37] to-[#B38F48] hover:from-[#B38F48] hover:to-[#C5A059] text-[#2B2110] font-sans font-bold text-xs sm:text-sm tracking-widest uppercase shadow-lg shadow-amber-900/15 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 border border-amber-300/40"
-            >
-              BOOK APPOINTMENT
-            </button>
+            {/* Main Heading */}
+            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] text-white">
+              Your Perfect{' '}
+              <span className="relative inline-block">
+                <span className="bg-gradient-to-r from-[#F0C97A] via-[#D4AF37] to-[#C5A059] bg-clip-text text-transparent">
+                  Smile
+                </span>
+                <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-gradient-to-r from-[#F0C97A] to-transparent" />
+              </span>
+              {' '}Starts Here
+            </h1>
 
-            <button
-              onClick={() => {
-                const element = document.getElementById('how-we-work-section');
-                if (element) {
-                  element.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                  router.push('/services');
-                }
-              }}
-              className="w-full sm:w-auto px-10 py-4 rounded-sm bg-[#4A4440] hover:bg-[#383330] text-amber-100 font-sans font-bold text-xs sm:text-sm tracking-widest uppercase shadow-md transition-all duration-300 border border-white/10 hover:border-amber-400/30"
-            >
-              HOW WE WORK
-            </button>
-          </div>
+            {/* Subheading */}
+            <p className="font-sans text-base sm:text-lg text-slate-300 leading-relaxed max-w-lg">
+              Experience world-class dental care — from <span className="text-[#F0C97A] font-semibold">Porcelain Veneers</span> &amp; <span className="text-[#F0C97A] font-semibold">3D Implants</span> to <span className="text-[#F0C97A] font-semibold">Invisalign</span> &amp; <span className="text-[#F0C97A] font-semibold">Laser Whitening</span>. Painless, precise &amp; personalised for you.
+            </p>
 
-          {/* Interactive Animated Count-up Social Proof Stats Bar */}
-          <div className={`grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 pt-8 border-t max-w-4xl mx-auto ${
-            isLight ? 'border-amber-900/10' : 'border-white/10'
-          }`}>
-            <AnimatedStat
-              targetNumber={16}
-              suffix="+"
-              label="Years of Excellence"
-              targetId="how-we-work-section"
-              isLight={isLight}
-            />
-            <AnimatedStat
-              targetNumber={12400}
-              suffix="+"
-              label="Smiles Transformed"
-              targetId="before-after-section"
-              isLight={isLight}
-            />
-            <AnimatedStat
-              targetNumber={99.8}
-              suffix="%"
-              decimals={1}
-              label="Patient Satisfaction"
-              targetId="google-reviews-section"
-              isLight={isLight}
-            />
-            <AnimatedStat
-              targetNumber={5.0}
-              suffix="★"
-              decimals={1}
-              label="Google Rating (480+)"
-              targetId="google-reviews-section"
-              isLight={isLight}
-            />
+            {/* Services Chips — All Equal Size */}
+            <div className="grid grid-cols-3 gap-2">
+              {['Porcelain Veneers', 'Dental Implants', 'Invisalign', 'Laser Whitening', 'Emergency Care', 'Teeth Cleaning'].map((s) => (
+                <span
+                  key={s}
+                  className="bg-white/10 border border-white/20 backdrop-blur-sm text-white text-xs font-sans font-medium px-3 py-2.5 rounded-lg hover:bg-[#C5A059]/30 hover:border-[#C5A059]/50 transition-all duration-200 cursor-default text-center w-full"
+                >
+                  {s}
+                </span>
+              ))}
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 pt-2">
+              <button
+                onClick={() => router.push('/appointment')}
+                className="group flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-[#C5A059] via-[#D4AF37] to-[#B38F48] hover:from-[#D4AF37] hover:to-[#C5A059] text-[#1A0F00] font-sans font-bold text-sm tracking-widest uppercase rounded-sm shadow-lg shadow-amber-900/30 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border border-amber-300/30"
+              >
+                Book Appointment
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+
+              <button
+                onClick={() => {
+                  const element = document.getElementById('how-we-work-section');
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    router.push('/services');
+                  }
+                }}
+                className="flex items-center justify-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-sans font-bold text-sm tracking-widest uppercase rounded-sm border border-white/30 hover:border-[#C5A059]/60 transition-all duration-300"
+              >
+                Our Services
+              </button>
+            </div>
+
+            {/* Stats Bar */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-white/10">
+              {[
+                { num: '16+', label: 'Years of Excellence', id: 'how-we-work-section' },
+                { num: '12,400+', label: 'Smiles Transformed', id: 'before-after-section' },
+                { num: '99.8%', label: 'Patient Satisfaction', id: 'google-reviews-section' },
+                { num: '5.0 ★', label: 'Google Rating (480+)', id: 'google-reviews-section' },
+              ].map((stat) => (
+                <div
+                  key={stat.num}
+                  onClick={() => {
+                    const el = document.getElementById(stat.id);
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="group cursor-pointer text-center sm:text-left space-y-0.5 hover:scale-105 transition-transform duration-200"
+                >
+                  <div className="font-serif text-2xl sm:text-3xl font-bold text-[#F0C97A] group-hover:text-white transition-colors">
+                    {stat.num}
+                  </div>
+                  <div className="font-sans text-[11px] uppercase tracking-wider font-semibold text-slate-400 group-hover:text-[#F0C97A] transition-colors">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+
           </div>
         </div>
 
-        {/* Scroll Indicator matching reference bottom center */}
-        <div className="relative z-10 text-center flex flex-col items-center justify-center space-y-2 pt-4">
-          <span className="text-[10px] uppercase font-serif tracking-[0.35em] text-[#A6884F] dark:text-amber-300 font-semibold">
-            SCROLL
-          </span>
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center space-y-1.5">
+          <span className="text-[10px] uppercase font-sans tracking-[0.35em] text-[#C5A059] font-semibold">SCROLL</span>
           <div className="w-[1px] h-6 bg-gradient-to-b from-[#C5A059] to-transparent animate-pulse" />
         </div>
       </section>
+
 
       {/* React Bits LogoLoop Accredited Partners Marquee */}
       <section className={`py-6 border-y ${isLight ? 'bg-slate-100/60 border-slate-200' : 'bg-navy-950/60 border-white/10'}`}>

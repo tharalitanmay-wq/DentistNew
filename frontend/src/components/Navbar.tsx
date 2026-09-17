@@ -79,12 +79,12 @@ export default function Navbar() {
           </div>
           <div className="flex flex-col justify-center">
             <div className="flex items-start">
-              <span className="text-2xl font-serif font-extrabold tracking-tight text-[#7A2818] dark:text-amber-300 group-hover:text-amber-700 transition-colors leading-none">
+              <span className="text-2xl font-serif font-extrabold tracking-tight text-white dark:text-white group-hover:text-[#F0C97A] transition-colors leading-none drop-shadow-sm">
                 Pearl Dental
               </span>
-              <span className="text-[10px] text-amber-700 dark:text-amber-400 font-sans font-bold ml-0.5">TM</span>
+              <span className="text-[10px] text-[#F0C97A] dark:text-[#F0C97A] font-sans font-bold ml-0.5 drop-shadow-sm">TM</span>
             </div>
-            <span className="text-[9px] tracking-[0.25em] text-[#8C3D2B] dark:text-amber-200 font-bold uppercase mt-1 leading-none">
+            <span className="text-[9px] tracking-[0.25em] text-[#F0C97A] dark:text-[#F0C97A] font-bold uppercase mt-1 leading-none drop-shadow-sm">
               A BOND OF SMILES
             </span>
           </div>
