@@ -1,4 +1,7 @@
+const { Op } = require('sequelize');
 const WalkInQueue = require('../models/WalkInQueue');
+const Appointment = require('../models/Appointment');
+const { memoryAppointments } = require('./appointmentController');
 const { getIsConnected } = require('../config/db');
 
 const getTodayDateString = () => {
@@ -39,42 +42,84 @@ let memoryQueue = [
   }
 ];
 
-// GET today's queue & live counts
+// GET today's queue & live counts (ONLY Accepted & Confirmed appointments appear)
 const getTodayQueue = async (req, res) => {
   try {
     const today = getTodayDateString();
+    let mergedQueue = [];
 
     if (getIsConnected()) {
-      const queueList = await WalkInQueue.findAll({
+      const walkInList = await WalkInQueue.findAll({
         where: { date: today },
         order: [['id', 'ASC']]
       });
 
-      const waitingCount = queueList.filter(q => !q.isTreated).length;
-      const treatedCount = queueList.filter(q => q.isTreated).length;
-
-      return res.json({
-        success: true,
-        date: today,
-        waitingCount,
-        treatedCount,
-        totalToday: queueList.length,
-        queue: queueList
+      // STRICT REQUIREMENT: Only retrieve appointments where status = 'accepted' or 'Confirmed'
+      const acceptedAppointments = await Appointment.findAll({
+        where: {
+          status: {
+            [Op.in]: ['Accepted', 'accepted', 'Confirmed', 'confirmed']
+          }
+        },
+        order: [['id', 'ASC']]
       });
+
+      const walkInFormatted = walkInList.map(w => ({
+        id: `walkin-${w.id}`,
+        patientName: w.patientName,
+        patientNumber: w.patientNumber,
+        reason: w.reason,
+        tokenNumber: w.tokenNumber,
+        isTreated: w.isTreated,
+        date: w.date,
+        createdAt: w.createdAt
+      }));
+
+      const apptFormatted = acceptedAppointments.map((a, index) => ({
+        id: `appt-${a.id}`,
+        patientName: a.patientName,
+        patientNumber: a.patientPhone,
+        reason: `${a.serviceName} - ${a.doctorName}`,
+        tokenNumber: `TK-${String(walkInList.length + index + 1).padStart(2, '0')}`,
+        isTreated: a.status === 'Completed' || a.status === 'completed',
+        date: a.date,
+        createdAt: a.createdAt
+      }));
+
+      mergedQueue = [...walkInFormatted, ...apptFormatted];
     } else {
       const todayList = memoryQueue.filter(q => q.date === today);
-      const waitingCount = todayList.filter(q => !q.isTreated).length;
-      const treatedCount = todayList.filter(q => q.isTreated).length;
 
-      return res.json({
-        success: true,
-        date: today,
-        waitingCount,
-        treatedCount,
-        totalToday: todayList.length,
-        queue: todayList
-      });
+      // STRICT REQUIREMENT: Filter memory appointments strictly for accepted/confirmed
+      const acceptedMemoryAppts = (memoryAppointments || []).filter(
+        a => a.status === 'Accepted' || a.status === 'accepted' || a.status === 'Confirmed' || a.status === 'confirmed'
+      );
+
+      const apptFormatted = acceptedMemoryAppts.map((a, index) => ({
+        id: `appt-${a.id}`,
+        patientName: a.patientName,
+        patientNumber: a.patientPhone,
+        reason: `${a.serviceName} - ${a.doctorName}`,
+        tokenNumber: `TK-${String(todayList.length + index + 1).padStart(2, '0')}`,
+        isTreated: a.status === 'Completed' || a.status === 'completed',
+        date: a.date,
+        createdAt: a.createdAt
+      }));
+
+      mergedQueue = [...todayList, ...apptFormatted];
     }
+
+    const waitingCount = mergedQueue.filter(q => !q.isTreated).length;
+    const treatedCount = mergedQueue.filter(q => q.isTreated).length;
+
+    return res.json({
+      success: true,
+      date: today,
+      waitingCount,
+      treatedCount,
+      totalToday: mergedQueue.length,
+      queue: mergedQueue
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

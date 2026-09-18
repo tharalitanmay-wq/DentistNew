@@ -277,16 +277,33 @@ const login = async (req, res) => {
 
 // ─── GOOGLE AUTHENTICATOR 2FA ENDPOINTS ───────────────────────────────────────
 
+// Helper to get user by ID either from DB or memory
+const findCustomerById = async (userId) => {
+  if (getIsConnected()) {
+    return await Customer.findByPk(userId);
+  }
+  return memoryCustomers.find(c => c.id == userId) || null;
+};
+
+// Helper to save customer updates either to DB or memory
+const updateCustomerData = async (user, updates) => {
+  if (getIsConnected()) {
+    await user.update(updates);
+  } else {
+    Object.assign(user, updates);
+  }
+};
+
 // A) Setup: generate secret + QR code
 const setup2FA = async (req, res) => {
   try {
     const userId = req.user.id;
-    const user = await Customer.findByPk(userId);
+    const user = await findCustomerById(userId);
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
 
     const secret = generateSecret(user.email);
     // Save unverified secret (totp_enabled stays false until verified)
-    await user.update({ totp_secret: secret.base32 });
+    await updateCustomerData(user, { totp_secret: secret.base32 });
 
     const qrCode = await generateQRCode(secret.otpauth_url);
     return res.json({ success: true, qrCode, secret: secret.base32 });
@@ -300,7 +317,7 @@ const verifySetup2FA = async (req, res) => {
   try {
     const { token } = req.body;
     const userId = req.user.id;
-    const user = await Customer.findByPk(userId);
+    const user = await findCustomerById(userId);
     if (!user || !user.totp_secret) {
       return res.status(400).json({ success: false, message: '2FA setup not started. Please generate QR code first.' });
     }
@@ -311,7 +328,7 @@ const verifySetup2FA = async (req, res) => {
     }
 
     const recoveryCodes = generateRecoveryCodes();
-    await user.update({
+    await updateCustomerData(user, {
       totp_enabled: true,
       totp_recovery: JSON.stringify(recoveryCodes)
     });
@@ -327,7 +344,7 @@ const disable2FA = async (req, res) => {
   try {
     const { token } = req.body;
     const userId = req.user.id;
-    const user = await Customer.findByPk(userId);
+    const user = await findCustomerById(userId);
     if (!user || !user.totp_enabled) {
       return res.status(400).json({ success: false, message: '2FA is not enabled.' });
     }
@@ -337,7 +354,7 @@ const disable2FA = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid code. Cannot disable 2FA.' });
     }
 
-    await user.update({ totp_enabled: false, totp_secret: null, totp_recovery: null });
+    await updateCustomerData(user, { totp_enabled: false, totp_secret: null, totp_recovery: null });
     return res.json({ success: true, message: '2FA disabled successfully.' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -364,7 +381,7 @@ const verifyLogin2FA = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid request.' });
     }
 
-    const user = await Customer.findByPk(payload.id);
+    const user = await findCustomerById(payload.id);
     if (!user || !user.totp_enabled || !user.totp_secret) {
       return res.status(400).json({ success: false, message: 'User not found or 2FA not enabled.' });
     }
@@ -379,7 +396,7 @@ const verifyLogin2FA = async (req, res) => {
       const idx = codes.indexOf(String(totpCode).toUpperCase());
       if (idx !== -1) {
         codes.splice(idx, 1); // remove used code
-        await user.update({ totp_recovery: JSON.stringify(codes) });
+        await updateCustomerData(user, { totp_recovery: JSON.stringify(codes) });
         usedRecovery = true;
       }
     }

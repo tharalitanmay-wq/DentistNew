@@ -47,11 +47,10 @@ export default function AdminSidebar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-semibold transition-all ${
-                  isActive
+                className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-semibold transition-all ${isActive
                     ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20 font-bold'
                     : 'text-slate-300 hover:bg-navy-800 hover:text-white'
-                }`}
+                  }`}
               >
                 <item.icon className="w-4 h-4 shrink-0" />
                 <span>{item.name}</span>

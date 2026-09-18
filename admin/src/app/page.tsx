@@ -138,7 +138,7 @@ export default function AdminDashboardPage() {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-xl font-serif font-bold text-white">Recent Patient Appointments</h3>
-            <p className="text-xs text-slate-400">Manage status, assign doctors, and review uploaded records</p>
+            <p className="text-xs text-slate-400 font-medium">Review pending requests, approve/reject bookings, and manage clinic schedule</p>
           </div>
           <Link
             href="/appointments"
@@ -157,44 +157,73 @@ export default function AdminDashboardPage() {
                 <th className="p-4">Specialist Doctor</th>
                 <th className="p-4">Date & Slot</th>
                 <th className="p-4">Status</th>
-                <th className="p-4 text-right">Actions</th>
+                <th className="p-4 text-right">Approval Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
-              {appointments.map((appt) => (
-                <tr key={appt._id} className="hover:bg-navy-800/40">
-                  <td className="p-4 font-bold text-white">
-                    <div>{appt.patientName}</div>
-                    <div className="text-[10px] font-normal text-slate-400">{appt.patientEmail}</div>
-                  </td>
-                  <td className="p-4 text-cyan-300">{appt.serviceName}</td>
-                  <td className="p-4 text-slate-200">{appt.doctorName}</td>
-                  <td className="p-4 text-slate-300">{appt.date} ({appt.timeSlot})</td>
-                  <td className="p-4">
-                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                      appt.status === 'Confirmed'
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                        : appt.status === 'Completed'
-                        ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                        : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                    }`}>
-                      {appt.status}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right">
-                    <select
-                      value={appt.status}
-                      onChange={(e) => handleStatusChange(appt._id, e.target.value)}
-                      className="px-2 py-1 bg-navy-900 border border-white/15 rounded text-[10px] text-white focus:outline-none focus:border-cyan-400"
-                    >
-                      <option value="Pending">Pending</option>
-                      <option value="Confirmed">Confirmed</option>
-                      <option value="Completed">Completed</option>
-                      <option value="Cancelled">Cancelled</option>
-                    </select>
-                  </td>
-                </tr>
-              ))}
+              {appointments.map((appt) => {
+                const apptId = appt.id || appt._id;
+                const isPending = appt.status?.toLowerCase() === 'pending';
+                const isAccepted = appt.status?.toLowerCase() === 'accepted' || appt.status?.toLowerCase() === 'confirmed';
+                const isRejected = appt.status?.toLowerCase() === 'rejected';
+
+                return (
+                  <tr key={apptId} className="hover:bg-navy-800/40">
+                    <td className="p-4 font-bold text-white">
+                      <div>{appt.patientName}</div>
+                      <div className="text-[10px] font-normal text-slate-400">{appt.patientEmail}</div>
+                    </td>
+                    <td className="p-4 text-cyan-300 font-medium">{appt.serviceName}</td>
+                    <td className="p-4 text-slate-200">{appt.doctorName}</td>
+                    <td className="p-4 text-slate-300">{appt.date} ({appt.timeSlot})</td>
+                    <td className="p-4">
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                          isAccepted
+                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                            : isRejected
+                            ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                            : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                        }`}
+                      >
+                        {isAccepted ? 'Accepted' : appt.status}
+                      </span>
+                    </td>
+                    <td className="p-4 text-right">
+                      {isPending ? (
+                        <div className="inline-flex items-center space-x-2">
+                          <button
+                            onClick={() => handleStatusChange(apptId, 'Accepted')}
+                            className="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-[11px] shadow-sm transition-all"
+                            title="Accept Appointment (Adds to Live Queue)"
+                          >
+                            ACCEPT
+                          </button>
+                          <button
+                            onClick={() => handleStatusChange(apptId, 'Rejected')}
+                            className="px-3 py-1 rounded-lg bg-red-500/20 hover:bg-red-500/40 text-red-400 border border-red-500/40 font-bold text-[11px] transition-all"
+                            title="Reject Appointment (Hides from Live Queue)"
+                          >
+                            REJECT
+                          </button>
+                        </div>
+                      ) : (
+                        <select
+                          value={appt.status}
+                          onChange={(e) => handleStatusChange(apptId, e.target.value)}
+                          className="px-2 py-1 bg-navy-900 border border-white/15 rounded text-[10px] text-white focus:outline-none focus:border-cyan-400"
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="Accepted">Accepted</option>
+                          <option value="Rejected">Rejected</option>
+                          <option value="Completed">Completed</option>
+                          <option value="Cancelled">Cancelled</option>
+                        </select>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

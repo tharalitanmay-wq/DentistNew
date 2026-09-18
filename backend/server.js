@@ -33,7 +33,7 @@ if (!fs.existsSync(uploadsDir)) {
 }
 
 // Security & Middleware
-app.use(helmet({ crossOriginResourcePolicy: false }));
+app.use(helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: false }));
 app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -75,28 +75,59 @@ app.get('/api/health', (req, res) => {
 
 // Serve Admin CMS Dashboard under /admin (Integrated 2-Process Setup)
 const adminBuildPath = path.join(__dirname, '../admin/out');
-if (fs.existsSync(adminBuildPath)) {
-  app.use('/admin', express.static(adminBuildPath));
-  app.get('/admin*', (req, res) => {
-    let relativePath = req.path.replace(/^\/admin/, '');
-    if (!relativePath || relativePath === '/') {
-      return res.sendFile(path.join(adminBuildPath, 'index.html'));
-    }
-    const directFile = path.join(adminBuildPath, relativePath);
-    if (fs.existsSync(directFile) && fs.statSync(directFile).isFile()) {
-      return res.sendFile(directFile);
-    }
-    const htmlFile = path.join(adminBuildPath, `${relativePath.replace(/\/$/, '')}.html`);
-    if (fs.existsSync(htmlFile)) {
-      return res.sendFile(htmlFile);
-    }
-    const indexInDir = path.join(adminBuildPath, relativePath, 'index.html');
-    if (fs.existsSync(indexInDir)) {
-      return res.sendFile(indexInDir);
-    }
-    res.sendFile(path.join(adminBuildPath, 'index.html'));
-  });
-}
+
+app.use('/admin', (req, res, next) => {
+  if (!fs.existsSync(adminBuildPath)) {
+    return res.status(503).send(`
+      <div style="font-family:system-ui,sans-serif; background:#0f172a; color:#fff; min-h:100vh; padding:60px 20px; text-align:center;">
+        <h1 style="color:#38bdf8;">Lumina Admin CMS - Build Required</h1>
+        <p style="color:#94a3b8; max-width:500px; margin:0 auto 20px;">The admin build directory was not found on the server.</p>
+        <p style="color:#cbd5e1; font-family:monospace; background:#1e293b; padding:12px; rounded:8px; display:inline-block;">
+          cd admin && npm install && npm run build
+        </p>
+      </div>
+    `);
+  }
+  next();
+});
+
+// Serve static assets for /admin, /admin/_next, and /_next
+app.use('/admin/_next', express.static(path.join(adminBuildPath, '_next')));
+app.use('/admin', express.static(adminBuildPath));
+app.use('/_next', express.static(path.join(adminBuildPath, '_next')));
+
+app.get('/admin*', (req, res) => {
+  if (!fs.existsSync(adminBuildPath)) {
+    return res.status(503).send('Admin CMS build not ready');
+  }
+
+  let relativePath = req.path.replace(/^\/admin/, '');
+  if (!relativePath || relativePath === '/') {
+    return res.sendFile(path.join(adminBuildPath, 'index.html'));
+  }
+
+  const directFile = path.join(adminBuildPath, relativePath);
+  if (fs.existsSync(directFile) && fs.statSync(directFile).isFile()) {
+    return res.sendFile(directFile);
+  }
+
+  const htmlFile = path.join(adminBuildPath, `${relativePath.replace(/\/$/, '')}.html`);
+  if (fs.existsSync(htmlFile)) {
+    return res.sendFile(htmlFile);
+  }
+
+  const indexInDir = path.join(adminBuildPath, relativePath, 'index.html');
+  if (fs.existsSync(indexInDir)) {
+    return res.sendFile(indexInDir);
+  }
+
+  // If a static asset (.css, .js, .png, etc.) is missing, return 404 instead of returning index.html
+  if (/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$/i.test(req.path)) {
+    return res.status(404).send('Asset not found');
+  }
+
+  res.sendFile(path.join(adminBuildPath, 'index.html'));
+});
 
 // Global Error Handler
 app.use(errorHandler);

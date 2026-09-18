@@ -194,28 +194,25 @@ function AppointmentContent() {
         </div>
 
         {/* Auth Box */}
-        <div className={`rounded-3xl p-8 border space-y-6 shadow-2xl transition-all ${
-          isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'glass-card border-white/10 shadow-black/80 bg-slate-900/90'
-        }`}>
+        <div className={`rounded-3xl p-8 border space-y-6 shadow-2xl transition-all ${isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'glass-card border-white/10 shadow-black/80 bg-slate-900/90'
+          }`}>
           <div className={`flex rounded-xl p-1 border ${isLight ? 'bg-slate-100 border-slate-200' : 'bg-navy-950 border-white/10'}`}>
             <button
               onClick={() => { setInlineAuthTab('login'); setAuthError(''); setAuthSuccess(''); }}
-              className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 ${
-                inlineAuthTab === 'login' 
-                  ? 'bg-cyan-500 text-slate-950 shadow-md font-extrabold' 
+              className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 ${inlineAuthTab === 'login'
+                  ? 'bg-cyan-500 text-slate-950 shadow-md font-extrabold'
                   : isLight ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-white'
-              }`}
+                }`}
             >
               <LogIn className="w-3.5 h-3.5" />
               <span>Sign In</span>
             </button>
             <button
               onClick={() => { setInlineAuthTab('register'); setAuthError(''); setAuthSuccess(''); }}
-              className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 ${
-                inlineAuthTab === 'register' 
-                  ? 'bg-cyan-500 text-slate-950 shadow-md font-extrabold' 
+              className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 ${inlineAuthTab === 'register'
+                  ? 'bg-cyan-500 text-slate-950 shadow-md font-extrabold'
                   : isLight ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-white'
-              }`}
+                }`}
             >
               <UserPlus className="w-3.5 h-3.5" />
               <span>Register</span>
@@ -248,9 +245,8 @@ function AppointmentContent() {
                   value={authName}
                   onChange={(e) => setAuthName(e.target.value)}
                   placeholder="Johnathan Miller"
-                  className={`w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${
-                    isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
-                  }`}
+                  className={`w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
+                    }`}
                 />
               </div>
             )}
@@ -265,9 +261,8 @@ function AppointmentContent() {
                 value={authEmail}
                 onChange={(e) => setAuthEmail(e.target.value)}
                 placeholder="patient@example.com"
-                className={`w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${
-                  isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
-                }`}
+                className={`w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
+                  }`}
               />
             </div>
 
@@ -282,9 +277,8 @@ function AppointmentContent() {
                   value={authPassword}
                   onChange={(e) => setAuthPassword(e.target.value)}
                   placeholder="••••••••"
-                  className={`w-full pl-4 pr-10 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${
-                    isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
-                  }`}
+                  className={`w-full pl-4 pr-10 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
+                    }`}
                 />
                 <button
                   type="button"
@@ -307,9 +301,8 @@ function AppointmentContent() {
                   value={authPhone}
                   onChange={(e) => setAuthPhone(e.target.value)}
                   placeholder="+1 (555) 000-0000"
-                  className={`w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${
-                    isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
-                  }`}
+                  className={`w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
+                    }`}
                 />
               </div>
             )}
@@ -322,8 +315,8 @@ function AppointmentContent() {
               {authSubmitting
                 ? 'Processing...'
                 : inlineAuthTab === 'login'
-                ? 'Sign In & Unlock Booking'
-                : 'Create Account (Next: Sign In)'}
+                  ? 'Sign In & Unlock Booking'
+                  : 'Create Account (Next: Sign In)'}
             </button>
           </form>
 
@@ -357,9 +350,8 @@ function AppointmentContent() {
         <div className="flex items-center justify-between max-w-xl mx-auto text-xs font-bold text-slate-400">
           {[1, 2, 3, 4].map((s) => (
             <div key={s} className="flex items-center space-x-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold transition-all ${
-                step === s ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/30' : step > s ? 'bg-emerald-500 text-slate-950' : 'bg-navy-800 text-slate-400 border border-white/10'
-              }`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold transition-all ${step === s ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/30' : step > s ? 'bg-emerald-500 text-slate-950' : 'bg-navy-800 text-slate-400 border border-white/10'
+                }`}>
                 {step > s ? '✓' : s}
               </div>
               <span className={step === s ? 'text-white font-bold' : ''}>
@@ -379,9 +371,8 @@ function AppointmentContent() {
               <div
                 key={idx}
                 onClick={() => setSelectedDoctor(doc.name)}
-                className={`glass-card rounded-2xl p-6 border cursor-pointer transition-all space-y-3 text-center ${
-                  selectedDoctor === doc.name ? 'border-cyan-400 bg-navy-800/80 shadow-xl shadow-cyan-500/20 scale-105' : 'border-white/10 hover:border-cyan-400/50'
-                }`}
+                className={`glass-card rounded-2xl p-6 border cursor-pointer transition-all space-y-3 text-center ${selectedDoctor === doc.name ? 'border-cyan-400 bg-navy-800/80 shadow-xl shadow-cyan-500/20 scale-105' : 'border-white/10 hover:border-cyan-400/50'
+                  }`}
               >
                 <img src={doc.img} alt={doc.name} className="w-20 h-20 rounded-full mx-auto object-cover border-2 border-cyan-400/50" />
                 <h4 className="text-base font-bold text-white">{doc.name}</h4>
@@ -410,9 +401,8 @@ function AppointmentContent() {
               <div
                 key={idx}
                 onClick={() => setSelectedService(srv)}
-                className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center justify-between text-xs font-bold ${
-                  selectedService === srv ? 'border-cyan-400 bg-cyan-500/10 text-white shadow-md' : 'border-white/10 bg-navy-900 text-slate-300 hover:border-cyan-400'
-                }`}
+                className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center justify-between text-xs font-bold ${selectedService === srv ? 'border-cyan-400 bg-cyan-500/10 text-white shadow-md' : 'border-white/10 bg-navy-900 text-slate-300 hover:border-cyan-400'
+                  }`}
               >
                 <span>{srv}</span>
                 {selectedService === srv && <CheckCircle2 className="w-5 h-5 text-cyan-400" />}
@@ -459,9 +449,8 @@ function AppointmentContent() {
                 <button
                   key={slot}
                   onClick={() => setSelectedSlot(slot)}
-                  className={`py-2.5 rounded-xl text-xs font-bold border transition-all ${
-                    selectedSlot === slot ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-md' : 'bg-navy-900 text-slate-300 border-white/10 hover:border-cyan-400'
-                  }`}
+                  className={`py-2.5 rounded-xl text-xs font-bold border transition-all ${selectedSlot === slot ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-md' : 'bg-navy-900 text-slate-300 border-white/10 hover:border-cyan-400'
+                    }`}
                 >
                   {slot}
                 </button>
@@ -572,17 +561,22 @@ function AppointmentContent() {
         </form>
       )}
 
-      {/* STEP 5: Instant Confirmation */}
+      {/* STEP 5: Request Submitted Pending Admin Approval */}
       {step === 5 && (
-        <div className="glass-card rounded-3xl p-8 max-w-xl mx-auto border border-cyan-500/40 text-center space-y-6 shadow-2xl">
-          <div className="w-16 h-16 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center mx-auto border border-cyan-500/30">
-            <CheckCircle2 className="w-10 h-10" />
+        <div className="glass-card rounded-3xl p-8 max-w-xl mx-auto border border-amber-500/40 text-center space-y-6 shadow-2xl">
+          <div className="w-16 h-16 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto border border-amber-500/30">
+            <Clock className="w-10 h-10 animate-pulse" />
           </div>
 
-          <h3 className="text-3xl font-serif font-bold text-white">Appointment Confirmed!</h3>
-          <p className="text-xs text-slate-300">
-            A confirmation receipt and calendar invitation have been dispatched to <span className="text-cyan-400 font-bold">{confirmedAppt?.patientEmail}</span>.
-          </p>
+          <div className="space-y-2">
+            <span className="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30 inline-block">
+              Status: Pending Admin Approval
+            </span>
+            <h3 className="text-3xl font-serif font-bold text-white pt-2">Appointment Request Submitted!</h3>
+            <p className="text-xs text-slate-300 font-medium max-w-md mx-auto">
+              Appointment request submitted successfully. Your appointment will be confirmed after admin approval.
+            </p>
+          </div>
 
           <div className="bg-navy-900 rounded-2xl p-5 border border-white/10 text-left text-xs space-y-2">
             <div className="flex justify-between py-1 border-b border-white/5">
@@ -601,14 +595,18 @@ function AppointmentContent() {
               <span className="text-slate-400">Date & Slot:</span>
               <span className="font-bold text-white">{confirmedAppt?.date} at {confirmedAppt?.timeSlot}</span>
             </div>
+            <div className="flex justify-between py-1">
+              <span className="text-slate-400">Live Queue Status:</span>
+              <span className="font-bold text-amber-400">Hidden (Appears after Admin Accept)</span>
+            </div>
           </div>
 
-          <div className="pt-4 flex justify-center space-x-4">
+          <div className="pt-2 flex justify-center space-x-4">
             <button
               onClick={() => router.push('/dashboard')}
-              className="px-8 py-3 rounded-full bg-cyan-500 text-slate-950 font-bold text-xs uppercase tracking-wider hover:bg-cyan-400 transition-all"
+              className="px-8 py-3 rounded-full bg-cyan-500 text-slate-950 font-bold text-xs uppercase tracking-wider hover:bg-cyan-400 transition-all shadow-lg shadow-cyan-500/25"
             >
-              Go to Patient Portal
+              Check Status in Patient Portal
             </button>
           </div>
         </div>

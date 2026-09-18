@@ -98,7 +98,11 @@ const createAppointment = async (req, res) => {
         userId,
         status: 'Pending'
       });
-      return res.status(201).json({ success: true, message: 'Appointment booked successfully!', appointment: appt });
+      return res.status(201).json({
+        success: true,
+        message: 'Appointment request submitted successfully. Your appointment will be confirmed after admin approval.',
+        appointment: appt
+      });
     } else {
       const newAppt = {
         id: memoryAppointments.length + 1,
@@ -118,7 +122,11 @@ const createAppointment = async (req, res) => {
         createdAt: new Date().toISOString()
       };
       memoryAppointments.unshift(newAppt);
-      return res.status(201).json({ success: true, message: 'Appointment booked successfully!', appointment: newAppt });
+      return res.status(201).json({
+        success: true,
+        message: 'Appointment request submitted successfully. Your appointment will be confirmed after admin approval.',
+        appointment: newAppt
+      });
     }
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -144,7 +152,7 @@ const getMyAppointments = async (req, res) => {
       });
       return res.json({ success: true, appointments: appts });
     } else {
-      const appts = memoryAppointments.filter(a => 
+      const appts = memoryAppointments.filter(a =>
         (userId && String(a.userId) === userId) ||
         (userEmail && a.patientEmail && a.patientEmail.toLowerCase() === userEmail) ||
         (userName && a.patientName && a.patientName.toLowerCase() === userName)
@@ -176,6 +184,13 @@ const updateAppointmentStatus = async (req, res) => {
     const { id } = req.params;
     const { status, doctorName, prescription } = req.body;
 
+    let responseMsg = 'Appointment updated successfully';
+    if (status && (status.toLowerCase() === 'accepted' || status.toLowerCase() === 'confirmed')) {
+      responseMsg = 'Appointment accepted successfully.';
+    } else if (status && status.toLowerCase() === 'rejected') {
+      responseMsg = 'Appointment rejected successfully.';
+    }
+
     if (getIsConnected()) {
       const updateData = {};
       if (status) updateData.status = status;
@@ -185,14 +200,14 @@ const updateAppointmentStatus = async (req, res) => {
       const appt = await Appointment.findByPk(id);
       if (!appt) return res.status(404).json({ success: false, message: 'Appointment not found' });
       await appt.update(updateData);
-      return res.json({ success: true, message: 'Appointment updated successfully', appointment: appt });
+      return res.json({ success: true, message: responseMsg, appointment: appt });
     } else {
       const appt = memoryAppointments.find(a => String(a.id) === String(id));
       if (!appt) return res.status(404).json({ success: false, message: 'Appointment not found' });
       if (status) appt.status = status;
       if (doctorName) appt.doctorName = doctorName;
       if (prescription) appt.prescription = prescription;
-      return res.json({ success: true, message: 'Appointment updated successfully', appointment: appt });
+      return res.json({ success: true, message: responseMsg, appointment: appt });
     }
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -214,4 +229,4 @@ const deleteAppointment = async (req, res) => {
   }
 };
 
-module.exports = { createAppointment, getMyAppointments, getAllAppointments, updateAppointmentStatus, deleteAppointment };
+module.exports = { createAppointment, getMyAppointments, getAllAppointments, updateAppointmentStatus, deleteAppointment, memoryAppointments };
