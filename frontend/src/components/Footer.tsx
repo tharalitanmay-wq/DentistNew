@@ -35,10 +35,12 @@ export default function Footer() {
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-6">
             <Link href="/" className="flex items-center space-x-3 group py-1">
-              <div className="relative flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-600 p-0.5 shadow-md group-hover:scale-105 transition-transform duration-300">
-                <div className="w-full h-full rounded-full bg-amber-50 dark:bg-slate-900 flex items-center justify-center">
-                  <ToothIcon className="w-5 h-5 text-amber-700 dark:text-amber-400 group-hover:scale-110 transition-transform duration-300" />
-                </div>
+              <div className="relative flex items-center justify-center w-11 h-11 rounded-full overflow-hidden bg-white shadow-md border border-slate-200/80 group-hover:scale-105 transition-transform duration-300 shrink-0">
+                <img 
+                  src="/pearl-emblem.png" 
+                  alt="Pearl Dentist Emblem" 
+                  className="w-full h-full object-cover scale-110" 
+                />
               </div>
               <div className="flex flex-col justify-center">
                 <div className="flex items-start">
