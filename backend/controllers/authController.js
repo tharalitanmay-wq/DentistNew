@@ -6,6 +6,7 @@ const User = require('../models/User');
 const { getIsConnected } = require('../config/db');
 const { JWT_SECRET } = require('../middleware/auth');
 const { generatePresignedUrl } = require('../utils/s3Service');
+const { generateSecret, generateQRCode, verifyTOTP, generateRecoveryCodes } = require('../utils/totpService');
 
 // In-memory fallback stores when MySQL is offline
 const memoryAdmins = [
@@ -71,80 +72,85 @@ const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     if (getIsConnected()) {
-      const { Op } = require('sequelize');
-      // Check if email or username already exists in customers table
-      const existingAccount = await Customer.findOne({ 
-        where: { 
-          [Op.or]: [
-            { email: cleanEmail },
-            { username: cleanUsername }
-          ] 
-        } 
-      });
+      try {
+        const { Op } = require('sequelize');
+        // Check if email or username already exists in customers table
+        const existingAccount = await Customer.findOne({ 
+          where: { 
+            [Op.or]: [
+              { email: cleanEmail },
+              { username: cleanUsername }
+            ] 
+          } 
+        });
 
-      if (existingAccount) {
-        if (existingAccount.email.toLowerCase() === cleanEmail) {
-          return res.status(400).json({ 
-            success: false, 
-            message: 'An account with this email already exists.' 
-          });
-        } else {
-          return res.status(400).json({ 
-            success: false, 
-            message: 'This username is already taken. Please enter a different username.' 
-          });
+        if (existingAccount) {
+          if (existingAccount.email && existingAccount.email.toLowerCase() === cleanEmail) {
+            return res.status(400).json({ 
+              success: false, 
+              message: 'An account with this email already exists.' 
+            });
+          } else {
+            return res.status(400).json({ 
+              success: false, 
+              message: 'This username is already taken. Please enter a different username.' 
+            });
+          }
         }
+
+        // Save customer record in customers table with bcrypt hashed password
+        const customer = await Customer.create({
+          name: String(name).trim(),
+          username: cleanUsername,
+          email: cleanEmail,
+          phone: phone ? String(phone).trim() : '',
+          password: hashedPassword
+        });
+
+        return res.status(201).json({
+          success: true,
+          message: 'Registration successful! Please login with your credentials.',
+          customer: {
+            id: customer.id,
+            name: customer.name,
+            username: customer.username,
+            email: customer.email,
+            phone: customer.phone
+          }
+        });
+      } catch (dbErr) {
+        console.warn('DB creation error, using memory fallback:', dbErr.message);
       }
-
-      // Save customer record in customers table with bcrypt hashed password
-      const customer = await Customer.create({
-        name: String(name).trim(),
-        username: cleanUsername,
-        email: cleanEmail,
-        phone: phone ? String(phone).trim() : '',
-        password: hashedPassword
-      });
-
-      return res.status(201).json({
-        success: true,
-        message: 'Registration successful! Please login with your credentials.',
-        customer: {
-          id: customer.id,
-          name: customer.name,
-          username: customer.username,
-          email: customer.email,
-          phone: customer.phone
-        }
-      });
-    } else {
-      const existsEmail = memoryCustomers.find(c => c.email.toLowerCase() === cleanEmail);
-      if (existsEmail) {
-        return res.status(400).json({ success: false, message: 'An account with this email already exists.' });
-      }
-
-      const newCust = {
-        id: memoryCustomers.length + 1,
-        name: String(name).trim(),
-        username: cleanUsername,
-        email: cleanEmail,
-        phone: phone ? String(phone).trim() : '',
-        password: hashedPassword,
-        role: 'patient'
-      };
-      memoryCustomers.push(newCust);
-
-      return res.status(201).json({
-        success: true,
-        message: 'Registration successful! Please login with your credentials.',
-        customer: {
-          id: newCust.id,
-          name: newCust.name,
-          username: newCust.username,
-          email: newCust.email,
-          phone: newCust.phone
-        }
-      });
     }
+
+    // Memory store fallback
+    const existsEmail = memoryCustomers.find(c => c.email.toLowerCase() === cleanEmail);
+    if (existsEmail) {
+      return res.status(400).json({ success: false, message: 'An account with this email already exists.' });
+    }
+
+    const newCust = {
+      id: memoryCustomers.length + 1,
+      name: String(name).trim(),
+      username: cleanUsername,
+      email: cleanEmail,
+      phone: phone ? String(phone).trim() : '',
+      password: hashedPassword,
+      role: 'patient'
+    };
+    memoryCustomers.push(newCust);
+
+    return res.status(201).json({
+      success: true,
+      message: 'Registration successful! Please login with your credentials.',
+      customer: {
+        id: newCust.id,
+        name: newCust.name,
+        username: newCust.username,
+        email: newCust.email,
+        phone: newCust.phone
+      }
+    });
   } catch (error) {
     console.error('[Registration Failure]:', error);
     res.status(500).json({ success: false, message: error.message || 'Registration failed.' });
@@ -215,7 +221,23 @@ const login = async (req, res) => {
       });
     }
 
-    // STEP 5: ONLY WHEN BOTH EMAIL MATCH AND BCRYPT PASSWORD MATCH -> CREATE JWT & SUCCEED
+    // STEP 5: Check if 2FA is enabled for this user
+    if (user.totp_enabled && user.totp_secret) {
+      // Issue a short-lived temp token (5 min) — no full access yet
+      const tempToken = jwt.sign(
+        { id: user.id, twofa_pending: true },
+        JWT_SECRET,
+        { expiresIn: '5m' }
+      );
+      return res.status(200).json({
+        success: true,
+        requires2FA: true,
+        tempToken,
+        message: 'Please enter your Google Authenticator code.'
+      });
+    }
+
+    // STEP 6: 2FA not enabled — issue full JWT token immediately
     const token = jwt.sign(
       { id: user.id, username: user.username || user.email.split('@')[0], email: user.email, name: user.name, role: user.role || 'patient' },
       JWT_SECRET,
@@ -250,6 +272,149 @@ const login = async (req, res) => {
       success: false, 
       message: 'Invalid email or password' 
     });
+  }
+};
+
+// ─── GOOGLE AUTHENTICATOR 2FA ENDPOINTS ───────────────────────────────────────
+
+// A) Setup: generate secret + QR code
+const setup2FA = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await Customer.findByPk(userId);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    const secret = generateSecret(user.email);
+    // Save unverified secret (totp_enabled stays false until verified)
+    await user.update({ totp_secret: secret.base32 });
+
+    const qrCode = await generateQRCode(secret.otpauth_url);
+    return res.json({ success: true, qrCode, secret: secret.base32 });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// B) Verify setup: confirm 6-digit code → enable 2FA
+const verifySetup2FA = async (req, res) => {
+  try {
+    const { token } = req.body;
+    const userId = req.user.id;
+    const user = await Customer.findByPk(userId);
+    if (!user || !user.totp_secret) {
+      return res.status(400).json({ success: false, message: '2FA setup not started. Please generate QR code first.' });
+    }
+
+    const isValid = verifyTOTP(user.totp_secret, token);
+    if (!isValid) {
+      return res.status(400).json({ success: false, message: 'Invalid code. Please try again.' });
+    }
+
+    const recoveryCodes = generateRecoveryCodes();
+    await user.update({
+      totp_enabled: true,
+      totp_recovery: JSON.stringify(recoveryCodes)
+    });
+
+    return res.json({ success: true, message: '2FA enabled successfully!', recoveryCodes });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// C) Disable 2FA
+const disable2FA = async (req, res) => {
+  try {
+    const { token } = req.body;
+    const userId = req.user.id;
+    const user = await Customer.findByPk(userId);
+    if (!user || !user.totp_enabled) {
+      return res.status(400).json({ success: false, message: '2FA is not enabled.' });
+    }
+
+    const isValid = verifyTOTP(user.totp_secret, token);
+    if (!isValid) {
+      return res.status(400).json({ success: false, message: 'Invalid code. Cannot disable 2FA.' });
+    }
+
+    await user.update({ totp_enabled: false, totp_secret: null, totp_recovery: null });
+    return res.json({ success: true, message: '2FA disabled successfully.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// D) Verify login 2FA code → issue full JWT
+const verifyLogin2FA = async (req, res) => {
+  try {
+    const { tempToken, totpCode } = req.body;
+    if (!tempToken || !totpCode) {
+      return res.status(400).json({ success: false, message: 'Missing token or code.' });
+    }
+
+    // Decode temp token
+    let payload;
+    try {
+      payload = jwt.verify(tempToken, JWT_SECRET);
+    } catch {
+      return res.status(401).json({ success: false, message: 'Session expired. Please login again.' });
+    }
+
+    if (!payload.twofa_pending) {
+      return res.status(400).json({ success: false, message: 'Invalid request.' });
+    }
+
+    const user = await Customer.findByPk(payload.id);
+    if (!user || !user.totp_enabled || !user.totp_secret) {
+      return res.status(400).json({ success: false, message: 'User not found or 2FA not enabled.' });
+    }
+
+    // Check TOTP code
+    const isValid = verifyTOTP(user.totp_secret, totpCode);
+
+    // Check recovery codes as fallback
+    let usedRecovery = false;
+    if (!isValid && user.totp_recovery) {
+      const codes = JSON.parse(user.totp_recovery);
+      const idx = codes.indexOf(String(totpCode).toUpperCase());
+      if (idx !== -1) {
+        codes.splice(idx, 1); // remove used code
+        await user.update({ totp_recovery: JSON.stringify(codes) });
+        usedRecovery = true;
+      }
+    }
+
+    if (!isValid && !usedRecovery) {
+      return res.status(401).json({ success: false, message: 'Invalid or expired code.' });
+    }
+
+    // Issue full JWT
+    const fullToken = jwt.sign(
+      { id: user.id, username: user.username || user.email.split('@')[0], email: user.email, name: user.name, role: user.role || 'patient' },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    const profileImageKey = user.profile_image_key || null;
+    let profileImageUrl = null;
+    if (profileImageKey) profileImageUrl = await generatePresignedUrl(profileImageKey);
+
+    return res.json({
+      success: true,
+      message: usedRecovery ? 'Logged in with recovery code.' : 'Login successful!',
+      token: fullToken,
+      user: {
+        id: user.id, name: user.name,
+        username: user.username || user.email.split('@')[0],
+        email: user.email, phone: user.phone || '',
+        role: user.role || 'patient',
+        profile_image_key: profileImageKey,
+        profile_image_url: profileImageUrl,
+        avatar: profileImageUrl || null
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
@@ -452,4 +617,4 @@ const getAllCustomers = async (req, res) => {
   }
 };
 
-module.exports = { register, login, adminLogin, getMe, updateProfile, getAllCustomers };
+module.exports = { register, login, adminLogin, getMe, updateProfile, getAllCustomers, setup2FA, verifySetup2FA, disable2FA, verifyLogin2FA };

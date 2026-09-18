@@ -37,6 +37,20 @@ const Customer = sequelize.define('Customer', {
     type: DataTypes.STRING,
     allowNull: true,
     defaultValue: null
+  },
+  totp_secret: {
+    type: DataTypes.STRING(64),
+    allowNull: true,
+    defaultValue: null
+  },
+  totp_enabled: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
+  totp_recovery: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    defaultValue: null
   }
 }, {
   tableName: 'customers',

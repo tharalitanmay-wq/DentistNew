@@ -41,6 +41,13 @@ function LoginContent() {
   const [successMsg, setSuccessMsg] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  // 2FA state
+  const [step, setStep] = useState<'credentials' | 'totp'>('credentials');
+  const [tempToken, setTempToken] = useState('');
+  const [totpDigits, setTotpDigits] = useState(['', '', '', '', '', '']);
+  const [isRecovery, setIsRecovery] = useState(false);
+  const [recoveryCode, setRecoveryCode] = useState('');
+
   useEffect(() => {
     if (user) {
       if (user.role === 'admin') {
@@ -78,11 +85,18 @@ function LoginContent() {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        login(data.token, data.user);
-        if (data.user?.role === 'admin') {
-          window.location.href = getApiUrl('/admin');
+        if (data.requires2FA) {
+          // 2FA required — show TOTP screen
+          setTempToken(data.tempToken);
+          setStep('totp');
+          setSubmitting(false);
         } else {
-          router.push('/dashboard');
+          login(data.token, data.user);
+          if (data.user?.role === 'admin') {
+            window.location.href = getApiUrl('/admin');
+          } else {
+            router.push('/dashboard');
+          }
         }
       } else {
         setAuthError(data.message || 'Invalid email or password');
@@ -91,6 +105,57 @@ function LoginContent() {
     } catch (err) {
       setAuthError('Invalid email or password');
       setSubmitting(false);
+    }
+  };
+
+  const handleTOTPSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+    setSubmitting(true);
+    const totpCode = isRecovery ? recoveryCode.trim().toUpperCase() : totpDigits.join('');
+    try {
+      const res = await fetch(getApiUrl('/api/auth/2fa/verify-login'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tempToken, totpCode })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        login(data.token, data.user);
+        router.push('/dashboard');
+      } else {
+        setAuthError(data.message || 'Invalid code. Please try again.');
+        setSubmitting(false);
+      }
+    } catch {
+      setAuthError('Something went wrong. Please try again.');
+      setSubmitting(false);
+    }
+  };
+
+  const handleDigitInput = (index: number, value: string) => {
+    if (!/^[0-9]?$/.test(value)) return;
+    const newDigits = [...totpDigits];
+    newDigits[index] = value;
+    setTotpDigits(newDigits);
+    if (value && index < 5) {
+      const next = document.getElementById(`totp-digit-${index + 1}`);
+      if (next) (next as HTMLInputElement).focus();
+    }
+  };
+
+  const handleDigitKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === 'Backspace' && !totpDigits[index] && index > 0) {
+      const prev = document.getElementById(`totp-digit-${index - 1}`);
+      if (prev) (prev as HTMLInputElement).focus();
+    }
+  };
+
+  const handleDigitPaste = (e: React.ClipboardEvent) => {
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (pasted.length === 6) {
+      setTotpDigits(pasted.split(''));
+      e.preventDefault();
     }
   };
 
@@ -104,6 +169,113 @@ function LoginContent() {
       setResetEmail('');
     }, 2500);
   };
+
+  // ── TOTP SCREEN (shown after password verified) ──────────────────────────────
+  if (step === 'totp') {
+    return (
+      <div className="relative max-w-lg mx-auto px-3.5 sm:px-6 py-6 sm:py-12">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-72 h-72 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
+        <div className={`relative rounded-2xl sm:rounded-3xl p-6 sm:p-10 border shadow-2xl backdrop-blur-xl ${isLight ? 'bg-white/95 border-slate-200/90' : 'bg-slate-900/90 border-white/10'}`}>
+
+          {/* Icon */}
+          <div className="flex flex-col items-center mb-6">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg mb-4">
+              <Shield className="w-8 h-8 text-white" />
+            </div>
+            <h2 className={`text-2xl font-bold font-serif ${isLight ? 'text-slate-900' : 'text-white'}`}>
+              2-Step Verification
+            </h2>
+            <p className={`text-sm mt-1 text-center ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+              {isRecovery ? 'Enter a recovery code' : 'Open Google Authenticator and enter the 6-digit code'}
+            </p>
+          </div>
+
+          {/* Error */}
+          {authError && (
+            <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3 text-red-400 text-sm mb-4">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{authError}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleTOTPSubmit} className="space-y-5">
+            {!isRecovery ? (
+              /* 6-digit boxes */
+              <div className="flex justify-center gap-2 sm:gap-3">
+                {totpDigits.map((digit, i) => (
+                  <input
+                    key={i}
+                    id={`totp-digit-${i}`}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={digit}
+                    onChange={e => handleDigitInput(i, e.target.value)}
+                    onKeyDown={e => handleDigitKeyDown(i, e)}
+                    onPaste={i === 0 ? handleDigitPaste : undefined}
+                    autoFocus={i === 0}
+                    className={`w-11 h-14 sm:w-13 sm:h-16 text-center text-2xl font-bold rounded-xl border-2 outline-none transition-all ${
+                      isLight
+                        ? 'bg-slate-50 border-slate-200 text-slate-900 focus:border-cyan-500 focus:bg-white'
+                        : 'bg-slate-800 border-slate-600 text-white focus:border-cyan-400 focus:bg-slate-700'
+                    }`}
+                  />
+                ))}
+              </div>
+            ) : (
+              /* Recovery code input */
+              <input
+                type="text"
+                value={recoveryCode}
+                onChange={e => setRecoveryCode(e.target.value.toUpperCase())}
+                placeholder="e.g. A1B2C3D4"
+                autoFocus
+                className={`w-full px-4 py-3 rounded-xl border-2 text-center text-lg font-mono font-bold outline-none transition-all ${
+                  isLight
+                    ? 'bg-slate-50 border-slate-200 text-slate-900 focus:border-cyan-500'
+                    : 'bg-slate-800 border-slate-600 text-white focus:border-cyan-400'
+                }`}
+              />
+            )}
+
+            {/* Verify Button */}
+            <button
+              type="submit"
+              disabled={submitting || (!isRecovery && totpDigits.join('').length < 6) || (isRecovery && !recoveryCode.trim())}
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-base shadow-lg hover:from-cyan-400 hover:to-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              {submitting ? (
+                <span className="animate-spin w-5 h-5 border-2 border-white/40 border-t-white rounded-full" />
+              ) : (
+                <>
+                  <Shield className="w-4 h-4" />
+                  Verify & Login
+                </>
+              )}
+            </button>
+
+            {/* Toggle Recovery / Back */}
+            <div className="flex items-center justify-between pt-1">
+              <button
+                type="button"
+                onClick={() => { setStep('credentials'); setAuthError(''); setTotpDigits(['','','','','','']); }}
+                className={`text-xs hover:underline ${isLight ? 'text-slate-500' : 'text-slate-400'}`}
+              >
+                ← Back to login
+              </button>
+              <button
+                type="button"
+                onClick={() => { setIsRecovery(!isRecovery); setAuthError(''); }}
+                className="text-xs text-cyan-500 hover:text-cyan-400 hover:underline"
+              >
+                {isRecovery ? 'Use authenticator app' : 'Use recovery code'}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative max-w-lg mx-auto px-3.5 sm:px-6 py-6 sm:py-12">

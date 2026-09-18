@@ -4,16 +4,16 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { getApiUrl } from '@/config/api';
-import { 
-  LayoutDashboard, 
-  Calendar, 
-  User, 
-  FileText, 
-  Clock, 
-  LogOut, 
-  CheckCircle2, 
-  Download, 
-  AlertCircle, 
+import {
+  LayoutDashboard,
+  Calendar,
+  User,
+  FileText,
+  Clock,
+  LogOut,
+  CheckCircle2,
+  Download,
+  AlertCircle,
   Sparkles,
   Activity,
   ShieldCheck,
@@ -59,8 +59,18 @@ export default function DashboardPage() {
   const [appointments, setAppointments] = useState<any[]>([]);
   const [loadingAppts, setLoadingAppts] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'appointments' | 'profile' | 'queue'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'appointments' | 'profile' | 'queue' | 'security'>('dashboard');
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // 2FA State
+  const [twoFAEnabled, setTwoFAEnabled] = useState(false);
+  const [twoFAStep, setTwoFAStep] = useState<'idle' | 'qr' | 'verify' | 'recovery' | 'disable'>('idle');
+  const [qrCodeImg, setQrCodeImg] = useState('');
+  const [totpToken, setTotpToken] = useState('');
+  const [disableToken, setDisableToken] = useState('');
+  const [recoveryCodes, setRecoveryCodes] = useState<string[]>([]);
+  const [twoFAMsg, setTwoFAMsg] = useState('');
+  const [twoFAError, setTwoFAError] = useState('');
 
   useEffect(() => {
     if (user && token) {
@@ -81,10 +91,57 @@ export default function DashboardPage() {
           profile_image_url: data.user.profile_image_url,
           avatar: data.user.profile_image_url || data.user.avatar
         });
+        setTwoFAEnabled(!!data.user.totp_enabled);
       }
     } catch (e) {
       // Ignore fallback
     }
+  };
+
+  const handleSetup2FA = async () => {
+    setTwoFAError(''); setTwoFAMsg('');
+    try {
+      const res = await fetch(getApiUrl('/api/auth/2fa/setup'), {
+        method: 'POST', headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) { setQrCodeImg(data.qrCode); setTwoFAStep('qr'); }
+      else setTwoFAError(data.message);
+    } catch { setTwoFAError('Failed to start 2FA setup.'); }
+  };
+
+  const handleVerifySetup = async () => {
+    setTwoFAError('');
+    try {
+      const res = await fetch(getApiUrl('/api/auth/2fa/verify-setup'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ token: totpToken })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setTwoFAEnabled(true);
+        setRecoveryCodes(data.recoveryCodes || []);
+        setTwoFAStep('recovery');
+        setTotpToken('');
+      } else setTwoFAError(data.message);
+    } catch { setTwoFAError('Verification failed.'); }
+  };
+
+  const handleDisable2FA = async () => {
+    setTwoFAError('');
+    try {
+      const res = await fetch(getApiUrl('/api/auth/2fa/disable'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ token: disableToken })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setTwoFAEnabled(false); setTwoFAStep('idle'); setDisableToken('');
+        setTwoFAMsg('2FA has been disabled.');
+      } else setTwoFAError(data.message);
+    } catch { setTwoFAError('Failed to disable 2FA.'); }
   };
 
   const fetchAppointments = async () => {
@@ -221,9 +278,8 @@ export default function DashboardPage() {
   if (!user) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4">
-        <div className={`max-w-md w-full rounded-3xl p-8 border space-y-6 shadow-2xl transition-all ${
-          isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-slate-900 border-white/10 shadow-black/50'
-        }`}>
+        <div className={`max-w-md w-full rounded-3xl p-8 border space-y-6 shadow-2xl transition-all ${isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-slate-900 border-white/10 shadow-black/50'
+          }`}>
           <div className="text-center space-y-2">
             <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center mx-auto border border-cyan-500/20 shadow-md">
               <ToothIcon className="w-7 h-7 text-cyan-600 dark:text-cyan-400" />
@@ -239,21 +295,19 @@ export default function DashboardPage() {
           <div className={`flex rounded-2xl p-1 border ${isLight ? 'bg-slate-100 border-slate-200' : 'bg-slate-950 border-white/10'}`}>
             <button
               onClick={() => { setIsLoginTab(true); setAuthError(''); setSuccessMsg(''); }}
-              className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all ${
-                isLoginTab 
-                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20' 
+              className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all ${isLoginTab
+                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
                   : isLight ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-white'
-              }`}
+                }`}
             >
               Sign In
             </button>
             <button
               onClick={() => { setIsLoginTab(false); setAuthError(''); setSuccessMsg(''); }}
-              className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all ${
-                !isLoginTab 
-                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20' 
+              className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all ${!isLoginTab
+                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
                   : isLight ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-white'
-              }`}
+                }`}
             >
               Register
             </button>
@@ -283,9 +337,8 @@ export default function DashboardPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Tanmay"
-                  className={`w-full px-4 py-3 border rounded-xl text-xs focus:outline-none focus:border-cyan-500 transition-all ${
-                    isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-xl text-xs focus:outline-none focus:border-cyan-500 transition-all ${isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
+                    }`}
                 />
               </div>
             )}
@@ -298,9 +351,8 @@ export default function DashboardPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="tanmay@gmail.com"
-                className={`w-full px-4 py-3 border rounded-xl text-xs focus:outline-none focus:border-cyan-500 transition-all ${
-                  isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
-                }`}
+                className={`w-full px-4 py-3 border rounded-xl text-xs focus:outline-none focus:border-cyan-500 transition-all ${isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
+                  }`}
               />
             </div>
 
@@ -312,9 +364,8 @@ export default function DashboardPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className={`w-full px-4 py-3 border rounded-xl text-xs focus:outline-none focus:border-cyan-500 transition-all ${
-                  isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
-                }`}
+                className={`w-full px-4 py-3 border rounded-xl text-xs focus:outline-none focus:border-cyan-500 transition-all ${isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
+                  }`}
               />
             </div>
 
@@ -326,9 +377,8 @@ export default function DashboardPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+1 (555) 000-0000"
-                  className={`w-full px-4 py-3 border rounded-xl text-xs focus:outline-none focus:border-cyan-500 transition-all ${
-                    isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-xl text-xs focus:outline-none focus:border-cyan-500 transition-all ${isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-950 border-white/15 text-white'
+                    }`}
                 />
               </div>
             )}
@@ -367,15 +417,14 @@ export default function DashboardPage() {
 
           {/* Sidebar Navigation Items */}
           <nav className="space-y-1.5 text-xs font-semibold">
-            
+
             {/* Active Dashboard item */}
             <button
               onClick={() => setActiveTab('dashboard')}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${
-                activeTab === 'dashboard'
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'dashboard'
                   ? 'bg-slate-800/90 text-cyan-300 border border-cyan-500/30 shadow-md'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
-              }`}
+                }`}
             >
               <LayoutDashboard className="w-4 h-4 text-cyan-400" />
               <span>Dashboard Overview</span>
@@ -391,11 +440,10 @@ export default function DashboardPage() {
 
             <button
               onClick={() => setActiveTab('appointments')}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${
-                activeTab === 'appointments'
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'appointments'
                   ? 'bg-slate-800/90 text-cyan-300 border border-cyan-500/30 shadow-md'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
-              }`}
+                }`}
             >
               <Stethoscope className="w-4 h-4 text-slate-400" />
               <span>My Consultations & Notes</span>
@@ -432,14 +480,29 @@ export default function DashboardPage() {
 
             <button
               onClick={() => setActiveTab('profile')}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${
-                activeTab === 'profile'
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'profile'
                   ? 'bg-slate-800/90 text-cyan-300 border border-cyan-500/30 shadow-md'
                   : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
-              }`}
+                }`}
             >
               <User className="w-4 h-4 text-slate-400" />
               <span>Profile & Settings</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('security')}
+              className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${activeTab === 'security'
+                  ? 'bg-slate-800/90 text-cyan-300 border border-cyan-500/30 shadow-md'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
+                }`}
+            >
+              <div className="flex items-center space-x-3">
+                <Shield className="w-4 h-4 text-slate-400" />
+                <span>Security &amp; 2FA</span>
+              </div>
+              {twoFAEnabled && (
+                <span className="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold">ON</span>
+              )}
             </button>
 
             <Link
@@ -477,7 +540,7 @@ export default function DashboardPage() {
 
         {/* Top Header Bar */}
         <header className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-white/10">
-          
+
           {/* Clean White/Slate Search Bar */}
           <div className="relative w-full sm:w-80">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
@@ -486,11 +549,10 @@ export default function DashboardPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search appointments, doctors, notes..."
-              className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-xs focus:outline-none transition-all ${
-                isLight 
-                  ? 'bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-cyan-500 shadow-sm' 
+              className={`w-full pl-10 pr-4 py-2.5 rounded-xl text-xs focus:outline-none transition-all ${isLight
+                  ? 'bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-cyan-500 shadow-sm'
                   : 'bg-slate-900 border border-white/10 text-white placeholder:text-slate-500 focus:border-cyan-400'
-              }`}
+                }`}
             />
           </div>
 
@@ -498,11 +560,10 @@ export default function DashboardPage() {
           <div className="flex items-center space-x-4 w-full sm:w-auto justify-end">
             <button
               onClick={handleRefresh}
-              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all ${
-                isLight 
-                  ? 'bg-white border-slate-200 text-slate-800 hover:bg-slate-100 shadow-sm' 
+              className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all ${isLight
+                  ? 'bg-white border-slate-200 text-slate-800 hover:bg-slate-100 shadow-sm'
                   : 'bg-slate-900 border-white/10 text-slate-300 hover:text-white'
-              }`}
+                }`}
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-cyan-500' : ''}`} />
               <span>Refresh</span>
@@ -510,11 +571,10 @@ export default function DashboardPage() {
 
             <button
               onClick={toggleTheme}
-              className={`p-2.5 rounded-xl border transition-all ${
-                isLight 
-                  ? 'bg-white border-slate-200 text-slate-800 hover:bg-slate-100 shadow-sm' 
+              className={`p-2.5 rounded-xl border transition-all ${isLight
+                  ? 'bg-white border-slate-200 text-slate-800 hover:bg-slate-100 shadow-sm'
                   : 'bg-slate-900 border-white/10 text-slate-300 hover:text-white'
-              }`}
+                }`}
               title="Toggle Theme"
             >
               {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
@@ -552,20 +612,18 @@ export default function DashboardPage() {
 
         {/* Profile Upload Tab Toggle */}
         {activeTab === 'profile' && (
-          <div className={`rounded-2xl p-6 border shadow-lg transition-all ${
-            isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-slate-900 border-white/10'
-          }`}>
+          <div className={`rounded-2xl p-6 border shadow-lg transition-all ${isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-slate-900 border-white/10'
+            }`}>
             <ProfilePhotoUpload isLight={isLight} />
           </div>
         )}
 
         {/* 8-METRIC STAT CARDS GRID (HARMONIZED COLOR SCHEME) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          
+
           {/* Card 1: APPOINTMENTS */}
-          <div className={`rounded-2xl p-5 border shadow-sm transition-all ${
-            isLight ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-cyan-500/10' : 'bg-slate-900 border-white/10 hover:border-cyan-400/40'
-          }`}>
+          <div className={`rounded-2xl p-5 border shadow-sm transition-all ${isLight ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-cyan-500/10' : 'bg-slate-900 border-white/10 hover:border-cyan-400/40'
+            }`}>
             <div className="flex items-center space-x-3.5">
               <div className="p-3 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
                 <Calendar className="w-5 h-5" />
@@ -579,9 +637,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Card 2: TREATMENT PLANS */}
-          <div className={`rounded-2xl p-5 border shadow-sm transition-all ${
-            isLight ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-cyan-500/10' : 'bg-slate-900 border-white/10 hover:border-cyan-400/40'
-          }`}>
+          <div className={`rounded-2xl p-5 border shadow-sm transition-all ${isLight ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-cyan-500/10' : 'bg-slate-900 border-white/10 hover:border-cyan-400/40'
+            }`}>
             <div className="flex items-center space-x-3.5">
               <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                 <Stethoscope className="w-5 h-5" />
@@ -595,9 +652,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Card 3: DENTAL REPORTS */}
-          <div className={`rounded-2xl p-5 border shadow-sm transition-all ${
-            isLight ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-cyan-500/10' : 'bg-slate-900 border-white/10 hover:border-cyan-400/40'
-          }`}>
+          <div className={`rounded-2xl p-5 border shadow-sm transition-all ${isLight ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-cyan-500/10' : 'bg-slate-900 border-white/10 hover:border-cyan-400/40'
+            }`}>
             <div className="flex items-center space-x-3.5">
               <div className="p-3 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
                 <FileText className="w-5 h-5" />
@@ -611,9 +667,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Card 4: SPECIALISTS */}
-          <div className={`rounded-2xl p-5 border shadow-sm transition-all ${
-            isLight ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-cyan-500/10' : 'bg-slate-900 border-white/10 hover:border-cyan-400/40'
-          }`}>
+          <div className={`rounded-2xl p-5 border shadow-sm transition-all ${isLight ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-cyan-500/10' : 'bg-slate-900 border-white/10 hover:border-cyan-400/40'
+            }`}>
             <div className="flex items-center space-x-3.5">
               <div className="p-3 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
                 <Users className="w-5 h-5" />
@@ -627,9 +682,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Card 5: SMILE SIMULATIONS */}
-          <div className={`rounded-2xl p-5 border shadow-sm transition-all ${
-            isLight ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-cyan-500/10' : 'bg-slate-900 border-white/10 hover:border-cyan-400/40'
-          }`}>
+          <div className={`rounded-2xl p-5 border shadow-sm transition-all ${isLight ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-cyan-500/10' : 'bg-slate-900 border-white/10 hover:border-cyan-400/40'
+            }`}>
             <div className="flex items-center space-x-3.5">
               <div className="p-3 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                 <Sparkles className="w-5 h-5" />
@@ -643,9 +697,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Card 6: NEXT CONSULTATION */}
-          <div className={`rounded-2xl p-5 border shadow-sm transition-all ${
-            isLight ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-cyan-500/10' : 'bg-slate-900 border-white/10 hover:border-cyan-400/40'
-          }`}>
+          <div className={`rounded-2xl p-5 border shadow-sm transition-all ${isLight ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-cyan-500/10' : 'bg-slate-900 border-white/10 hover:border-cyan-400/40'
+            }`}>
             <div className="flex items-center space-x-3.5">
               <div className="p-3 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
                 <Clock className="w-5 h-5" />
@@ -661,9 +714,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Card 7: MEMBERSHIP TIER */}
-          <div className={`rounded-2xl p-5 border shadow-sm transition-all ${
-            isLight ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-cyan-500/10' : 'bg-slate-900 border-white/10 hover:border-cyan-400/40'
-          }`}>
+          <div className={`rounded-2xl p-5 border shadow-sm transition-all ${isLight ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-cyan-500/10' : 'bg-slate-900 border-white/10 hover:border-cyan-400/40'
+            }`}>
             <div className="flex items-center space-x-3.5">
               <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                 <Award className="w-5 h-5" />
@@ -677,9 +729,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Card 8: CLINIC QUEUE */}
-          <div className={`rounded-2xl p-5 border shadow-sm transition-all ${
-            isLight ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-cyan-500/10' : 'bg-slate-900 border-white/10 hover:border-cyan-400/40'
-          }`}>
+          <div className={`rounded-2xl p-5 border shadow-sm transition-all ${isLight ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:shadow-cyan-500/10' : 'bg-slate-900 border-white/10 hover:border-cyan-400/40'
+            }`}>
             <div className="flex items-center space-x-3.5">
               <div className="p-3 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
                 <Activity className="w-5 h-5 animate-pulse" />
@@ -704,16 +755,14 @@ export default function DashboardPage() {
             </h2>
 
             {loadingAppts ? (
-              <div className={`rounded-2xl p-8 text-center text-xs space-y-2 border ${
-                isLight ? 'bg-white border-slate-200 text-slate-600' : 'bg-slate-900 border-white/10 text-slate-400'
-              }`}>
+              <div className={`rounded-2xl p-8 text-center text-xs space-y-2 border ${isLight ? 'bg-white border-slate-200 text-slate-600' : 'bg-slate-900 border-white/10 text-slate-400'
+                }`}>
                 <div className="w-6 h-6 rounded-full border-2 border-cyan-500 border-t-transparent animate-spin mx-auto" />
                 <p>Loading clinical consultations...</p>
               </div>
             ) : filteredAppointments.length === 0 ? (
-              <div className={`rounded-2xl p-8 text-center space-y-3 border ${
-                isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-white/10'
-              }`}>
+              <div className={`rounded-2xl p-8 text-center space-y-3 border ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-white/10'
+                }`}>
                 <Stethoscope className="w-8 h-8 text-cyan-500/40 mx-auto" />
                 <p className="text-xs text-slate-600 dark:text-slate-400">No consultations matching your query.</p>
               </div>
@@ -722,11 +771,10 @@ export default function DashboardPage() {
                 {filteredAppointments.map((appt) => (
                   <div
                     key={appt._id}
-                    className={`rounded-2xl p-6 border space-y-4 shadow-sm transition-all ${
-                      isLight 
-                        ? 'bg-white border-slate-200 hover:border-cyan-500/30' 
+                    className={`rounded-2xl p-6 border space-y-4 shadow-sm transition-all ${isLight
+                        ? 'bg-white border-slate-200 hover:border-cyan-500/30'
                         : 'bg-slate-900 border-white/10 hover:border-cyan-400/30'
-                    }`}
+                      }`}
                   >
                     {/* Header Tags & Timestamp */}
                     <div className="flex items-center justify-between text-xs">
@@ -734,12 +782,40 @@ export default function DashboardPage() {
                         <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border border-cyan-500/25">
                           {appt.typeTag || 'CONSULTATION'}
                         </span>
-                        <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25">
-                          {appt.status || 'CONFIRMED'}
-                        </span>
+                        {(() => {
+                          const st = (appt.status || '').toLowerCase();
+                          if (st === 'pending') {
+                            return (
+                              <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 flex items-center space-x-1">
+                                <Clock className="w-3 h-3 text-amber-500 animate-pulse" />
+                                <span>Waiting for confirmation</span>
+                              </span>
+                            );
+                          } else if (st === 'accepted' || st === 'confirmed') {
+                            return (
+                              <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 flex items-center space-x-1">
+                                <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                                <span>Appointment Confirmed</span>
+                              </span>
+                            );
+                          } else if (st === 'rejected') {
+                            return (
+                              <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-red-500/15 text-red-700 dark:text-red-400 border border-red-500/30 flex items-center space-x-1">
+                                <AlertCircle className="w-3 h-3 text-red-500" />
+                                <span>Appointment Rejected</span>
+                              </span>
+                            );
+                          } else {
+                            return (
+                              <span className="px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-500/15 text-slate-700 dark:text-slate-300 border border-slate-500/30">
+                                <span>{appt.status || 'Scheduled'}</span>
+                              </span>
+                            );
+                          }
+                        })()}
                       </div>
                       <span className="text-[11px] text-slate-400 font-mono">
-                        {appt.createdAt || '18 min ago'}
+                        {appt.createdAt ? (typeof appt.createdAt === 'string' && appt.createdAt.includes('T') ? new Date(appt.createdAt).toLocaleDateString() : appt.createdAt) : '18 min ago'}
                       </span>
                     </div>
 
@@ -794,11 +870,10 @@ export default function DashboardPage() {
             <div className="space-y-3">
               <button
                 onClick={() => setActiveTab('appointments')}
-                className={`w-full p-4 rounded-xl border text-left flex items-center space-x-3 transition-all ${
-                  isLight 
-                    ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:bg-slate-50 text-slate-800 shadow-sm' 
+                className={`w-full p-4 rounded-xl border text-left flex items-center space-x-3 transition-all ${isLight
+                    ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:bg-slate-50 text-slate-800 shadow-sm'
                     : 'bg-slate-900 border-white/10 hover:bg-slate-800 text-white'
-                }`}
+                  }`}
               >
                 <Stethoscope className="w-4.5 h-4.5 text-cyan-600 shrink-0" />
                 <span className="text-xs font-bold font-sans">Review Consultations</span>
@@ -812,11 +887,10 @@ export default function DashboardPage() {
                     alert('No dental report file attached yet.');
                   }
                 }}
-                className={`w-full p-4 rounded-xl border text-left flex items-center space-x-3 transition-all ${
-                  isLight 
-                    ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:bg-slate-50 text-slate-800 shadow-sm' 
+                className={`w-full p-4 rounded-xl border text-left flex items-center space-x-3 transition-all ${isLight
+                    ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:bg-slate-50 text-slate-800 shadow-sm'
                     : 'bg-slate-900 border-white/10 hover:bg-slate-800 text-white'
-                }`}
+                  }`}
               >
                 <FileText className="w-4.5 h-4.5 text-cyan-600 shrink-0" />
                 <span className="text-xs font-bold font-sans">View X-Ray & Reports</span>
@@ -824,11 +898,10 @@ export default function DashboardPage() {
 
               <Link
                 href="/appointment"
-                className={`w-full p-4 rounded-xl border text-left flex items-center space-x-3 transition-all block ${
-                  isLight 
-                    ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:bg-slate-50 text-slate-800 shadow-sm' 
+                className={`w-full p-4 rounded-xl border text-left flex items-center space-x-3 transition-all block ${isLight
+                    ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:bg-slate-50 text-slate-800 shadow-sm'
                     : 'bg-slate-900 border-white/10 hover:bg-slate-800 text-white'
-                }`}
+                  }`}
               >
                 <Calendar className="w-4.5 h-4.5 text-cyan-600 shrink-0" />
                 <span className="text-xs font-bold font-sans">Schedule Consultation</span>
@@ -836,17 +909,152 @@ export default function DashboardPage() {
 
               <button
                 onClick={() => setActiveTab('profile')}
-                className={`w-full p-4 rounded-xl border text-left flex items-center space-x-3 transition-all ${
-                  isLight 
-                    ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:bg-slate-50 text-slate-800 shadow-sm' 
+                className={`w-full p-4 rounded-xl border text-left flex items-center space-x-3 transition-all ${isLight
+                    ? 'bg-white border-slate-200 hover:border-cyan-500/40 hover:bg-slate-50 text-slate-800 shadow-sm'
                     : 'bg-slate-900 border-white/10 hover:bg-slate-800 text-white'
-                }`}
+                  }`}
               >
                 <User className="w-4.5 h-4.5 text-cyan-600 shrink-0" />
                 <span className="text-xs font-bold font-sans">Upload Profile Photo</span>
               </button>
             </div>
           </div>
+
+          {/* ── SECURITY & 2FA TAB ─────────────────────────────────────────── */}
+          {activeTab === 'security' && (
+            <div className="space-y-6">
+              <div className={`rounded-2xl border p-6 ${isLight ? 'bg-white border-slate-200' : 'bg-slate-900/60 border-white/10'}`}>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className={`text-lg font-bold font-serif ${isLight ? 'text-slate-900' : 'text-white'}`}>Google Authenticator 2FA</h3>
+                    <p className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                      {twoFAEnabled ? '🟢 Active — your account is protected' : '🔴 Not enabled — your account uses password only'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Messages */}
+                {twoFAMsg && <div className="mb-4 p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-sm flex gap-2"><CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />{twoFAMsg}</div>}
+                {twoFAError && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm flex gap-2"><AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />{twoFAError}</div>}
+
+                {/* STEP: IDLE — show enable/disable button */}
+                {twoFAStep === 'idle' && (
+                  <div className="space-y-4">
+                    {!twoFAEnabled ? (
+                      <button
+                        onClick={handleSetup2FA}
+                        className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold flex items-center justify-center gap-2 hover:from-cyan-400 hover:to-blue-500 transition-all shadow-lg"
+                      >
+                        <Shield className="w-4 h-4" /> Enable Google Authenticator 2FA
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => { setTwoFAStep('disable'); setTwoFAError(''); setTwoFAMsg(''); }}
+                        className="w-full py-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 font-semibold flex items-center justify-center gap-2 hover:bg-red-500/20 transition-all"
+                      >
+                        Disable 2FA
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {/* STEP: QR — show QR code to scan */}
+                {twoFAStep === 'qr' && (
+                  <div className="space-y-5">
+                    <div className={`rounded-xl p-4 border text-sm space-y-2 ${isLight ? 'bg-amber-50 border-amber-200 text-amber-800' : 'bg-amber-500/10 border-amber-500/30 text-amber-300'}`}>
+                      <p className="font-semibold">Step 1 — Install Google Authenticator</p>
+                      <p className="text-xs opacity-80">Download it from the App Store (iOS) or Google Play (Android).</p>
+                      <p className="font-semibold mt-2">Step 2 — Scan this QR Code</p>
+                      <p className="text-xs opacity-80">Open the app → tap the "+" button → Scan QR code.</p>
+                    </div>
+                    {qrCodeImg && (
+                      <div className="flex justify-center">
+                        <img src={qrCodeImg} alt="2FA QR Code" className="w-48 h-48 rounded-xl border-4 border-white shadow-xl" />
+                      </div>
+                    )}
+                    <div className="space-y-2">
+                      <p className={`text-xs font-semibold ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>Step 3 — Enter the 6-digit code from the app:</p>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={6}
+                        value={totpToken}
+                        onChange={e => setTotpToken(e.target.value.replace(/\D/g, ''))}
+                        placeholder="Enter 6-digit code"
+                        className={`w-full px-4 py-3 rounded-xl border-2 text-center text-2xl font-bold tracking-[0.5em] outline-none transition-all ${isLight ? 'bg-slate-50 border-slate-200 text-slate-900 focus:border-cyan-500' : 'bg-slate-800 border-slate-600 text-white focus:border-cyan-400'}`}
+                      />
+                    </div>
+                    <div className="flex gap-3">
+                      <button onClick={() => { setTwoFAStep('idle'); setTwoFAError(''); }} className={`flex-1 py-3 rounded-xl border font-semibold text-sm transition-all ${isLight ? 'border-slate-200 text-slate-600 hover:bg-slate-50' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleVerifySetup}
+                        disabled={totpToken.length < 6}
+                        className="flex-1 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-sm shadow-lg hover:from-cyan-400 hover:to-blue-500 disabled:opacity-50 transition-all"
+                      >
+                        Verify & Activate 2FA
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* STEP: RECOVERY — show recovery codes */}
+                {twoFAStep === 'recovery' && (
+                  <div className="space-y-5">
+                    <div className={`rounded-xl p-4 border ${isLight ? 'bg-amber-50 border-amber-200 text-amber-800' : 'bg-amber-500/10 border-amber-500/30 text-amber-300'}`}>
+                      <p className="font-semibold text-sm mb-1">⚠️ Save your recovery codes!</p>
+                      <p className="text-xs opacity-80">Store these somewhere safe. Each code can only be used once if you lose your phone.</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {recoveryCodes.map((code, i) => (
+                        <div key={i} className={`px-3 py-2 rounded-lg text-center font-mono text-sm font-bold tracking-wider ${isLight ? 'bg-slate-100 text-slate-800' : 'bg-slate-800 text-cyan-300'}`}>
+                          {code}
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => { setTwoFAStep('idle'); setTwoFAMsg('2FA is now active! Your account is protected.'); setRecoveryCodes([]); }}
+                      className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-semibold flex items-center justify-center gap-2 shadow-lg hover:opacity-90 transition-all"
+                    >
+                      <CheckCircle2 className="w-4 h-4" /> I&apos;ve saved my recovery codes
+                    </button>
+                  </div>
+                )}
+
+                {/* STEP: DISABLE — confirm with code */}
+                {twoFAStep === 'disable' && (
+                  <div className="space-y-4">
+                    <p className={`text-sm ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Enter the current 6-digit code from Google Authenticator to confirm:</p>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={6}
+                      value={disableToken}
+                      onChange={e => setDisableToken(e.target.value.replace(/\D/g, ''))}
+                      placeholder="Enter 6-digit code"
+                      className={`w-full px-4 py-3 rounded-xl border-2 text-center text-2xl font-bold tracking-[0.5em] outline-none transition-all ${isLight ? 'bg-slate-50 border-slate-200 text-slate-900 focus:border-red-400' : 'bg-slate-800 border-slate-600 text-white focus:border-red-400'}`}
+                    />
+                    <div className="flex gap-3">
+                      <button onClick={() => { setTwoFAStep('idle'); setTwoFAError(''); }} className={`flex-1 py-3 rounded-xl border font-semibold text-sm ${isLight ? 'border-slate-200 text-slate-600' : 'border-white/10 text-slate-400 hover:bg-slate-800'}`}>
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleDisable2FA}
+                        disabled={disableToken.length < 6}
+                        className="flex-1 py-3 rounded-xl bg-red-500 text-white font-semibold text-sm hover:bg-red-600 disabled:opacity-50 transition-all"
+                      >
+                        Disable 2FA
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
         </div>
 
