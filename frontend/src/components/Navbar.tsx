@@ -60,25 +60,27 @@ export default function Navbar() {
   };
 
   const isLight = theme === 'light';
-  // Over dark hero only on the homepage when not scrolled
-  const isOverDarkHero = pathname === '/' && !scrolled;
+  // Over dark hero only in dark theme on homepage when not scrolled
+  const isOverDarkHero = pathname === '/' && !scrolled && !isLight;
 
   // Adaptive contrast colors for logo and controls
-  const logoMainColor = isOverDarkHero || !isLight 
+  const logoMainColor = isOverDarkHero 
     ? 'text-white' 
-    : 'text-slate-900';
+    : isLight 
+      ? 'text-slate-900' 
+      : 'text-white';
     
   const logoSubColor = isOverDarkHero || !isLight 
     ? 'text-[#F0C97A]' 
-    : 'text-amber-700 font-extrabold';
+    : 'text-teal-700 font-extrabold';
 
   const loginTextColor = isOverDarkHero || !isLight
-    ? 'text-slate-100 hover:text-amber-300'
-    : 'text-slate-900 hover:text-amber-700';
+    ? 'text-slate-100 hover:text-teal-300'
+    : 'text-slate-900 hover:text-teal-700';
 
   const loginIconColor = isOverDarkHero || !isLight
-    ? 'text-amber-300'
-    : 'text-amber-700';
+    ? 'text-teal-300'
+    : 'text-teal-700';
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${

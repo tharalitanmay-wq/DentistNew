@@ -266,8 +266,12 @@ export default function HomePage() {
   return (
     <div className="space-y-24 pb-20">
 
-      {/* HERO SECTION — Left-Aligned Split Layout */}
-      <section className="relative min-h-[92vh] flex items-center overflow-hidden -mt-24 pt-24 bg-gradient-to-br from-[#0B2B3A] via-[#0D3347] to-[#0A1F2E]">
+      {/* HERO SECTION — Fresh Medical Mint & Soft Slate Aesthetic */}
+      <section className={`relative min-h-[92vh] flex items-center overflow-hidden -mt-24 pt-24 transition-colors duration-500 ${
+        isLight
+          ? 'bg-gradient-to-br from-[#F0F7F5] via-[#E5EFEA] to-[#D5E5DE]'
+          : 'bg-gradient-to-br from-[#0A1D1C] via-[#0E2625] to-[#071716]'
+      }`}>
 
         {/* Right side — Static Dental Image */}
         <div className="absolute inset-y-0 right-0 w-full lg:w-[55%] z-0">
@@ -277,7 +281,11 @@ export default function HomePage() {
             className="w-full h-full object-cover object-center"
           />
           {/* Gradient fade from left so text is readable */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0B2B3A] via-[#0B2B3A]/70 to-transparent" />
+          <div className={`absolute inset-0 transition-colors duration-500 ${
+            isLight
+              ? 'bg-gradient-to-r from-[#F0F7F5] via-[#F0F7F5]/90 lg:via-[#F0F7F5]/75 to-transparent'
+              : 'bg-gradient-to-r from-[#0A1D1C] via-[#0A1D1C]/90 lg:via-[#0A1D1C]/75 to-transparent'
+          }`} />
         </div>
 
         {/* Left side — Hero Content */}
@@ -285,28 +293,48 @@ export default function HomePage() {
           <div className="max-w-xl lg:max-w-2xl space-y-7">
 
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-[#C5A059]/20 border border-[#C5A059]/40 rounded-full px-4 py-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#C5A059] animate-pulse" />
-              <span className="text-[#F0C97A] font-sans text-xs font-semibold tracking-widest uppercase">
+            <div className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 border transition-all ${
+              isLight
+                ? 'bg-[#0D9488]/10 border-[#0D9488]/30 text-[#0F766E]'
+                : 'bg-[#2DD4BF]/10 border-[#2DD4BF]/30 text-[#2DD4BF]'
+            }`}>
+              <span className={`w-2 h-2 rounded-full animate-pulse ${
+                isLight ? 'bg-[#0D9488]' : 'bg-[#2DD4BF]'
+              }`} />
+              <span className="font-sans text-xs font-semibold tracking-widest uppercase">
                 Trusted by 12,400+ Patients
               </span>
             </div>
 
             {/* Main Heading */}
-            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] text-white">
+            <h1 className={`font-serif text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] ${
+              isLight ? 'text-[#0F2F2E]' : 'text-white'
+            }`}>
               Your Perfect{' '}
               <span className="relative inline-block">
-                <span className="bg-gradient-to-r from-[#F0C97A] via-[#D4AF37] to-[#C5A059] bg-clip-text text-transparent">
+                <span className={`bg-gradient-to-r ${
+                  isLight
+                    ? 'from-[#0D9488] via-[#059669] to-[#047857]'
+                    : 'from-[#2DD4BF] via-[#34D399] to-[#6EE7B7]'
+                } bg-clip-text text-transparent`}>
                   Smile
                 </span>
-                <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-gradient-to-r from-[#F0C97A] to-transparent" />
+                <span className={`absolute -bottom-1 left-0 w-full h-[2.5px] bg-gradient-to-r ${
+                  isLight ? 'from-[#0D9488] to-transparent' : 'from-[#2DD4BF] to-transparent'
+                }`} />
               </span>
               {' '}Starts Here
             </h1>
 
             {/* Subheading */}
-            <p className="font-sans text-base sm:text-lg text-slate-300 leading-relaxed max-w-lg">
-              Experience world-class dental care — from <span className="text-[#F0C97A] font-semibold">Porcelain Veneers</span> &amp; <span className="text-[#F0C97A] font-semibold">3D Implants</span> to <span className="text-[#F0C97A] font-semibold">Invisalign</span> &amp; <span className="text-[#F0C97A] font-semibold">Laser Whitening</span>. Painless, precise &amp; personalised for you.
+            <p className={`font-sans text-base sm:text-lg leading-relaxed max-w-lg ${
+              isLight ? 'text-[#335552]' : 'text-slate-300'
+            }`}>
+              Experience world-class dental care — from{' '}
+              <span className={isLight ? 'text-[#0D9488] font-bold' : 'text-[#2DD4BF] font-semibold'}>Porcelain Veneers</span> &amp;{' '}
+              <span className={isLight ? 'text-[#0D9488] font-bold' : 'text-[#2DD4BF] font-semibold'}>3D Implants</span> to{' '}
+              <span className={isLight ? 'text-[#0D9488] font-bold' : 'text-[#2DD4BF] font-semibold'}>Invisalign</span> &amp;{' '}
+              <span className={isLight ? 'text-[#0D9488] font-bold' : 'text-[#2DD4BF] font-semibold'}>Laser Whitening</span>. Painless, precise &amp; personalised for you.
             </p>
 
             {/* Services Chips — All Equal Size */}
@@ -314,7 +342,11 @@ export default function HomePage() {
               {['Porcelain Veneers', 'Dental Implants', 'Invisalign', 'Laser Whitening', 'Emergency Care', 'Teeth Cleaning'].map((s) => (
                 <span
                   key={s}
-                  className="bg-white/10 border border-white/20 backdrop-blur-sm text-white text-xs font-sans font-medium px-3 py-2.5 rounded-lg hover:bg-[#C5A059]/30 hover:border-[#C5A059]/50 transition-all duration-200 cursor-default text-center w-full"
+                  className={`text-xs font-sans font-medium px-3 py-2.5 rounded-xl border transition-all duration-200 cursor-default text-center w-full shadow-sm ${
+                    isLight
+                      ? 'bg-white/85 border-[#CBDCD5] text-[#133D3A] hover:bg-[#0D9488]/15 hover:border-[#0D9488]/40'
+                      : 'bg-white/10 border-white/20 text-white hover:bg-teal-500/20 hover:border-teal-400/50'
+                  }`}
                 >
                   {s}
                 </span>
@@ -325,7 +357,7 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row gap-4 pt-2">
               <button
                 onClick={() => router.push('/appointment')}
-                className="group flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-[#C5A059] via-[#D4AF37] to-[#B38F48] hover:from-[#D4AF37] hover:to-[#C5A059] text-[#1A0F00] font-sans font-bold text-sm tracking-widest uppercase rounded-sm shadow-lg shadow-amber-900/30 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border border-amber-300/30"
+                className="group flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-[#0D9488] via-[#0F766E] to-[#115E59] hover:from-[#0F766E] hover:to-[#0D9488] text-white font-sans font-bold text-sm tracking-widest uppercase rounded-xl shadow-lg shadow-teal-900/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border border-teal-400/30"
               >
                 Book Appointment
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -340,14 +372,20 @@ export default function HomePage() {
                     router.push('/services');
                   }
                 }}
-                className="flex items-center justify-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-sans font-bold text-sm tracking-widest uppercase rounded-sm border border-white/30 hover:border-[#C5A059]/60 transition-all duration-300"
+                className={`flex items-center justify-center gap-2 px-8 py-4 font-sans font-bold text-sm tracking-widest uppercase rounded-xl border transition-all duration-300 ${
+                  isLight
+                    ? 'bg-white/70 hover:bg-white text-[#0F766E] border-[#CBDCD5] hover:border-[#0D9488] shadow-sm'
+                    : 'bg-white/10 hover:bg-white/20 text-white border-white/30 hover:border-teal-400'
+                }`}
               >
                 Our Services
               </button>
             </div>
 
             {/* Stats Bar */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-white/10">
+            <div className={`grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t ${
+              isLight ? 'border-[#CBDCD5]/70' : 'border-white/10'
+            }`}>
               {[
                 { num: '16+', label: 'Years of Excellence', id: 'how-we-work-section' },
                 { num: '12,400+', label: 'Smiles Transformed', id: 'before-after-section' },
@@ -362,10 +400,18 @@ export default function HomePage() {
                   }}
                   className="group cursor-pointer text-center sm:text-left space-y-0.5 hover:scale-105 transition-transform duration-200"
                 >
-                  <div className="font-serif text-2xl sm:text-3xl font-bold text-[#F0C97A] group-hover:text-white transition-colors">
+                  <div className={`font-serif text-2xl sm:text-3xl font-bold transition-colors ${
+                    isLight
+                      ? 'text-[#0D9488] group-hover:text-[#0F2F2E]'
+                      : 'text-[#2DD4BF] group-hover:text-white'
+                  }`}>
                     {stat.num}
                   </div>
-                  <div className="font-sans text-[11px] uppercase tracking-wider font-semibold text-slate-400 group-hover:text-[#F0C97A] transition-colors">
+                  <div className={`font-sans text-[11px] uppercase tracking-wider font-semibold transition-colors ${
+                    isLight
+                      ? 'text-[#527873] group-hover:text-[#0D9488]'
+                      : 'text-slate-400 group-hover:text-[#2DD4BF]'
+                  }`}>
                     {stat.label}
                   </div>
                 </div>
@@ -377,8 +423,12 @@ export default function HomePage() {
 
         {/* Scroll Indicator */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center space-y-1.5">
-          <span className="text-[10px] uppercase font-sans tracking-[0.35em] text-[#C5A059] font-semibold">SCROLL</span>
-          <div className="w-[1px] h-6 bg-gradient-to-b from-[#C5A059] to-transparent animate-pulse" />
+          <span className={`text-[10px] uppercase font-sans tracking-[0.35em] font-semibold ${
+            isLight ? 'text-[#0D9488]' : 'text-[#2DD4BF]'
+          }`}>SCROLL</span>
+          <ChevronDown className={`w-4 h-4 animate-bounce ${
+            isLight ? 'text-[#0D9488]' : 'text-[#2DD4BF]'
+          }`} />
         </div>
       </section>
 
