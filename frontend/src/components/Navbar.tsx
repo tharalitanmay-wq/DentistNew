@@ -59,15 +59,39 @@ export default function Navbar() {
     router.push('/');
   };
 
-  return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-      scrolled 
-        ? theme === 'light' 
-          ? 'bg-white/90 backdrop-blur-xl border-b border-slate-200 py-3 shadow-md' 
-          : 'bg-navy-900/80 backdrop-blur-xl border-b border-white/10 py-3 shadow-2xl' 
-        : 'bg-transparent py-5'
-    }`}>
+  const isLight = theme === 'light';
+  // Over dark hero only on the homepage when not scrolled
+  const isOverDarkHero = pathname === '/' && !scrolled;
 
+  // Adaptive contrast colors for logo and controls
+  const logoMainColor = isOverDarkHero || !isLight 
+    ? 'text-white' 
+    : 'text-slate-900';
+    
+  const logoSubColor = isOverDarkHero || !isLight 
+    ? 'text-[#F0C97A]' 
+    : 'text-amber-700 font-extrabold';
+
+  const loginTextColor = isOverDarkHero || !isLight
+    ? 'text-slate-100 hover:text-amber-300'
+    : 'text-slate-900 hover:text-amber-700';
+
+  const loginIconColor = isOverDarkHero || !isLight
+    ? 'text-amber-300'
+    : 'text-amber-700';
+
+  return (
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      scrolled 
+        ? isLight 
+          ? 'bg-white/95 backdrop-blur-xl border-b border-slate-200/90 py-3 shadow-md' 
+          : 'bg-navy-900/90 backdrop-blur-xl border-b border-white/10 py-3 shadow-2xl' 
+        : pathname === '/'
+          ? 'bg-transparent py-5'
+          : isLight
+            ? 'bg-[#FAF7F2]/90 backdrop-blur-md border-b border-amber-900/10 py-4'
+            : 'bg-navy-950/90 backdrop-blur-md border-b border-white/10 py-4'
+    }`}>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between mt-1">
         {/* Logo */}
@@ -79,12 +103,12 @@ export default function Navbar() {
           </div>
           <div className="flex flex-col justify-center">
             <div className="flex items-start">
-              <span className="text-2xl font-serif font-extrabold tracking-tight text-white dark:text-white group-hover:text-[#F0C97A] transition-colors leading-none drop-shadow-sm">
+              <span className={`text-2xl font-serif font-extrabold tracking-tight transition-colors leading-none ${logoMainColor} group-hover:text-amber-500`}>
                 Pearl Dental
               </span>
-              <span className="text-[10px] text-[#F0C97A] dark:text-[#F0C97A] font-sans font-bold ml-0.5 drop-shadow-sm">TM</span>
+              <span className={`text-[10px] font-sans font-bold ml-0.5 transition-colors ${logoSubColor}`}>TM</span>
             </div>
-            <span className="text-[9px] tracking-[0.25em] text-[#F0C97A] dark:text-[#F0C97A] font-bold uppercase mt-1 leading-none drop-shadow-sm">
+            <span className={`text-[9px] tracking-[0.25em] font-bold uppercase mt-1 leading-none transition-colors ${logoSubColor}`}>
               A BOND OF SMILES
             </span>
           </div>
@@ -110,9 +134,11 @@ export default function Navbar() {
           <button
             onClick={toggleTheme}
             className={`p-2 rounded-full border transition-all hover:scale-105 ${
-              theme === 'light'
-                ? 'bg-slate-100/80 border-slate-300 text-slate-800 hover:bg-slate-200'
-                : 'bg-navy-800/60 border-white/10 text-slate-300 hover:text-amber-400'
+              isOverDarkHero
+                ? 'bg-white/10 border-white/20 text-white hover:bg-white/20'
+                : isLight
+                  ? 'bg-slate-100 border-slate-300 text-slate-800 hover:bg-slate-200'
+                  : 'bg-navy-800/60 border-white/10 text-slate-300 hover:text-amber-400'
             }`}
             title="Toggle Light/Dark Theme"
           >
@@ -125,7 +151,7 @@ export default function Navbar() {
               <Link
                 href="/dashboard"
                 className={`group relative flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full border transition-all duration-300 shadow-sm ${
-                  theme === 'light'
+                  isLight
                     ? 'bg-amber-50 border-amber-300 text-slate-900 hover:border-amber-500'
                     : 'bg-navy-900/90 border-white/10 text-white hover:border-amber-400/50'
                 }`}
@@ -156,12 +182,10 @@ export default function Navbar() {
             <div className="flex items-center space-x-4">
               <Link
                 href="/login"
-                className={`flex items-center space-x-1.5 text-xs font-serif font-bold tracking-widest uppercase transition-all px-3 py-1.5 hover:text-amber-700 ${
-                  theme === 'light' ? 'text-slate-900' : 'text-slate-100'
-                }`}
+                className={`flex items-center space-x-1.5 text-xs font-serif font-bold tracking-widest uppercase transition-all px-3 py-1.5 ${loginTextColor}`}
               >
                 <span>LOGIN</span>
-                <Globe className="w-4 h-4 text-slate-800 dark:text-amber-300" />
+                <Globe className={`w-4 h-4 ${loginIconColor}`} />
               </Link>
             </div>
           )}
@@ -171,15 +195,25 @@ export default function Navbar() {
         <div className="flex sm:hidden items-center space-x-2">
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-full border border-white/10 text-slate-300"
+            className={`p-2 rounded-full border transition-all ${
+              isOverDarkHero
+                ? 'border-white/20 text-white bg-white/10'
+                : isLight
+                  ? 'border-slate-300 text-slate-800 bg-slate-100'
+                  : 'border-white/10 text-slate-300 bg-navy-800/60'
+            }`}
           >
-            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
+            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-amber-800" />}
           </button>
           
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className={`p-2 rounded-xl border transition-colors ${
-              theme === 'light' ? 'bg-slate-100 border-slate-300 text-slate-800' : 'bg-navy-800 border-white/10 text-white'
+              isOverDarkHero
+                ? 'bg-white/10 border-white/20 text-white'
+                : isLight
+                  ? 'bg-slate-100 border-slate-300 text-slate-800'
+                  : 'bg-navy-800 border-white/10 text-white'
             }`}
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
