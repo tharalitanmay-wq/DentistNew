@@ -48,6 +48,48 @@ const connectDB = async () => {
     await sequelize.sync({ alter: true });
     isConnected = true;
     console.log(`[MySQL Database] Connected successfully to ${dbHost}:${dbPort}/${dbName}`);
+
+    // Seed default users if tables are empty
+    try {
+      const Customer = require('../models/Customer');
+      const Admin = require('../models/Admin');
+      const bcrypt = require('bcryptjs');
+      const defaultHash = await bcrypt.hash('AdminPass123!', 10);
+
+      const customerCount = await Customer.count();
+      if (customerCount === 0) {
+        await Customer.bulkCreate([
+          {
+            name: 'Johnathan Miller',
+            username: 'jmiller',
+            email: 'patient@example.com',
+            phone: '+1 (555) 234-5678',
+            password: defaultHash
+          },
+          {
+            name: 'Sahil',
+            username: 'sahil',
+            email: 'sahil@gmail.com',
+            phone: '+1 (555) 999-8888',
+            password: defaultHash
+          }
+        ]);
+        console.log('[MySQL Database] Default customer accounts seeded successfully.');
+      }
+
+      const adminCount = await Admin.count();
+      if (adminCount === 0) {
+        await Admin.create({
+          name: 'Master Admin',
+          username: 'admin',
+          email: 'admin@pearldental.com',
+          password: defaultHash
+        });
+        console.log('[MySQL Database] Default admin account seeded successfully.');
+      }
+    } catch (seedErr) {
+      console.warn('[MySQL Warning] Auto-seed skipped:', seedErr.message);
+    }
   } catch (error) {
     console.warn(`[MySQL Warning] Could not connect to MySQL (${error.message}). Operating in in-memory fallback mode.`);
     isConnected = false;

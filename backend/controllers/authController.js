@@ -195,6 +195,27 @@ const login = async (req, res) => {
           }
         });
       }
+
+      // Fallback: Check default demo customers and seed if missing
+      if (!user) {
+        const memMatch = memoryCustomers.find(
+          c => c.email.toLowerCase() === loginEmail || c.username.toLowerCase() === loginEmail
+        );
+        if (memMatch) {
+          try {
+            user = await Customer.create({
+              name: memMatch.name,
+              username: memMatch.username,
+              email: memMatch.email,
+              phone: memMatch.phone || '',
+              password: memMatch.password,
+              profile_image_key: memMatch.profile_image_key || null
+            });
+          } catch (createErr) {
+            user = memMatch;
+          }
+        }
+      }
     } else {
       user = memoryCustomers.find(
         c => c.email.toLowerCase() === loginEmail || c.username.toLowerCase() === loginEmail
@@ -279,10 +300,20 @@ const login = async (req, res) => {
 
 // Helper to get user by ID either from DB or memory
 const findCustomerById = async (userId) => {
+  let user = null;
   if (getIsConnected()) {
-    return await Customer.findByPk(userId);
+    try {
+      user = await Customer.findByPk(userId);
+      if (!user) user = await User.findByPk(userId);
+      if (!user) user = await Admin.findByPk(userId);
+    } catch (e) {
+      console.warn('[findCustomerById DB error]:', e.message);
+    }
   }
-  return memoryCustomers.find(c => c.id == userId) || null;
+  if (!user) {
+    user = memoryCustomers.find(c => c.id == userId) || memoryAdmins.find(a => a.id == userId) || null;
+  }
+  return user;
 };
 
 // Helper to save customer updates either to DB or memory
