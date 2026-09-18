@@ -91,6 +91,24 @@ export default function HomePage() {
   const router = useRouter();
   const { theme } = useTheme();
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
+  const [heroSlide, setHeroSlide] = useState(0);
+
+  const heroSlides = [
+    { url: '/dental-dr-evans.png', alt: 'Dr. Evans at Pearl Dental Care clinic' },
+    { url: '/dental-hero.jpg', alt: 'Pearl Dental Care clinic treatment room' },
+    { url: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=2000', alt: 'Modern luxury dental clinic interior' },
+    { url: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&q=80&w=2000', alt: '3D computer-guided dental implant room' },
+    { url: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&q=80&w=2000', alt: 'Bespoke porcelain veneer smile studio' },
+    { url: 'https://images.unsplash.com/photo-1571772996211-2f02c9727629?auto=format&fit=crop&q=80&w=2000', alt: 'Laser whitening luxury dental spa' }
+  ];
+
+  // Auto-advance hero slides every 4.5 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setHeroSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [heroSlides.length]);
 
   const stats = [
     { number: '16+', label: 'Years of Excellence', icon: Award },
@@ -273,19 +291,48 @@ export default function HomePage() {
           : 'bg-gradient-to-br from-[#0A1D1C] via-[#0E2625] to-[#071716]'
       }`}>
 
-        {/* Right side — Static Dental Image */}
-        <div className="absolute inset-y-0 right-0 w-full lg:w-[55%] z-0">
-          <img
-            src="/dental-hero.jpg"
-            alt="Professional dentist at Pearl Dental Care clinic"
-            className="w-full h-full object-cover object-center"
-          />
+        {/* Right side — Auto-Crossfade Hero Slideshow */}
+        <div className="absolute inset-y-0 right-0 w-full lg:w-[55%] z-0 overflow-hidden">
+          {heroSlides.map((slide, idx) => (
+            <div
+              key={slide.url}
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                idx === heroSlide ? 'opacity-100 z-0' : 'opacity-0 pointer-events-none'
+              }`}
+            >
+              <img
+                src={slide.url}
+                alt={slide.alt}
+                className={`w-full h-full object-cover object-center transition-transform duration-[5000ms] ease-out ${
+                  idx === heroSlide ? 'scale-105' : 'scale-100'
+                }`}
+                loading={idx === 0 ? 'eager' : 'lazy'}
+              />
+            </div>
+          ))}
+
           {/* Gradient fade from left so text is readable */}
-          <div className={`absolute inset-0 transition-colors duration-500 ${
+          <div className={`absolute inset-0 transition-colors duration-500 z-10 ${
             isLight
               ? 'bg-gradient-to-r from-[#F0F7F5] via-[#F0F7F5]/90 lg:via-[#F0F7F5]/75 to-transparent'
               : 'bg-gradient-to-r from-[#0A1D1C] via-[#0A1D1C]/90 lg:via-[#0A1D1C]/75 to-transparent'
           }`} />
+
+          {/* Slide indicator dots in bottom right */}
+          <div className="absolute bottom-6 right-8 z-20 hidden sm:flex items-center space-x-2">
+            {heroSlides.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setHeroSlide(idx)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  idx === heroSlide 
+                    ? isLight ? 'w-6 bg-[#0D9488]' : 'w-6 bg-[#2DD4BF]'
+                    : isLight ? 'w-2 bg-[#0D9488]/30 hover:bg-[#0D9488]/50' : 'w-2 bg-white/30 hover:bg-white/50'
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Left side — Hero Content */}
