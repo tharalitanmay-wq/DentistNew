@@ -32,6 +32,9 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
+// Trust reverse proxy (Next.js rewrites, Nginx, Cloudflare, ALB)
+app.set('trust proxy', true);
+
 // Security & Middleware
 app.use(helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: false }));
 app.use(cors({ origin: '*', credentials: true }));
@@ -41,8 +44,21 @@ app.use(express.urlencoded({ extended: true }));
 // Rate Limiter
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5000,
-  skip: (req) => req.path.startsWith('/profile') || req.path.startsWith('/auth'),
+  max: 10000,
+  skip: (req) => {
+    const ip = req.ip || req.connection?.remoteAddress || '';
+    const isLocalhost = ip.includes('127.0.0.1') || ip === '::1' || ip.includes('localhost');
+    return (
+      isLocalhost ||
+      req.path.startsWith('/profile') ||
+      req.path.startsWith('/auth') ||
+      req.path.startsWith('/appointments') ||
+      req.path.startsWith('/health') ||
+      req.path.startsWith('/queue')
+    );
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
   message: { success: false, message: 'Too many requests from this IP, please try again later.' }
 });
 app.use('/api', limiter);
