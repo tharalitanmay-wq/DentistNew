@@ -18,16 +18,16 @@ const PRESET_TRANSFORMATIONS: TransformationItem[] = [
     id: 'veneers',
     title: '10 Upper Porcelain Veneers',
     subtitle: 'Full shade BL1 bleach transformation resolving discolored, uneven teeth',
-    before: '/images/transformations/before-veneers.png?v=3',
-    after: '/images/transformations/after-veneers.png?v=3',
+    before: '/images/transformations/before-veneers.png?v=5',
+    after: '/images/transformations/after-veneers.png?v=5',
     details: ['E.max Porcelain Veneers', 'Shade BL1 Bright White', 'Symmetrical Arch Alignment']
   },
   {
     id: 'whitening',
     title: 'Laser Teeth Whitening',
     subtitle: '8 shades brighter in a single 45-minute in-office treatment',
-    before: '/images/transformations/before-whitening.png?v=3',
-    after: '/images/transformations/after-whitening.png?v=3',
+    before: '/images/transformations/before-whitening.png?v=5',
+    after: '/images/transformations/after-whitening.png?v=5',
     details: ['Philips Zoom! Laser', 'Zero Sensitivity Protocol', 'Enamel Gloss Seal']
   }
 ];

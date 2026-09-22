@@ -16,10 +16,10 @@ export default function GalleryPage() {
   const cavityAfter     = '/images/transformations/after-cavity.png?v=4';
   const alignBefore     = '/images/transformations/before-alignment.png?v=4';
   const alignAfter      = '/images/transformations/after-alignment.png?v=4';
-  const veneersBefore   = '/images/transformations/before-veneers.png?v=4';
-  const veneersAfter    = '/images/transformations/after-veneers.png?v=4';
-  const whitBefore      = '/images/transformations/before-whitening.png?v=4';
-  const whitAfter       = '/images/transformations/after-whitening.png?v=4';
+  const veneersBefore   = '/images/transformations/before-veneers.png?v=5';
+  const veneersAfter    = '/images/transformations/after-veneers.png?v=5';
+  const whitBefore      = '/images/transformations/before-whitening.png?v=5';
+  const whitAfter       = '/images/transformations/after-whitening.png?v=5';
 
   const showAll         = activeCategory === 'All';
   const showCavity      = showAll || activeCategory === 'Cavity Restoration';
