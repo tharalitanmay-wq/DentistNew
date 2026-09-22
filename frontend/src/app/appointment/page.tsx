@@ -331,48 +331,44 @@ function AppointmentContent() {
 
   // LOGGED IN USER -> BOOKING STEPPER
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10 text-slate-900 dark:text-white">
 
       {/* Header */}
       <div className="text-center space-y-3">
-        <div className={`inline-flex items-center space-x-2 border px-3 py-1 rounded-full text-xs font-bold ${
-          isLight ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-        }`}>
+        <div className="inline-flex items-center space-x-2 border px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-500/10 dark:border-emerald-500/30 dark:text-emerald-400 shadow-sm">
           <CheckCircle2 className="w-3.5 h-3.5" />
           <span>Logged In as {user.name} ({user.email})</span>
         </div>
         <br />
-        <span className={`text-xs font-bold uppercase tracking-widest ${isLight ? 'text-cyan-700' : 'text-cyan-400'}`}>
+        <span className="text-xs font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">
           Concierge Booking
         </span>
-        <h1 className={`text-3xl sm:text-5xl font-serif font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
+        <h1 className="text-3xl sm:text-5xl font-serif font-bold text-slate-900 dark:text-white">
           Schedule Consultation
         </h1>
-        <p className={`text-xs sm:text-sm ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium">
           Select doctor, procedure, date, and preferred time slot.
         </p>
       </div>
 
       {/* Stepper Progress */}
       {step < 5 && (
-        <div className={`flex items-center justify-between max-w-xl mx-auto text-xs font-bold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+        <div className="flex items-center justify-between max-w-xl mx-auto text-xs font-bold text-slate-600 dark:text-slate-400">
           {[1, 2, 3, 4].map((s) => (
             <div key={s} className="flex items-center space-x-2">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold transition-all ${
                 step === s 
-                  ? (isLight ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/30' : 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/30')
+                  ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/30 ring-2 ring-cyan-400/50 font-extrabold' 
                   : step > s 
-                    ? (isLight ? 'bg-emerald-500 text-white shadow-sm' : 'bg-emerald-500 text-slate-950')
-                    : isLight 
-                      ? 'bg-slate-200 text-slate-600 border border-slate-300'
-                      : 'bg-navy-800 text-slate-400 border border-white/10'
+                    ? 'bg-emerald-500 text-white shadow-sm' 
+                    : 'bg-slate-200 text-slate-700 border border-slate-300 dark:bg-navy-800 dark:text-slate-400 dark:border-white/10'
               }`}>
                 {step > s ? '✓' : s}
               </div>
               <span className={
                 step === s 
-                  ? (isLight ? 'text-slate-900 font-bold' : 'text-white font-bold') 
-                  : (isLight ? 'text-slate-600' : 'text-slate-400')
+                  ? 'text-slate-900 dark:text-white font-extrabold' 
+                  : 'text-slate-600 dark:text-slate-400 font-medium'
               }>
                 {s === 1 ? 'Doctor' : s === 2 ? 'Treatment' : s === 3 ? 'Schedule' : 'Details'}
               </span>
@@ -384,7 +380,7 @@ function AppointmentContent() {
       {/* STEP 1: Select Doctor */}
       {step === 1 && (
         <div className="space-y-6">
-          <h3 className={`text-xl font-serif font-bold text-center ${isLight ? 'text-slate-900' : 'text-white'}`}>
+          <h3 className="text-xl font-serif font-bold text-center text-slate-900 dark:text-white">
             Step 1: Choose Specialist
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -393,27 +389,21 @@ function AppointmentContent() {
                 key={idx}
                 onClick={() => setSelectedDoctor(doc.name)}
                 className={`rounded-2xl p-6 border cursor-pointer transition-all space-y-3 text-center ${
-                  isLight
-                    ? selectedDoctor === doc.name
-                      ? 'border-cyan-500 bg-cyan-50/80 shadow-xl shadow-cyan-500/10 scale-105 ring-2 ring-cyan-400/40'
-                      : 'bg-white border-slate-200 hover:border-cyan-400 shadow-sm hover:shadow-md'
-                    : selectedDoctor === doc.name
-                      ? 'border-cyan-400 bg-navy-800/80 shadow-xl shadow-cyan-500/20 scale-105'
-                      : 'glass-card border-white/10 hover:border-cyan-400/50'
+                  selectedDoctor === doc.name
+                    ? 'border-cyan-500 bg-cyan-50/90 shadow-xl shadow-cyan-500/10 scale-105 ring-2 ring-cyan-400/50 dark:border-cyan-400 dark:bg-navy-800/80 dark:shadow-cyan-500/20'
+                    : 'bg-white border-slate-200 hover:border-cyan-400 shadow-sm hover:shadow-md dark:glass-card dark:border-white/10 dark:hover:border-cyan-400/50'
                 }`}
               >
-                <img src={doc.img} alt={doc.name} className="w-20 h-20 rounded-full mx-auto object-cover border-2 border-cyan-400/50" />
-                <h4 className={`text-base font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>{doc.name}</h4>
-                <p className={`text-xs ${isLight ? 'text-cyan-700 font-medium' : 'text-cyan-300'}`}>{doc.role}</p>
+                <img src={doc.img} alt={doc.name} className="w-20 h-20 rounded-full mx-auto object-cover border-2 border-cyan-400/50 shadow-sm" />
+                <h4 className="text-base font-bold text-slate-900 dark:text-white">{doc.name}</h4>
+                <p className="text-xs font-semibold text-cyan-600 dark:text-cyan-400">{doc.role}</p>
               </div>
             ))}
           </div>
           <div className="flex justify-end">
             <button
               onClick={() => setStep(2)}
-              className={`px-8 py-3 rounded-full font-bold text-xs uppercase tracking-wider transition-all flex items-center space-x-2 shadow-lg shadow-cyan-500/25 ${
-                isLight ? 'bg-cyan-500 text-white hover:bg-cyan-600' : 'bg-cyan-500 text-slate-950 hover:bg-cyan-400'
-              }`}
+              className="px-8 py-3 rounded-full font-bold text-xs uppercase tracking-wider transition-all flex items-center space-x-2 shadow-lg shadow-cyan-500/25 bg-cyan-500 text-white hover:bg-cyan-600 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400"
             >
               <span>Next: Select Treatment</span>
               <ArrowRight className="w-4 h-4" />
@@ -425,7 +415,7 @@ function AppointmentContent() {
       {/* STEP 2: Select Treatment */}
       {step === 2 && (
         <div className="space-y-6">
-          <h3 className={`text-xl font-serif font-bold text-center ${isLight ? 'text-slate-900' : 'text-white'}`}>
+          <h3 className="text-xl font-serif font-bold text-center text-slate-900 dark:text-white">
             Step 2: Choose Treatment
           </h3>
           <div className="space-y-3 max-w-xl mx-auto">
@@ -435,17 +425,13 @@ function AppointmentContent() {
                 onClick={() => setSelectedService(srv)}
                 className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center justify-between text-xs font-bold ${
                   selectedService === srv
-                    ? isLight
-                      ? 'border-cyan-500 bg-cyan-50 text-cyan-950 shadow-md ring-1 ring-cyan-500'
-                      : 'border-cyan-400 bg-cyan-500/15 text-white shadow-md'
-                    : isLight
-                      ? 'border-slate-200 bg-white text-slate-700 hover:border-cyan-400 hover:bg-slate-50 shadow-sm'
-                      : 'border-white/10 bg-navy-900 text-slate-300 hover:border-cyan-400'
+                    ? 'border-cyan-500 bg-cyan-50 text-cyan-950 shadow-md ring-1 ring-cyan-500 dark:border-cyan-400 dark:bg-cyan-500/15 dark:text-white'
+                    : 'border-slate-200 bg-white text-slate-800 hover:border-cyan-400 hover:bg-slate-50 shadow-sm dark:border-white/10 dark:bg-navy-900 dark:text-slate-300 dark:hover:border-cyan-400'
                 }`}
               >
                 <span>{srv}</span>
                 {selectedService === srv && (
-                  <CheckCircle2 className={`w-5 h-5 ${isLight ? 'text-cyan-600' : 'text-cyan-400'}`} />
+                  <CheckCircle2 className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
                 )}
               </div>
             ))}
@@ -453,17 +439,13 @@ function AppointmentContent() {
           <div className="flex justify-between max-w-xl mx-auto">
             <button
               onClick={() => setStep(1)}
-              className={`px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider transition-all ${
-                isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-navy-800 text-slate-300 hover:bg-navy-700'
-              }`}
+              className="px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider transition-all bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-navy-800 dark:text-slate-300 dark:hover:bg-navy-700"
             >
               Back
             </button>
             <button
               onClick={() => setStep(3)}
-              className={`px-8 py-3 rounded-full font-bold text-xs uppercase tracking-wider transition-all flex items-center space-x-2 shadow-lg shadow-cyan-500/25 ${
-                isLight ? 'bg-cyan-500 text-white hover:bg-cyan-600' : 'bg-cyan-500 text-slate-950 hover:bg-cyan-400'
-              }`}
+              className="px-8 py-3 rounded-full font-bold text-xs uppercase tracking-wider transition-all flex items-center space-x-2 shadow-lg shadow-cyan-500/25 bg-cyan-500 text-white hover:bg-cyan-600 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400"
             >
               <span>Next: Pick Date & Time</span>
               <ArrowRight className="w-4 h-4" />
@@ -475,26 +457,24 @@ function AppointmentContent() {
       {/* STEP 3: Select Date & Time Slot */}
       {step === 3 && (
         <div className="space-y-6 max-w-xl mx-auto">
-          <h3 className={`text-xl font-serif font-bold text-center ${isLight ? 'text-slate-900' : 'text-white'}`}>
+          <h3 className="text-xl font-serif font-bold text-center text-slate-900 dark:text-white">
             Step 3: Select Date & Slot
           </h3>
 
           <div>
-            <label className={`block text-xs font-semibold mb-2 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+            <label className="block text-xs font-semibold mb-2 text-slate-800 dark:text-slate-300">
               Preferred Consultation Date
             </label>
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className={`w-full px-4 py-3 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${
-                isLight ? 'bg-white border-slate-300 text-slate-900 shadow-sm focus:ring-2 focus:ring-cyan-500/20' : 'bg-navy-900 border-white/15 text-white focus:border-cyan-400'
-              }`}
+              className="w-full px-4 py-3 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all bg-white border-slate-300 text-slate-900 shadow-sm focus:ring-2 focus:ring-cyan-500/20 dark:bg-navy-900 dark:border-white/15 dark:text-white dark:focus:border-cyan-400"
             />
           </div>
 
           <div>
-            <label className={`block text-xs font-semibold mb-2 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+            <label className="block text-xs font-semibold mb-2 text-slate-800 dark:text-slate-300">
               Available Time Slots
             </label>
             <div className="grid grid-cols-3 gap-3">
@@ -504,8 +484,8 @@ function AppointmentContent() {
                   onClick={() => setSelectedSlot(slot)}
                   className={`py-2.5 rounded-xl text-xs font-bold border transition-all ${
                     selectedSlot === slot 
-                      ? (isLight ? 'bg-cyan-500 text-white border-cyan-500 shadow-md ring-1 ring-cyan-500' : 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-md')
-                      : (isLight ? 'bg-white text-slate-700 border-slate-200 hover:border-cyan-400 shadow-sm' : 'bg-navy-900 text-slate-300 border-white/10 hover:border-cyan-400')
+                      ? 'bg-cyan-500 text-white border-cyan-500 shadow-md ring-1 ring-cyan-500 dark:bg-cyan-500 dark:text-slate-950 dark:border-cyan-400'
+                      : 'bg-white text-slate-800 border-slate-200 hover:border-cyan-400 shadow-sm dark:bg-navy-900 dark:text-slate-300 dark:border-white/10 dark:hover:border-cyan-400'
                   }`}
                 >
                   {slot}
@@ -517,17 +497,13 @@ function AppointmentContent() {
           <div className="flex justify-between pt-4">
             <button
               onClick={() => setStep(2)}
-              className={`px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider transition-all ${
-                isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-navy-800 text-slate-300 hover:bg-navy-700'
-              }`}
+              className="px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider transition-all bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-navy-800 dark:text-slate-300 dark:hover:bg-navy-700"
             >
               Back
             </button>
             <button
               onClick={() => setStep(4)}
-              className={`px-8 py-3 rounded-full font-bold text-xs uppercase tracking-wider transition-all flex items-center space-x-2 shadow-lg shadow-cyan-500/25 ${
-                isLight ? 'bg-cyan-500 text-white hover:bg-cyan-600' : 'bg-cyan-500 text-slate-950 hover:bg-cyan-400'
-              }`}
+              className="px-8 py-3 rounded-full font-bold text-xs uppercase tracking-wider transition-all flex items-center space-x-2 shadow-lg shadow-cyan-500/25 bg-cyan-500 text-white hover:bg-cyan-600 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400"
             >
               <span>Next: Patient Info</span>
               <ArrowRight className="w-4 h-4" />
@@ -538,82 +514,68 @@ function AppointmentContent() {
 
       {/* STEP 4: Patient Info & Report Upload */}
       {step === 4 && (
-        <form onSubmit={handleBook} className={`space-y-6 max-w-xl mx-auto rounded-3xl p-8 border shadow-2xl transition-all ${
-          isLight ? 'bg-white border-slate-200 shadow-slate-200/60 text-slate-900' : 'glass-card border-white/10 shadow-black/80 bg-slate-900/90 text-white'
-        }`}>
-          <h3 className={`text-xl font-serif font-bold text-center ${isLight ? 'text-slate-900' : 'text-white'}`}>
+        <form onSubmit={handleBook} className="space-y-6 max-w-xl mx-auto rounded-3xl p-8 border shadow-2xl transition-all bg-white border-slate-200 shadow-slate-200/60 text-slate-900 dark:glass-card dark:border-white/10 dark:shadow-black/80 dark:bg-slate-900/90 dark:text-white">
+          <h3 className="text-xl font-serif font-bold text-center text-slate-900 dark:text-white">
             Step 4: Patient Information
           </h3>
 
           <div className="space-y-4">
             <div>
-              <label className={`block text-xs font-semibold mb-1 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>Full Name</label>
+              <label className="block text-xs font-semibold mb-1 text-slate-800 dark:text-slate-300">Full Name</label>
               <input
                 type="text"
                 required
                 value={patientData.name}
                 onChange={(e) => setPatientData({ ...patientData, name: e.target.value })}
                 placeholder="Johnathan Miller"
-                className={`w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${
-                  isLight ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-cyan-500/20 shadow-inner' : 'bg-navy-900 border-white/15 text-white focus:border-cyan-400'
-                }`}
+                className="w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-cyan-500/20 shadow-inner dark:bg-navy-900 dark:border-white/15 dark:text-white dark:focus:border-cyan-400"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className={`block text-xs font-semibold mb-1 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>Email Address</label>
+                <label className="block text-xs font-semibold mb-1 text-slate-800 dark:text-slate-300">Email Address</label>
                 <input
                   type="email"
                   required
                   value={patientData.email}
                   onChange={(e) => setPatientData({ ...patientData, email: e.target.value })}
                   placeholder="patient@example.com"
-                  className={`w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${
-                    isLight ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-cyan-500/20 shadow-inner' : 'bg-navy-900 border-white/15 text-white focus:border-cyan-400'
-                  }`}
+                  className="w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-cyan-500/20 shadow-inner dark:bg-navy-900 dark:border-white/15 dark:text-white dark:focus:border-cyan-400"
                 />
               </div>
 
               <div>
-                <label className={`block text-xs font-semibold mb-1 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>Phone Number</label>
+                <label className="block text-xs font-semibold mb-1 text-slate-800 dark:text-slate-300">Phone Number</label>
                 <input
                   type="tel"
                   required
                   value={patientData.phone}
                   onChange={(e) => setPatientData({ ...patientData, phone: e.target.value })}
                   placeholder="+1 (555) 000-0000"
-                  className={`w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${
-                    isLight ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-cyan-500/20 shadow-inner' : 'bg-navy-900 border-white/15 text-white focus:border-cyan-400'
-                  }`}
+                  className="w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-cyan-500/20 shadow-inner dark:bg-navy-900 dark:border-white/15 dark:text-white dark:focus:border-cyan-400"
                 />
               </div>
             </div>
 
             <div>
-              <label className={`block text-xs font-semibold mb-1 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>Upload Prior Dental X-Ray or Records (Optional)</label>
+              <label className="block text-xs font-semibold mb-1 text-slate-800 dark:text-slate-300">Upload Prior Dental X-Ray or Records (Optional)</label>
               <input
                 type="file"
                 accept=".jpg,.jpeg,.png,.pdf"
                 onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
-                className={`w-full text-xs file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold transition-all ${
-                  isLight 
-                    ? 'text-slate-600 file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100' 
-                    : 'text-slate-400 file:bg-cyan-500/20 file:text-cyan-400 hover:file:bg-cyan-500/30'
-                }`}
+                className="w-full text-xs text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold transition-all file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100 dark:text-slate-400 dark:file:bg-cyan-500/20 dark:file:text-cyan-400 dark:hover:file:bg-cyan-500/30"
               />
             </div>
 
             <div>
-              <label className={`block text-xs font-semibold mb-1 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>Notes for Specialist</label>
+              <label className="block text-xs font-semibold mb-1 text-slate-800 dark:text-slate-300">Notes for Specialist</label>
               <textarea
                 rows={3}
                 value={patientData.notes}
                 onChange={(e) => setPatientData({ ...patientData, notes: e.target.value })}
                 placeholder="Mention any dental anxiety, preferred sedation, or previous treatments..."
-                className={`w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all ${
-                  isLight ? 'bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-cyan-500/20 shadow-inner' : 'bg-navy-900 border-white/15 text-white focus:border-cyan-400'
-                }`}
+                className="w-full px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 border transition-all bg-slate-50 border-slate-300 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-cyan-500/20 shadow-inner dark:bg-navy-900 dark:border-white/15 dark:text-white dark:focus:border-cyan-400"
               ></textarea>
             </div>
           </div>
@@ -622,20 +584,14 @@ function AppointmentContent() {
             <button
               type="button"
               onClick={() => setStep(3)}
-              className={`px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider transition-all ${
-                isLight ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-navy-800 text-slate-300 hover:bg-navy-700'
-              }`}
+              className="px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider transition-all bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-navy-800 dark:text-slate-300 dark:hover:bg-navy-700"
             >
               Back
             </button>
             <button
               type="submit"
               disabled={loading}
-              className={`px-8 py-3 rounded-full font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-lg flex items-center justify-center space-x-2 ${
-                isLight 
-                  ? 'bg-gradient-to-r from-cyan-500 to-sky-400 text-white shadow-cyan-500/25' 
-                  : 'bg-gradient-to-r from-cyan-400 to-sky-300 text-slate-950 shadow-cyan-500/25'
-              }`}
+              className="px-8 py-3 rounded-full font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-lg flex items-center justify-center space-x-2 bg-gradient-to-r from-cyan-500 to-sky-400 text-white shadow-cyan-500/25 dark:bg-gradient-to-r dark:from-cyan-400 dark:to-sky-300 dark:text-slate-950"
             >
               {loading ? 'Confirming Booking...' : 'Confirm Appointment'}
             </button>
@@ -645,44 +601,40 @@ function AppointmentContent() {
 
       {/* STEP 5: Request Submitted Pending Admin Approval */}
       {step === 5 && (
-        <div className={`rounded-3xl p-8 max-w-xl mx-auto border text-center space-y-6 shadow-2xl transition-all ${
-          isLight ? 'bg-white border-amber-400/50 shadow-slate-200/60 text-slate-900' : 'glass-card border-amber-500/40 shadow-2xl text-white'
-        }`}>
+        <div className="rounded-3xl p-8 max-w-xl mx-auto border text-center space-y-6 shadow-2xl transition-all bg-white border-amber-400/50 shadow-slate-200/60 text-slate-900 dark:glass-card dark:border-amber-500/40 dark:shadow-2xl dark:text-white">
           <div className="w-16 h-16 rounded-full bg-amber-500/20 text-amber-500 flex items-center justify-center mx-auto border border-amber-500/30">
             <Clock className="w-10 h-10 animate-pulse" />
           </div>
 
           <div className="space-y-2">
-            <span className="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30 inline-block">
+            <span className="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/30 inline-block">
               Status: Pending Admin Approval
             </span>
-            <h3 className={`text-3xl font-serif font-bold pt-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>Appointment Request Submitted!</h3>
-            <p className={`text-xs font-medium max-w-md mx-auto ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
+            <h3 className="text-3xl font-serif font-bold pt-2 text-slate-900 dark:text-white">Appointment Request Submitted!</h3>
+            <p className="text-xs font-medium max-w-md mx-auto text-slate-600 dark:text-slate-300">
               Appointment request submitted successfully. Your appointment will be confirmed after admin approval.
             </p>
           </div>
 
-          <div className={`rounded-2xl p-5 border text-left text-xs space-y-2 ${
-            isLight ? 'bg-slate-50 border-slate-200 text-slate-800' : 'bg-navy-900 border-white/10 text-slate-300'
-          }`}>
-            <div className={`flex justify-between py-1 border-b ${isLight ? 'border-slate-200' : 'border-white/5'}`}>
-              <span className={isLight ? 'text-slate-500' : 'text-slate-400'}>Patient Name:</span>
-              <span className={`font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>{confirmedAppt?.patientName}</span>
+          <div className="rounded-2xl p-5 border text-left text-xs space-y-2 bg-slate-50 border-slate-200 text-slate-800 dark:bg-navy-900 dark:border-white/10 dark:text-slate-300">
+            <div className="flex justify-between py-1 border-b border-slate-200 dark:border-white/5">
+              <span className="text-slate-500 dark:text-slate-400">Patient Name:</span>
+              <span className="font-bold text-slate-900 dark:text-white">{confirmedAppt?.patientName}</span>
             </div>
-            <div className={`flex justify-between py-1 border-b ${isLight ? 'border-slate-200' : 'border-white/5'}`}>
-              <span className={isLight ? 'text-slate-500' : 'text-slate-400'}>Specialist Doctor:</span>
+            <div className="flex justify-between py-1 border-b border-slate-200 dark:border-white/5">
+              <span className="text-slate-500 dark:text-slate-400">Specialist Doctor:</span>
               <span className="font-bold text-cyan-600 dark:text-cyan-400">{confirmedAppt?.doctorName}</span>
             </div>
-            <div className={`flex justify-between py-1 border-b ${isLight ? 'border-slate-200' : 'border-white/5'}`}>
-              <span className={isLight ? 'text-slate-500' : 'text-slate-400'}>Treatment:</span>
-              <span className={`font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>{confirmedAppt?.serviceName}</span>
+            <div className="flex justify-between py-1 border-b border-slate-200 dark:border-white/5">
+              <span className="text-slate-500 dark:text-slate-400">Treatment:</span>
+              <span className="font-bold text-slate-900 dark:text-white">{confirmedAppt?.serviceName}</span>
             </div>
-            <div className={`flex justify-between py-1 border-b ${isLight ? 'border-slate-200' : 'border-white/5'}`}>
-              <span className={isLight ? 'text-slate-500' : 'text-slate-400'}>Date & Slot:</span>
-              <span className={`font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>{confirmedAppt?.date} at {confirmedAppt?.timeSlot}</span>
+            <div className="flex justify-between py-1 border-b border-slate-200 dark:border-white/5">
+              <span className="text-slate-500 dark:text-slate-400">Date & Slot:</span>
+              <span className="font-bold text-slate-900 dark:text-white">{confirmedAppt?.date} at {confirmedAppt?.timeSlot}</span>
             </div>
             <div className="flex justify-between py-1">
-              <span className={isLight ? 'text-slate-500' : 'text-slate-400'}>Live Queue Status:</span>
+              <span className="text-slate-500 dark:text-slate-400">Live Queue Status:</span>
               <span className="font-bold text-amber-600 dark:text-amber-400">Hidden (Appears after Admin Accept)</span>
             </div>
           </div>
@@ -690,9 +642,7 @@ function AppointmentContent() {
           <div className="pt-2 flex justify-center space-x-4">
             <button
               onClick={() => router.push('/dashboard')}
-              className={`px-8 py-3 rounded-full font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-lg ${
-                isLight ? 'bg-cyan-500 text-white shadow-cyan-500/25 hover:bg-cyan-600' : 'bg-cyan-500 text-slate-950 shadow-cyan-500/25 hover:bg-cyan-400'
-              }`}
+              className="px-8 py-3 rounded-full font-bold text-xs uppercase tracking-wider hover:brightness-110 transition-all shadow-lg bg-cyan-500 text-white shadow-cyan-500/25 hover:bg-cyan-600 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400"
             >
               Check Status in Patient Portal
             </button>
